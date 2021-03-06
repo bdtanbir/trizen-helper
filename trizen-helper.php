@@ -22,6 +22,7 @@ add_action('plugins_loaded', 'trizen_helper_load');
 function trizen_helper_load()
 {
 	require_once TRIZEN_HELPER_PATH.'widgets/trizen-social-profile.php';
+	require_once TRIZEN_HELPER_PATH.'widgets/trizen-recent-post-with-thumbnail.php';
 }
 
 
