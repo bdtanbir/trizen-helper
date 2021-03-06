@@ -1,0 +1,48 @@
+
+
+.trizen-rpwt-fields select,
+.trizen-rpwt-fields input {
+    height: auto;
+    line-height: inherit;
+    padding: 8px 15px;
+    font-size: 13px;
+    color: #0d233e;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+    -webkit-transition: all .3s;
+    -moz-transition: all .3s;
+    -ms-transition: all .3s;
+    -o-transition: all .3s;
+    transition: all .3s;
+    background-color: #fff;
+    display: block;
+    width: 100%;
+    font-weight: 400;
+    border: 1px solid rgba(128,137,150,.2);
+    border-radius: .25rem;
+}
+.trizen-rpwt-fields input:focus {
+    outline: none;
+    box-shadow: none;
+    border-color: #287dfa;
+}
+.trizen-rpwt-fields label {
+    font-size: 14px;
+    color: #0d233e;
+    display: inline-block;
+    margin-bottom: .5rem;
+}
+.trizen-rpwt-fields hr {
+    margin-top: 25px;
+}
+.highlight-desc {
+    font-style: italic;
+    color: #5d646d;
+    margin-top: 3px;
+    display: inline-block;
+}
+.highlight-desc strong {
+    color: #0d233e;
+}
+

@@ -26,5 +26,15 @@ function trizen_helper_load()
 }
 
 
+function trizen_helper_admin_script()
+{
+	wp_enqueue_style(
+		'trizen-admin-global-css',
+		TRIZEN_HELPER_URI.('assets/css/trizen-admin.css'),
+		TRIZEN_HELPER_VERSION
+	);
+}
+add_action('admin_enqueue_scripts', 'trizen_helper_admin_script');
+
 
 
