@@ -4,13 +4,15 @@
  * Register meta boxes.
  */
 if(!function_exists('trizen_register_meta_boxes')) {
+
+
 	function trizen_register_meta_boxes() {
 		add_meta_box(
-			'trizen-course-badge-title',
-			__( 'Course Badge Title', 'trizen-helper' ),
-			'trizen_display_feature_callback',
+			'trizen-hotel-infos-meta',
+			__( 'Hotel Information', 'trizen-helper' ),
+			'trizen_hotel_infos_callback',
 			'ts_hotel',
-			'normal',
+			'advanced',
 			'high'
 		);
 	}
@@ -25,9 +27,13 @@ if(!function_exists('trizen_register_meta_boxes')) {
 	function trizen_save_meta_box( $post_id ) {
 		if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) return;
 
+		$meta_key = 'trizen_hotel_image_gallery';
+		update_post_meta( $post_id, $meta_key, $_POST[$meta_key] );
+
 
 		$fields = [
-			'trizen_course_badge_title',
+			'trizen_hotel_address_title',
+			'trizen_hotel_video_url',
 		];
 		foreach ( $fields as $field ) {
 			if ( array_key_exists( $field, $_POST ) ) {
@@ -43,8 +49,9 @@ if(!function_exists('trizen_register_meta_boxes')) {
 	/**
 	 * Meta box display callback.
 	 */
-	function trizen_display_feature_callback() {
+	function trizen_hotel_infos_callback() {
 		require_once TRIZEN_HELPER_PATH.'custom/trizen-hotel-information-meta.php';
 	}
 }
+
 

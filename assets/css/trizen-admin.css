@@ -1,5 +1,6 @@
 
 
+.trizen-hotel-infos-content .form-settings input,
 .trizen-rpwt-fields select,
 .trizen-rpwt-fields input {
     height: auto;
@@ -22,6 +23,7 @@
     border: 1px solid rgba(128,137,150,.2);
     border-radius: .25rem;
 }
+.trizen-hotel-infos-content .form-settings input:focus,
 .trizen-rpwt-fields input:focus {
     outline: none;
     box-shadow: none;
@@ -44,5 +46,154 @@
 }
 .highlight-desc strong {
     color: #0d233e;
+}
+
+
+.trizen-hotel-information-wrap .tab-content{
+    display: none;
+    padding: 0;
+    transition: 0.3s ease all;
+}
+.trizen-hotel-information-wrap .tab-content.current{
+    display: inherit;
+    transition: 0.3s ease all;
+}
+.trizen-hotel-information-wrap .tab-content .finbyz-icon {
+    width: 100px;
+}
+.trizen-hotel-information-wrap .nav-pill-main-div {
+    display: flex;
+    align-items: start;
+}
+.trizen-hotel-information-wrap .tabs {
+    width: 150px;
+    flex: none;
+    margin: 0 20px 0 0;
+}
+.trizen-hotel-information-wrap .tabs li {
+    font-size: 14px;
+    border: 1px solid #287dfa;
+    padding: 10px 10px 11px 10px;
+    margin-bottom: 10px;
+    border-radius: 4px;
+    color: #287dfa;
+    font-weight: 500;
+    cursor: pointer;
+    position: relative;
+    background: #fff;
+}
+.trizen-hotel-information-wrap .tabs li.current {
+    background: #287dfa;
+    color: #ffffff;
+}
+.trizen-hotel-information-wrap .tabs li.current:after {
+    content: '';
+    width: 8px;
+    height: 8px;
+    background: #fff;
+    border-radius: 50%;
+    position: absolute;
+    right: 10px;
+    top: 16px;
+}
+.trizen-hotel-information-wrap .tabs li:last-child {
+    margin-bottom: 0;
+}
+#trizen-hotel-infos-meta .inside {
+    background: #f2f2f2;
+    margin: 0;
+    padding: 15px;
+}
+.trizen-hotel-information-wrap .trizen-hotel-infos-content {
+    background: #ffffff;
+    flex: 1;
+    border-radius: 4px;
+    border: 1px solid #d6d6d6;
+}
+.trizen-hotel-infos-content .form-settings {
+    padding: 20px 20px 25px 20px;
+    border-bottom: 2px solid #f2f2f2;
+}
+.trizen-hotel-infos-content .form-settings:last-child {
+    border-bottom: none;
+}
+.trizen-hotel-infos-content .form-settings label {
+    display: inline-block;
+    font-size: 20px;
+    font-weight: 500;
+    margin-bottom: 10px;
+}
+.trizen-hotel-infos-content .form-settings .description {
+    display: block;
+    font-style: italic;
+    margin-bottom: 6px;
+}
+.trizen-hotel-infos-content .form-settings input {
+    border-color: #d4d4d4;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    max-width: 600px;
+}
+.trizen-hotel-infos-content .form-settings .trizen-btn {
+    font-size: 15px;
+    color: #fff;
+    padding: 4px 18px;
+    background-color: #287dfa;
+    -webkit-transition: all 0.3s;
+    -moz-transition: all 0.3s;
+    -ms-transition: all 0.3s;
+    -o-transition: all 0.3s;
+    transition: all 0.3s;
+    position: relative;
+    display: inline-block;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+    border: 1px solid #287dfa;
+    font-weight: 500;
+}
+.trizen-hotel-infos-content .form-settings .trizen-btn:hover {
+    background: #ffffff;
+    color: #287dfa;
+}
+
+.trizen_hotel_img_gallery_mtb {
+    display: flex;
+    flex-wrap: wrap;
+}
+.trizen_hotel_img_gallery_mtb li {
+    position: relative;
+    width: 100px;
+    margin-right: 10px;
+}
+.trizen_hotel_img_gallery_mtb li:last-child {
+    margin-right: 0;
+}
+.trizen_hotel_img_gallery_mtb li img {
+    width: auto;
+    max-width: 100%;
+}
+.trizen_hotel_img_gallery_mtb li .trizen_hotel_img_gallery_remove {
+    position: absolute;
+    right: -7px;
+    top: -7px;
+    background: red;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    text-align: center;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 18px;
+    line-height: 15px;
+    transform: rotate(45deg);
+    color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+    transition: .3s;
+    border: 1px solid #ffffff;
+}
+.trizen_hotel_img_gallery_mtb li .trizen_hotel_img_gallery_remove:hover {
+    background: #ffffff;
+    color: #000000;
 }
 

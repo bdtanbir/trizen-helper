@@ -24,6 +24,7 @@ function trizen_helper_load()
 	require_once TRIZEN_HELPER_PATH.'widgets/trizen-social-profile.php';
 	require_once TRIZEN_HELPER_PATH.'widgets/trizen-recent-post-with-thumbnail.php';
 	require_once TRIZEN_HELPER_PATH.'custom/trizen-custom-post-types.php';
+	require_once TRIZEN_HELPER_PATH.'custom/trizen-custom-metaboxes.php';
 }
 
 
@@ -34,8 +35,19 @@ function trizen_helper_admin_script()
 		TRIZEN_HELPER_URI.('assets/css/trizen-admin.css'),
 		TRIZEN_HELPER_VERSION
 	);
+
+	if ( ! did_action( 'wp_enqueue_media' ) )
+		wp_enqueue_media();
+	wp_enqueue_script(
+		'trizen-helper-admin-js',
+		TRIZEN_HELPER_URI.('assets/js/trizen-helper-admin.js'),
+		array('jquery'),
+		TRIZEN_HELPER_VERSION,
+		true
+	);
 }
 add_action('admin_enqueue_scripts', 'trizen_helper_admin_script');
+
 
 
 
