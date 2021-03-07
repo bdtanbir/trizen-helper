@@ -23,6 +23,7 @@ function trizen_helper_load()
 {
 	require_once TRIZEN_HELPER_PATH.'widgets/trizen-social-profile.php';
 	require_once TRIZEN_HELPER_PATH.'widgets/trizen-recent-post-with-thumbnail.php';
+	require_once TRIZEN_HELPER_PATH.'custom/trizen-custom-post-types.php';
 }
 
 
