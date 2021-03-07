@@ -34,6 +34,8 @@ if(!function_exists('trizen_register_meta_boxes')) {
 		$fields = [
 			'trizen_hotel_address_title',
 			'trizen_hotel_video_url',
+			'trizen_hotel_regular_price',
+			'trizen_hotel_sale_price',
 		];
 		foreach ( $fields as $field ) {
 			if ( array_key_exists( $field, $_POST ) ) {

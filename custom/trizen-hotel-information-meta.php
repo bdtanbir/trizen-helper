@@ -1,6 +1,8 @@
 <?php
 $hotel_address_title = get_post_meta( get_the_ID(), 'trizen_hotel_address_title', true );
 $hotel_video         = get_post_meta( get_the_ID(), 'trizen_hotel_video_url', true );
+$hotel_regular_price = get_post_meta( get_the_ID(), 'trizen_hotel_regular_price', true );
+$hotel_sale_price    = get_post_meta( get_the_ID(), 'trizen_hotel_sale_price', true );
 if(empty($hotel_video)) {
     $hotel_video_src = 'https://www.youtube.com/watch?v=5u1WISBbo5I';
 } else {
@@ -16,8 +18,8 @@ if(empty($hotel_video)) {
             <li class="tab-link nav-pill" href="tab-hotel-details">
                 <?php esc_html_e('Hotel Details', 'trizen-helper'); ?>
             </li>
-            <li class="tab-link nav-pill" href="tab-3">
-                Efficiency
+            <li class="tab-link nav-pill" href="tab-price">
+                <?php esc_html_e('Price', 'trizen-helper'); ?>
             </li>
         </ul>
         <div class="trizen-hotel-infos-content">
@@ -93,22 +95,39 @@ if(empty($hotel_video)) {
                     </div>
                 </div>
             </div>
-            <div class="tab-content" id="tab-3">
-                <div class="float-left">
-                    <img alt="efficiency" class="finbyz-icon" src="https://finbyz.tech/svg/efficiency.svg"
-                         title="efficiency">
+            <div class="tab-content" id="tab-price">
+                <div class="form-settings" id="hotel_price_setting">
+                    <label for="trizen_hotel_regular_price" class="title">
+			            <?php esc_html_e('Regular price', 'trizen-helper'); ?>
+                    </label>
+                    <span class="description">
+                        <?php esc_html_e('Enter regular price here', 'trizen-helper'); ?>
+                    </span>
+                    <div class="form-input">
+                        <input
+                            id="trizen_hotel_regular_price"
+                            name="trizen_hotel_regular_price"
+                            type="text"
+                            value="<?php echo esc_attr($hotel_regular_price); ?>"
+                            placeholder="<?php esc_attr_e('$', 'trizen-helper'); ?>" />
+                    </div>
                 </div>
-                <p class="pb-20">
-                    The first step to increase the efficiency of your team is to track and limit how much time
-                    they send on each task. ERP software will not only give you tools to monitor &amp; measure
-                    financial performance, but can also help you in monitoring the tasks performed by each team
-                    member. Sometimes the most important part of solving the problem is knowing where the
-                    problem lies. An efficient organization needs you to be a leader, and ERP software
-                    development provides you all the tools required to mentor your team to success! The
-                    efficiency also increases when you have all information on the figure tips. Don’t you think
-                    the sales call will be more efficient if caller has all information about last conversation
-                    with the client, even the details of a call done few years ago!
-                </p>
+                <div class="form-settings" id="hotel_price_setting">
+                    <label for="trizen_hotel_sale_price" class="title">
+			            <?php esc_html_e('Sale price', 'trizen-helper'); ?>
+                    </label>
+                    <span class="description">
+                        <?php esc_html_e('Enter sale price here', 'trizen-helper'); ?>
+                    </span>
+                    <div class="form-input">
+                        <input
+                            id="trizen_hotel_sale_price"
+                            name="trizen_hotel_sale_price"
+                            type="text"
+                            value="<?php echo esc_attr($hotel_sale_price); ?>"
+                            placeholder="<?php esc_attr_e('$', 'trizen-helper'); ?>" />
+                    </div>
+                </div>
             </div>
         </div>
     </div>
