@@ -25,6 +25,7 @@ function trizen_helper_load()
 	require_once TRIZEN_HELPER_PATH.'widgets/trizen-recent-post-with-thumbnail.php';
 	require_once TRIZEN_HELPER_PATH.'custom/trizen-custom-post-types.php';
 	require_once TRIZEN_HELPER_PATH.'custom/trizen-custom-metaboxes.php';
+	require_once TRIZEN_HELPER_PATH.'custom/trizen-taxonomy-class.php';
 }
 
 
