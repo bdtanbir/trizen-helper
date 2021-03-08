@@ -26,11 +26,16 @@ function trizen_helper_load()
 	require_once TRIZEN_HELPER_PATH.'custom/trizen-custom-post-types.php';
 	require_once TRIZEN_HELPER_PATH.'custom/trizen-custom-metaboxes.php';
 	require_once TRIZEN_HELPER_PATH.'custom/trizen-taxonomy-class.php';
+	require_once TRIZEN_HELPER_PATH.'widgets/trizen-hotel-organized-by.php';
 }
 
 
 function trizen_helper_admin_script()
 {
+	wp_enqueue_style(
+		'lib-admin-select2-css',
+		'//cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css'
+	);
 	wp_enqueue_style(
 		'trizen-admin-global-css',
 		TRIZEN_HELPER_URI.('assets/css/trizen-admin.css'),
@@ -40,6 +45,13 @@ function trizen_helper_admin_script()
 
 	if ( ! did_action( 'wp_enqueue_media' ) )
 		wp_enqueue_media();
+	wp_enqueue_script(
+		'lib-admin-select2-js',
+		'//cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js',
+		array('jquery'),
+		TRIZEN_HELPER_VERSION,
+		true
+	);
 	wp_enqueue_script(
 		'trizen-helper-admin-js',
 		TRIZEN_HELPER_URI.('assets/js/trizen-helper-admin.js'),

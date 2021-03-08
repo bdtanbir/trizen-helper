@@ -285,8 +285,14 @@ $trizen_hotel_faqs_content = get_post_meta(get_the_ID(), 'trizen_hotel_faqs_cont
 		                    <?php esc_html_e('Add FAQ(s)', 'trizen-helper'); ?>
                         </button>
                     </div>
-
                 </div>
+                <!--<div class="form-settings" id="hotel_select2">
+                    <select class="select-to-select2" name="state">
+                        <option value="AL">Alabama</option>
+                        <option value="WY">Wyoming</option>
+                        <option value="BD">Bangladesh</option>
+                    </select>
+                </div>-->
             </div>
         </div>
     </div>
