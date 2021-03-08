@@ -24,6 +24,7 @@ function in_array(el, arr) {
 }
 
 jQuery( function( $ ) {
+    "use strict";
     /*
      * Sortable images
      */
@@ -131,6 +132,73 @@ jQuery( function( $ ) {
         el.parent().find('li').removeClass('misha-active');
         el.addClass('misha-active');
     });
+
+
+
+
+    /* Hotel Features */
+    $(function () {
+        // Download Options Field Repeat
+        $("#trizen_hotel_features_add").on('click', function (e) {
+            e.preventDefault();
+            var template = wp.template('repeater'),
+                html = template();
+            $("#trizen_hotel_features_data").append(html);
+        });
+        $(document).on('click', '.trizen_hotel_features_remove', function (e) {
+            e.preventDefault();
+            $(this).parent().remove();
+        });
+    });
+
+
+    /* Hotel Faqs */
+    $(function () {
+        // Download Options Field Repeat
+        $("#trizen_hotel_faqs_add").on('click', function (e) {
+            e.preventDefault();
+            var template = wp.template('repeater2'),
+                html = template();
+            $("#trizen_hotel_faqs_data").append(html);
+        });
+        $(document).on('click', '.trizen_hotel_faq_remove', function (e) {
+            e.preventDefault();
+            $(this).parent().remove();
+        });
+    });
+
 });
+
+
+
+/* Accordion */
+// Listen for click on the document
+document.addEventListener('click', function (event) {
+
+    //Bail if our clicked element doesn't have the class
+    if (!event.target.classList.contains('accordion-toggle')) return;
+
+    // Get the target content
+    var content = document.querySelector(event.target.hash);
+    if (!content) return;
+
+    // Prevent default link behavior
+    event.preventDefault();
+
+    // If the content is already expanded, collapse it and quit
+    if (content.classList.contains('active')) {
+        content.classList.remove('active');
+        return;
+    }
+
+    // Get all open accordion content, loop through it, and close it
+    var accordions = document.querySelectorAll('.accordion-content.active');
+    for (var i = 0; i < accordions.length; i++) {
+        accordions[i].classList.remove('active');
+    }
+
+    // Toggle our content
+    content.classList.toggle('active');
+})
 
 

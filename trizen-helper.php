@@ -34,6 +34,7 @@ function trizen_helper_admin_script()
 	wp_enqueue_style(
 		'trizen-admin-global-css',
 		TRIZEN_HELPER_URI.('assets/css/trizen-admin.css'),
+		'',
 		TRIZEN_HELPER_VERSION
 	);
 

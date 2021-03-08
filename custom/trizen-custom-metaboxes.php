@@ -36,12 +36,61 @@ if(!function_exists('trizen_register_meta_boxes')) {
 			'trizen_hotel_video_url',
 			'trizen_hotel_regular_price',
 			'trizen_hotel_sale_price',
+			'trizen_hotel_features_title',
+			'trizen_hotel_features_stitle',
+			'trizen_hotel_features_icon',
+			'trizen_hotel_faqs_title',
+			'trizen_hotel_faqs_content',
 		];
 		foreach ( $fields as $field ) {
 			if ( array_key_exists( $field, $_POST ) ) {
 				update_post_meta( $post_id, $field, wp_kses_post( $_POST[$field] ) );
 			}
 		}
+
+
+
+
+		/* Hotel Features */
+		$oldfield = get_post_meta($post_id, 'trizen_hotel_features_data_group', true);
+		if($_POST['trizen_hotel_features_title']) {
+			$newfield      = array();
+			$trizen_hotel_features_title   = $_POST['trizen_hotel_features_title'];
+			$trizen_hotel_features_stitle = $_POST['trizen_hotel_features_stitle'];
+			$trizen_hotel_features_icon = $_POST['trizen_hotel_features_icon'];
+			$count = count( $trizen_hotel_features_title );
+			for ( $i = 0; $i < $count; $i ++ ) {
+				if ( $trizen_hotel_features_title[ $i ] != '' ) :
+					$newfield[ $i ]['trizen_hotel_features_title']   = stripslashes( strip_tags( $trizen_hotel_features_title[ $i ] ) );
+					$newfield[ $i ]['trizen_hotel_features_stitle'] = stripslashes( $trizen_hotel_features_stitle[ $i ] ); // and however you want to sanitize
+					$newfield[ $i ]['trizen_hotel_features_icon'] = stripslashes( $trizen_hotel_features_icon[ $i ] ); // and however you want to sanitize
+				endif;
+			}
+		}
+		if ( !empty( $newfield ) && $newfield != $oldfield )
+			update_post_meta( $post_id, 'trizen_hotel_features_data_group', $newfield );
+		elseif ( empty($newfield) && $oldfield )
+			delete_post_meta( $post_id, 'trizen_hotel_features_data_group', $oldfield );
+
+
+		/* Hotel Faqs */
+		$oldfield = get_post_meta($post_id, 'trizen_hotel_faqs_data_group', true);
+		if($_POST['trizen_hotel_faqs_title']) {
+			$newfield      = array();
+			$trizen_hotel_faqs_title   = $_POST['trizen_hotel_faqs_title'];
+			$trizen_hotel_faqs_content = $_POST['trizen_hotel_faqs_content'];
+			$count = count( $trizen_hotel_faqs_title );
+			for ( $i = 0; $i < $count; $i ++ ) {
+				if ( $trizen_hotel_faqs_title[ $i ] != '' ) :
+					$newfield[ $i ]['trizen_hotel_faqs_title']   = stripslashes( strip_tags( $trizen_hotel_faqs_title[ $i ] ) );
+					$newfield[ $i ]['trizen_hotel_faqs_content'] = stripslashes( $trizen_hotel_faqs_content[ $i ] ); // and however you want to sanitize
+				endif;
+			}
+		}
+		if ( !empty( $newfield ) && $newfield != $oldfield )
+			update_post_meta( $post_id, 'trizen_hotel_faqs_data_group', $newfield );
+		elseif ( empty($newfield) && $oldfield )
+			delete_post_meta( $post_id, 'trizen_hotel_faqs_data_group', $oldfield );
 
 	}
 	add_action( 'save_post_ts_hotel', 'trizen_save_meta_box', 10, 2 );

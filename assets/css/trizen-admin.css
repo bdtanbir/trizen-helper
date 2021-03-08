@@ -1,5 +1,6 @@
 
 
+.trizen-hotel-infos-content .form-settings textarea,
 .trizen-hotel-infos-content .form-settings input,
 .trizen-rpwt-fields select,
 .trizen-rpwt-fields input {
@@ -23,11 +24,15 @@
     border: 1px solid rgba(128,137,150,.2);
     border-radius: .25rem;
 }
+.trizen-hotel-infos-content .form-settings textarea:focus,
 .trizen-hotel-infos-content .form-settings input:focus,
 .trizen-rpwt-fields input:focus {
     outline: none;
     box-shadow: none;
     border-color: #287dfa;
+}
+.trizen-hotel-infos-content .form-settings textarea {
+    height: 120px;
 }
 .trizen-rpwt-fields label {
     font-size: 14px;
@@ -195,5 +200,122 @@
 .trizen_hotel_img_gallery_mtb li .trizen_hotel_img_gallery_remove:hover {
     background: #ffffff;
     color: #000000;
+}
+.trizen-hotel-features-repeater-metabox .field-group:first-child {
+    margin-top: 25px;
+}
+.trizen-hotel-features-repeater-metabox .field-group {
+    margin-top: 15px;
+    display: flex;
+    align-items: flex-end;
+}
+.trizen-hotel-infos-content .form-settings .trizen-hotel-features-repeater-metabox label {
+    margin-bottom: 0;
+}
+.trizen-hotel-features-repeater-metabox .field-group label {
+    margin-right: 10px;
+}
+.trizen-hotel-features-repeater-metabox label span {
+    display: block;
+    font-size: 15px;
+    margin-bottom: 5px;
+}
+.trizen-hotel-features-repeater-metabox .field-group .trizen_hotel_features_remove {
+    border: none;
+    padding: 0;
+    background: red;
+    color: #fff;
+    font-weight: 700;
+    transition: .3s;
+    height: 40px;
+    text-align: center;
+    font-size: 15px;
+    width: 35px;
+}
+.hotel-accordion-item .hotel-accordion-title .trizen_hotel_faq_remove:hover,
+.trizen-hotel-features-repeater-metabox .field-group .trizen_hotel_features_remove:hover {
+    background: #e40707;
+}
+.hotel-accordion-item .hotel-accordion-title .trizen_hotel_faq_remove:focus,
+.hotel-accordion-item .hotel-accordion-title a:focus,
+#tab-hotel-features .trizen-btn:focus,
+.trizen-hotel-features-repeater-metabox .field-group .trizen_hotel_features_remove:focus {
+    outline: none;
+    box-shadow: none;
+}
+#tab-hotel-features .trizen-btn {
+    padding: 1px 15px;
+    margin-top: 10px;
+}
+
+
+/* Accordion */
+.hotel-accordion-item .accordion-toggle {
+    display: block;
+}
+.hotel-accordion-item .accordion-content {
+    display: none;
+    padding: 20px 20px 20px;
+}
+.hotel-accordion-item .accordion-content.active {
+    display: block;
+}
+.hotel-accordion-item {
+    -webkit-border-radius: 8px;
+    -moz-border-radius: 8px;
+    border-radius: 8px;
+    border: 1px solid rgba(128, 137, 150, 0.2);
+    margin-bottom: 10px;
+}
+.hotel-accordion-item:last-child {
+    margin-bottom: 0;
+}
+.hotel-accordion-item .hotel-accordion-title {
+    margin: 0;
+    background: #f2f2f2;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    border-radius: 8px;
+}
+.hotel-accordion-item .hotel-accordion-title a {
+    display: block;
+    padding: 12px 20px;
+    text-align: left;
+    color: #0d233e;
+    font-size: 16px;
+    font-weight: 500;
+    text-decoration: none;
+    flex: 1;
+}
+.hotel-accordion-item .hotel-accordion-title .trizen_hotel_faq_remove {
+    background: red;
+    color: #fff;
+    border: none;
+    height: 46px;
+    display: inline-block;
+    border-radius: 4px;
+    width: 40px;
+    font-weight: 600;
+    font-size: 17px;
+}
+.hotel-accordion-item .accordion-content .form-group {
+    margin-bottom: 20px;
+}
+.hotel-accordion-item .accordion-content .form-group:last-child {
+    margin-bottom: 0;
+}
+.hotel-accordion-item .accordion-content label {
+    font-size: 16px;
+}
+#hotel_faqs_setting {
+    max-width: 600px;
+}
+#trizen_hotel_faqs_data {
+    margin-top: 20px;
+}
+#trizen_hotel_faqs_add {
+    margin-top: 15px;
 }
 
