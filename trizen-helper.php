@@ -27,6 +27,7 @@ function trizen_helper_load()
 	require_once TRIZEN_HELPER_PATH.'custom/trizen-custom-metaboxes.php';
 	require_once TRIZEN_HELPER_PATH.'custom/trizen-taxonomy-class.php';
 	require_once TRIZEN_HELPER_PATH.'widgets/trizen-hotel-organized-by.php';
+	require_once TRIZEN_HELPER_PATH.'widgets/trizen-hotel-price-and-availability.php';
 }
 
 
@@ -62,6 +63,23 @@ function trizen_helper_admin_script()
 }
 add_action('admin_enqueue_scripts', 'trizen_helper_admin_script');
 
+
+
+
+
+function get_username($user_id) {
+	$userdata = get_userdata($user_id);
+	if (!$userdata) {
+		return __('Customer', 'trizen-helper');
+	}
+	if ($userdata->display_name) {
+		return $userdata->display_name;
+	} elseif ($userdata->first_name || $userdata->last_name) {
+		return $userdata->first_name . ' ' . $userdata->last_name;
+	} else {
+		return $userdata->user_login;
+	}
+}
 
 
 
