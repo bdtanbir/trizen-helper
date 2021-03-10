@@ -70,32 +70,34 @@ class trizen_hpa_widget extends WP_Widget {
             <div class="contact-form-action">
                 <form action="#">
                     <div class="input-box">
-                        <label class="label-text">Check in - Check out</label>
+                        <label class="label-text" for="check-in-check-out">
+                            <?php esc_html_e('Check in - Check out', 'trizen-helper'); ?>
+                        </label>
                         <div class="form-group">
                             <span class="la la-calendar form-icon"></span>
-                            <input class="date-range form-control" type="text" name="daterange">
+                            <input id="check-in-check-out" class="date-range form-control" type="text" name="daterange">
                         </div>
                     </div>
                     <div class="input-box">
-                        <label class="label-text">Rooms</label>
+                        <label class="label-text" for="select-room"><?php esc_html_e('Rooms', 'trizen-helper'); ?></label>
                         <div class="form-group">
                             <div class="select-contain w-auto">
-                                <select class="select-contain-select">
-                                    <option value="0">Select Rooms</option>
-                                    <option value="1">1 Room</option>
-                                    <option value="2">2 Rooms</option>
-                                    <option value="3">3 Rooms</option>
-                                    <option value="4">4 Rooms</option>
-                                    <option value="5">5 Rooms</option>
-                                    <option value="6">6 Rooms</option>
-                                    <option value="7">7 Rooms</option>
-                                    <option value="8">8 Rooms</option>
-                                    <option value="9">9 Rooms</option>
-                                    <option value="10">10 Rooms</option>
-                                    <option value="11">11 Rooms</option>
-                                    <option value="12">12 Rooms</option>
-                                    <option value="13">13 Rooms</option>
-                                    <option value="14">14 Rooms</option>
+                                <select id="select-room" class="select-contain-select">
+                                    <option value="0"><?php esc_html_e('Select Rooms','trizen-helper'); ?></option>
+                                    <option value="1"><?php esc_html_e('1 Room', 'trizen-helper'); ?></option>
+                                    <option value="2"><?php esc_html_e('2 Rooms', 'trizen-helper'); ?></option>
+                                    <option value="3"><?php esc_html_e('3 Rooms', 'trizen-helper'); ?></option>
+                                    <option value="4"><?php esc_html_e('4 Rooms', 'trizen-helper'); ?></option>
+                                    <option value="5"><?php esc_html_e('5 Rooms', 'trizen-helper'); ?></option>
+                                    <option value="6"><?php esc_html_e('6 Rooms', 'trizen-helper'); ?></option>
+                                    <option value="7"><?php esc_html_e('7 Rooms', 'trizen-helper'); ?></option>
+                                    <option value="8"><?php esc_html_e('8 Rooms', 'trizen-helper'); ?></option>
+                                    <option value="9"><?php esc_html_e('9 Rooms', 'trizen-helper'); ?></option>
+                                    <option value="10"><?php esc_html_e('10 Rooms', 'trizen-helper'); ?></option>
+                                    <option value="11"><?php esc_html_e('11 Rooms', 'trizen-helper'); ?></option>
+                                    <option value="12"><?php esc_html_e('12 Rooms', 'trizen-helper'); ?></option>
+                                    <option value="13"><?php esc_html_e('13 Rooms', 'trizen-helper'); ?></option>
+                                    <option value="14"><?php esc_html_e('14 Rooms', 'trizen-helper'); ?></option>
                                 </select>
                             </div>
                         </div>
@@ -105,36 +107,48 @@ class trizen_hpa_widget extends WP_Widget {
         </div>
         <div class="sidebar-widget-item">
             <div class="qty-box mb-2 d-flex align-items-center justify-content-between">
-                <label class="font-size-16">Adults <span>Age 18+</span></label>
+                <label class="font-size-16" for="adults-num">
+                    <?php esc_html_e('Adults', 'trizen-elper'); ?> <span><?php esc_html_e('Age 18+', 'trizen-helper'); ?></span>
+                </label>
                 <div class="qtyBtn d-flex align-items-center">
                     <div class="qtyDec"><i class="la la-minus"></i></div>
-                    <input type="text" name="qtyInput" value="0">
+                    <input id="adults-num" type="text" name="qtyInput" value="0">
                     <div class="qtyInc"><i class="la la-plus"></i></div>
                 </div>
             </div>
             <div class="qty-box mb-2 d-flex align-items-center justify-content-between">
-                <label class="font-size-16">Children <span>2-12 years old</span></label>
+                <label class="font-size-16" for="children-num">
+                    <?php esc_html_e('Children', 'trizen-elper'); ?> <span><?php esc_html_e('2-12 years old', 'trizen-helper'); ?></span>
+                </label>
                 <div class="qtyBtn d-flex align-items-center">
                     <div class="qtyDec"><i class="la la-minus"></i></div>
-                    <input type="text" name="qtyInput" value="0">
+                    <input id="children-num" type="text" name="qtyInput" value="0">
                     <div class="qtyInc"><i class="la la-plus"></i></div>
                 </div>
             </div>
             <div class="qty-box mb-2 d-flex align-items-center justify-content-between">
-                <label class="font-size-16">Infants <span>0-2 years old</span></label>
+                <label class="font-size-16" for="infants_num"><?php esc_html_e('Infants', 'trizen-helper'); ?> <span><?php esc_html_e('0-2 years old', 'trizen-helper'); ?></span></label>
                 <div class="qtyBtn d-flex align-items-center">
                     <div class="qtyDec"><i class="la la-minus"></i></div>
-                    <input type="text" name="qtyInput" value="0">
+                    <input id="infants_num" type="text" name="qtyInput" value="0">
                     <div class="qtyInc"><i class="la la-plus"></i></div>
                 </div>
             </div>
         </div>
         <div class="btn-box pt-2">
-            <a href="tour-booking.html" class="theme-btn text-center w-100 mb-2"><i class="la la-shopping-cart mr-2 font-size-18"></i>Book Now</a>
-            <a href="#" class="theme-btn text-center w-100 theme-btn-transparent"><i class="la la-heart-o mr-2"></i>Add to Wishlist</a>
+            <a href="tour-booking.html" class="theme-btn text-center w-100 mb-2">
+                <i class="la la-shopping-cart mr-2 font-size-18"></i><?php esc_html_e('Book Now', 'trizen-helper'); ?>
+            </a>
+            <a href="#" class="theme-btn text-center w-100 theme-btn-transparent">
+                <i class="la la-heart-o mr-2"></i><?php esc_html_e('Add to Wishlist', 'trizen-helper');  ?>
+            </a>
             <div class="d-flex align-items-center justify-content-between pt-2">
-                <a href="#" class="btn theme-btn-hover-gray font-size-15" data-toggle="modal" data-target="#sharePopupForm"><i class="la la-share mr-1"></i>Share</a>
-                <p><i class="la la-eye mr-1 font-size-15 color-text-2"></i>3456</p>
+                <a href="#" class="btn theme-btn-hover-gray font-size-15" data-toggle="modal" data-target="#sharePopupForm">
+                    <i class="la la-share mr-1"></i><?php esc_html_e('Share', 'trizen-helper'); ?>
+                </a>
+                <p>
+                    <i class="la la-eye mr-1 font-size-15 color-text-2"></i><?php esc_html_e('3456', 'trizen-helper'); ?>
+                </p>
             </div>
         </div>
 
@@ -174,7 +188,7 @@ class trizen_hpa_widget extends WP_Widget {
 		if(isset($instance['trizen_hpa_title'])) {
 			$trizen_hpa_title = $instance['trizen_hpa_title'];
 		} else {
-			$trizen_hpa_title = __('POPULAR', 'trizen-helper');
+			$trizen_hpa_title = __('POPULARh', 'trizen-helper');
 		}
 
 		// PART 1: Display the fields

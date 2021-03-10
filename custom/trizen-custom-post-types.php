@@ -130,6 +130,69 @@ function trizen_custom_post_types() {
 	);
 	register_taxonomy('ts_location_type', 'location', $args);
 	/* Location End */
+
+
+	/* Room Start */
+	$labels = [
+		'name'                  => __( 'Room(s)', 'trizen-helper' ),
+		'singular_name'         => __( 'Room', 'trizen-helper' ),
+		'menu_name'             => __( 'Rooms', 'trizen-helper' ),
+		'name_admin_bar'        => __( 'Room', 'trizen-helper' ),
+		'add_new'               => __( 'Add New', 'trizen-helper' ),
+		'add_new_item'          => __( 'Add New Room', 'trizen-helper' ),
+		'new_item'              => __( 'New Room', 'trizen-helper' ),
+		'edit_item'             => __( 'Edit Room', 'trizen-helper' ),
+		'view_item'             => __( 'View Room', 'trizen-helper' ),
+		'all_items'             => __( 'All Rooms', 'trizen-helper' ),
+		'search_items'          => __( 'Search Rooms', 'trizen-helper' ),
+		'parent_item_colon'     => __( 'Parent Rooms:', 'trizen-helper' ),
+		'not_found'             => __( 'No rooms found.', 'trizen-helper' ),
+		'not_found_in_trash'    => __( 'No rooms found in Trash.', 'trizen-helper' ),
+		'insert_into_item'      => __( "Insert into Room", 'trizen-helper' ),
+		'uploaded_to_this_item' => __( "Uploaded to this Room", 'trizen-helper' ),
+		'featured_image'        => __( "Feature Image", 'trizen-helper' ),
+		'set_featured_image'    => __( "Set featured image", 'trizen-helper' )
+	];
+	$args   = [
+		'labels'              => $labels,
+		'menu_icon'           => 'dashicons-building',
+		'public'              => true,
+		'publicly_queryable'  => true,
+		'show_ui'             => true,
+		'show_in_menu'        => true,
+		'query_var'           => true,
+		'rewrite'             => [ 'slug' => get_option( 'hotel_permalink', 'hotel_room' ) ],
+		'capability_type'     => 'post',
+		'has_archive'         => true,
+		'hierarchical'        => false,
+		'exclude_from_search' => true,
+		'supports'            => [ 'title', 'editor', 'author', 'thumbnail', 'excerpt', 'comments' ]
+	];
+	register_post_type( 'hotel_room', $args );
+
+	$name   = __( 'Room Facilities', 'trizen-helper' );
+	$labels = [
+		'name'              => $name,
+		'singular_name'     => $name,
+		'search_items'      => sprintf( __( 'Search %s', 'trizen-helper' ), $name ),
+		'all_items'         => sprintf( __( 'All %s', 'trizen-helper' ), $name ),
+		'parent_item'       => sprintf( __( 'Parent %s', 'trizen-helper' ), $name ),
+		'parent_item_colon' => sprintf( __( 'Parent %s', 'trizen-helper' ), $name ),
+		'edit_item'         => sprintf( __( 'Edit %s', 'trizen-helper' ), $name ),
+		'update_item'       => sprintf( __( 'Update %s', 'trizen-helper' ), $name ),
+		'add_new_item'      => sprintf( __( 'New %s', 'trizen-helper' ), $name ),
+		'new_item_name'     => sprintf( __( 'New %s', 'trizen-helper' ), $name ),
+		'menu_name'         => $name,
+	];
+	$args   = [
+		'hierarchical' => true,
+		'labels'       => $labels,
+		'show_ui'      => 'edit.php?post_type=hotel_room',
+		'query_var'    => true,
+		'show_admin_column' => true,
+	];
+	register_taxonomy( 'room_facilities', 'hotel_room', $args );
+	/* Room End */
 }
 
 add_action( 'init', 'trizen_custom_post_types' );

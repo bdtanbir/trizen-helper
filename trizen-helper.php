@@ -26,6 +26,7 @@ function trizen_helper_load()
 	require_once TRIZEN_HELPER_PATH.'custom/trizen-custom-post-types.php';
 	require_once TRIZEN_HELPER_PATH.'custom/trizen-custom-metaboxes.php';
 	require_once TRIZEN_HELPER_PATH.'custom/trizen-taxonomy-class.php';
+	require_once TRIZEN_HELPER_PATH.'custom/trizen-room-facilities-custom-icon-field.php';
 	require_once TRIZEN_HELPER_PATH.'widgets/trizen-hotel-organized-by.php';
 	require_once TRIZEN_HELPER_PATH.'widgets/trizen-hotel-price-and-availability.php';
 }
