@@ -57,7 +57,7 @@ function trizen_helper_admin_script()
 	wp_enqueue_script(
 		'trizen-helper-admin-js',
 		TRIZEN_HELPER_URI.('assets/js/trizen-helper-admin.js'),
-		array('jquery'),
+		'',
 		TRIZEN_HELPER_VERSION,
 		true
 	);

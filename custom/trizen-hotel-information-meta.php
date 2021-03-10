@@ -90,7 +90,7 @@ $trizen_hotel_faqs_content = get_post_meta(get_the_ID(), 'trizen_hotel_faqs_cont
 
 		            }
 		            $html .= '</ul><div style="clear:both"></div></div>';
-		            $html .= '<input type="hidden" name="trizen_hotel_image_gallery" value="' . join(',',$hidden) . '" /><a href="#" class="button trizen-btn misha_upload_gallery_button">'.__("Add Images", "trizen-helper").'</a>';
+		            $html .= '<input type="hidden" name="trizen_hotel_image_gallery" value="' . join(',',$hidden) . '" /><a href="#" class="button trizen-btn trizen_upload_hotel_gallery_button">'.__("Add Images", "trizen-helper").'</a>';
 
 		            echo $html;
 		            ?>
@@ -241,11 +241,15 @@ $trizen_hotel_faqs_content = get_post_meta(get_the_ID(), 'trizen_hotel_faqs_cont
                                 </h3>
                                 <div class="accordion-content" id="content-<?php echo get_the_ID(); ?>">
                                     <div class="form-group">
-                                        <label for="trizen_hotel_faqs_title" class="title">Title</label>
+                                        <label for="trizen_hotel_faqs_title" class="title">
+                                            <?php esc_html_e('Title', 'trizen-helper'); ?>
+                                        </label>
                                         <input id="trizen_hotel_faqs_title" type="text" name="trizen_hotel_faqs_title[]" />
                                     </div>
                                     <div class="form-group">
-                                        <label for="trizen_hotel_faqs_content" class="title">Content</label>
+                                        <label for="trizen_hotel_faqs_content" class="title">
+                                            <?php esc_html_e('Content', 'trizen-helper'); ?>
+                                        </label>
                                         <textarea name="trizen_hotel_faqs_content[]" id="trizen_hotel_faqs_content"></textarea>
                                     </div>
                                 </div>
@@ -260,19 +264,23 @@ $trizen_hotel_faqs_content = get_post_meta(get_the_ID(), 'trizen_hotel_faqs_cont
 
                                     <div class="field-group hotel-accordion-item">
                                         <h3 class="hotel-accordion-title">
-                                            <a href="#content-<?php echo $index; ?>" class="accordion-toggle">
+                                            <a href="#content-<?php echo esc_attr($index); ?>" class="accordion-toggle">
 	                                            <?php if($field['trizen_hotel_faqs_title'] != '') echo esc_html( $field['trizen_hotel_faqs_title'] ); ?>
                                             </a>
                                             <button type="button" class="button button-secondary trizen_hotel_faq_remove dashicons dashicons-trash">
                                             </button>
                                         </h3>
-                                        <div class="accordion-content" id="content-<?php echo $index; ?>">
+                                        <div class="accordion-content" id="content-<?php echo esc_attr($index); ?>">
                                             <div class="form-group">
-                                                <label for="trizen_hotel_faqs_title" class="title">Title</label>
+                                                <label for="trizen_hotel_faqs_title" class="title">
+                                                    <?php esc_html_e('Title', 'trizen-helper'); ?>
+                                                </label>
                                                 <input id="trizen_hotel_faqs_title" type="text" name="trizen_hotel_faqs_title[]" value="<?php if($field['trizen_hotel_faqs_title'] != '') echo esc_attr( $field['trizen_hotel_faqs_title'] ); ?>" />
                                             </div>
                                             <div class="form-group">
-                                                <label for="trizen_hotel_faqs_content" class="title" name="trizen_hotel_faqs_title[]">Content</label>
+                                                <label for="trizen_hotel_faqs_content" class="title" name="trizen_hotel_faqs_title[]">
+                                                    <?php esc_html_e('Content', 'trizen-helper'); ?>
+                                                </label>
                                                 <textarea name="trizen_hotel_faqs_content[]" id="trizen_hotel_faqs_content"><?php if($field['trizen_hotel_faqs_content'] != '') echo esc_attr( $field['trizen_hotel_faqs_content'] ); ?></textarea>
                                             </div>
                                         </div>
@@ -286,13 +294,6 @@ $trizen_hotel_faqs_content = get_post_meta(get_the_ID(), 'trizen_hotel_faqs_cont
                         </button>
                     </div>
                 </div>
-                <!--<div class="form-settings" id="hotel_select2">
-                    <select class="select-to-select2" name="state">
-                        <option value="AL">Alabama</option>
-                        <option value="WY">Wyoming</option>
-                        <option value="BD">Bangladesh</option>
-                    </select>
-                </div>-->
             </div>
         </div>
     </div>
