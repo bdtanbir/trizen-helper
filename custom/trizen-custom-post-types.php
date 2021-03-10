@@ -134,7 +134,7 @@ function trizen_custom_post_types() {
 
 	/* Room Start */
 	$labels = [
-		'name'                  => __( 'Room(s)', 'trizen-helper' ),
+		'name'                  => __( 'Rooms', 'trizen-helper' ),
 		'singular_name'         => __( 'Room', 'trizen-helper' ),
 		'menu_name'             => __( 'Rooms', 'trizen-helper' ),
 		'name_admin_bar'        => __( 'Room', 'trizen-helper' ),
