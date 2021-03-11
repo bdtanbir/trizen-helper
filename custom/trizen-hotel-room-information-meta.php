@@ -3,12 +3,15 @@
 $room_price = get_post_meta(get_the_ID(), 'trizen_room_price', true);
 $number_of_room = get_post_meta(get_the_ID(), 'trizen_hotel_room_number', true);
 $number_of_adults = get_post_meta(get_the_ID(), 'trizen_room_facility_num_of_adults', true);
+$number_of_beds = get_post_meta(get_the_ID(), 'trizen_room_facility_num_of_beds', true);
+$room_footage = get_post_meta(get_the_ID(), 'trizen_hotel_room_footage', true);
 
 // Hotel Room Extra Services
 $trizen_hotel_room_extra_services_data = get_post_meta(get_the_ID(), 'trizen_hotel_extra_services_data_group', true);
 $trizen_hotel_room_extra_service_title = get_post_meta(get_the_ID(), 'trizen_hotel_room_extra_service_title', true);
 $trizen_hotel_room_extra_service_price = get_post_meta(get_the_ID(), 'trizen_hotel_room_extra_service_price', true);
 
+$trizen_room_other_facility_data = get_post_meta(get_the_ID(), 'trizen_room_other_facility_data_group', true);
 
 $default = array(
 	'post_type'      => 'ts_hotel',
@@ -28,6 +31,9 @@ $hotel_rooms = new WP_Query($default);
 			</li>
 			<li class="tab-link nav-pill" href="tab-room-facility">
 				<?php esc_html_e('Room Facility', 'trizen-helper'); ?>
+			</li>
+			<li class="tab-link nav-pill" href="tab-room-other-facility">
+				<?php esc_html_e('Other Facility', 'trizen-helper'); ?>
 			</li>
 		</ul>
 		<div class="trizen-hotel-infos-content">
@@ -212,8 +218,25 @@ $hotel_rooms = new WP_Query($default);
                     </div>
 				</div>
 			</div>
-
             <div class="tab-content" id="tab-room-facility">
+                <div class="form-settings" id="room_number_of_beds_setting">
+                    <label for="trizen_room_facility_num_of_beds" class="title">
+			            <?php esc_html_e('Number of Beds', 'trizen-helper'); ?>
+                    </label>
+                    <span class="description">
+                        <?php esc_html_e('Number of beds in room', 'trizen-helper'); ?>
+                    </span>
+                    <div class="form-input w-600">
+                        <input
+                            id="trizen_room_facility_num_of_beds"
+                            name="trizen_room_facility_num_of_beds"
+                            class="trizen_room_facility_num_of_beds"
+                            type="range"
+                            value="<?php if(!empty($number_of_beds)) { echo esc_attr($number_of_beds); } else { esc_attr_e('0','trizen-helper');} ?>" />
+                        <output class="range2-bubble"></output>
+                    </div>
+                </div>
+
                 <div class="form-settings" id="room_number_of_adults_setting">
                     <label for="trizen_room_facility_num_of_adults" class="title">
 			            <?php esc_html_e('Number of adults', 'trizen-helper'); ?>
@@ -232,6 +255,77 @@ $hotel_rooms = new WP_Query($default);
                         <output class="range-bubble"></output>
                     </div>
                 </div>
+
+                <div class="form-settings" id="room_footage_setting">
+                    <label for="trizen_hotel_room_footage" class="title">
+			            <?php esc_html_e('Room Footage (square feet)', 'trizen-helper'); ?>
+                    </label>
+                    <span class="description">
+                        <?php esc_html_e('Room footage (square feet)', 'trizen-helper'); ?>
+                    </span>
+                    <div class="form-input">
+                        <input
+                            id="trizen_hotel_room_footage"
+                            name="trizen_hotel_room_footage"
+                            class="trizen_hotel_room_footage"
+                            type="text"
+                            value="<?php echo esc_attr($room_footage); ?>" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-content" id="tab-room-other-facility">
+
+                <div class="form-settings" id="room_other_facility_setting">
+                    <label for="trizen_room_other_facility" class="title">
+			            <?php esc_html_e('Other Facility', 'trizen-helper'); ?>
+                    </label>
+                    <span class="description">
+                        <?php esc_html_e('Room\'s other Facility', 'trizen-helper'); ?>
+                    </span>
+
+
+
+                    <!-- Start -->
+                    <script type="text/html" id="tmpl-repeater4">
+                        <div class="field-group room-other-facility-tmpl">
+                            <label for="trizen_room_other_facility_title">
+                                <span>
+                                    <?php esc_html_e('Title', 'trizen-helper'); ?>
+                                </span>
+                                <input id="trizen_room_other_facility_title" type="text" name="trizen_room_other_facility_title[]" value="" />
+                            </label>
+
+                            <button type="button" class="button button-secondary trizen_room_other_facility_remove dashicons dashicons-trash">
+                            </button>
+                        </div>
+                    </script>
+
+                    <div id="trizen_room_other_facility_data" class="trizen-room-other-facility-metabox">
+		                <?php
+		                if( !empty( $trizen_room_other_facility_data ) ) {
+			                foreach( $trizen_room_other_facility_data as $index => $field ) { ?>
+                                <div class="field-group">
+                                    <label for="trizen_room_other_facility_title-<?php echo esc_attr__($index, 'trizen-helper'); ?>">
+                                        <span>
+                                            <?php esc_html_e('Title', 'trizen-helper'); ?>
+                                        </span>
+                                        <input id="trizen_room_other_facility_title-<?php echo esc_attr__($index, 'trizen-helper'); ?>" type="text" name="trizen_room_other_facility_title[]" value="<?php if($field['trizen_room_other_facility_title'] != '') echo esc_attr( $field['trizen_room_other_facility_title'] ); ?>" />
+                                    </label>
+
+                                    <button type="button" class="button button-secondary trizen_room_other_facility_remove dashicons dashicons-trash">
+                                    </button>
+                                </div>
+				                <?php
+			                }
+		                } ?>
+                    </div>
+                    <button type="button" id="trizen_room_other_facility_add" class="button trizen-btn">
+		                <?php esc_html_e('Add', 'trizen-helper'); ?>
+                    </button>
+                    <!-- End -->
+                </div>
+
             </div>
 		</div>
 	</div>

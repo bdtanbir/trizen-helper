@@ -225,7 +225,6 @@ jQuery( function( $ ) {
 
     /* Hotel Features */
     $(function () {
-        // Download Options Field Repeat
         $("#trizen_hotel_features_add").on('click', function (e) {
             e.preventDefault();
             var template = wp.template('repeater'),
@@ -241,7 +240,6 @@ jQuery( function( $ ) {
 
     /* Hotel Faqs */
     $(function () {
-        // Download Options Field Repeat
         $("#trizen_hotel_faqs_add").on('click', function (e) {
             e.preventDefault();
             var template = wp.template('repeater2'),
@@ -256,7 +254,6 @@ jQuery( function( $ ) {
 
     /* Hotel Room Extra Services */
     $(function () {
-        // Download Options Field Repeat
         $("#trizen_hotel_room_extra_service_add").on('click', function (e) {
             e.preventDefault();
             var template = wp.template('repeater3'),
@@ -264,6 +261,20 @@ jQuery( function( $ ) {
             $("#trizen_hotel_room_extra_services_data").append(html);
         });
         $(document).on('click', '.trizen_hotel_room_extra_service_remove', function (e) {
+            e.preventDefault();
+            $(this).parent().remove();
+        });
+    });
+
+    /* Hotel Room Other Facility */
+    $(function () {
+        $("#trizen_room_other_facility_add").on('click', function (e) {
+            e.preventDefault();
+            var template = wp.template('repeater4'),
+                html = template();
+            $("#trizen_room_other_facility_data").append(html);
+        });
+        $(document).on('click', '.trizen_room_other_facility_remove', function (e) {
             e.preventDefault();
             $(this).parent().remove();
         });
@@ -325,6 +336,22 @@ function setBubble(range, bubble) {
     bubble.innerHTML = val;
     // Sorta magic numbers based on size of the native UI thumb
     bubble.style.left = `calc(${newVal}% + (${8 - newVal * 0.15}px))`;
+}
+
+const range2 = document.querySelector(".trizen_room_facility_num_of_beds");
+const bubble2 = document.querySelector(".range2-bubble");
+range2.addEventListener("input", () => {
+    setBubble(range2, bubble2);
+});
+setBubble(range2, bubble2);
+function setBubble(range, bubble) {
+    const val = range.value;
+    const min = range.min ? range.min : 0;
+    const max = range.max ? range.max : 100;
+    const newVal = Number(((val - min) * 100) / (max - min));
+    bubble.innerHTML = val;
+    // Sorta magic numbers based on size of the native UI thumb
+    bubble.style.left = `calc(${newVal}% + (${11 - newVal * 0.15}px))`;
 }
 
 

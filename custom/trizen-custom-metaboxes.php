@@ -127,6 +127,9 @@ if(!function_exists('trizen_register_meta_boxes')) {
 			'trizen_hotel_room_extra_service_price',
 			'trizen_hotel_room_extra_service_price_designation',
 			'trizen_room_facility_num_of_adults',
+			'trizen_room_facility_num_of_beds',
+			'trizen_hotel_room_footage',
+			'trizen_room_other_facility_title',
 		];
 		foreach ( $fields as $field ) {
 			if ( array_key_exists( $field, $_POST ) ) {
@@ -158,6 +161,25 @@ if(!function_exists('trizen_register_meta_boxes')) {
 			update_post_meta( $post_id, 'trizen_hotel_extra_services_data_group', $newfield );
 		elseif ( empty($newfield) && $room_extra_service_oldfield )
 			delete_post_meta( $post_id, 'trizen_hotel_extra_services_data_group', $room_extra_service_oldfield );
+
+
+
+		/* Hotel Room other facility */
+		$room_other_facility_oldfield = get_post_meta($post_id, 'trizen_room_other_facility_data_group', true);
+		if($_POST['trizen_room_other_facility_title']) {
+			$newfield      = array();
+			$trizen_room_other_facility_title   = $_POST['trizen_room_other_facility_title'];
+			$count = count( $trizen_room_other_facility_title );
+			for ( $i = 0; $i < $count; $i ++ ) {
+				if ( $trizen_room_other_facility_title[ $i ] != '' ) :
+					$newfield[ $i ]['trizen_room_other_facility_title']   = stripslashes( strip_tags( $trizen_room_other_facility_title[ $i ] ) );
+				endif;
+			}
+		}
+		if ( !empty( $newfield ) && $newfield != $room_other_facility_oldfield )
+			update_post_meta( $post_id, 'trizen_room_other_facility_data_group', $newfield );
+		elseif ( empty($newfield) && $room_other_facility_oldfield )
+			delete_post_meta( $post_id, 'trizen_room_other_facility_data_group', $room_other_facility_oldfield );
 	}
 	add_action( 'save_post_hotel_room', 'trizen_hotel_room_save_meta_box', 10, 2 );
 
