@@ -280,6 +280,20 @@ jQuery( function( $ ) {
         });
     });
 
+    /* Hotel Room Rules */
+    $(function () {
+        $("#trizen_room_rules_add").on('click', function (e) {
+            e.preventDefault();
+            var template = wp.template('repeater5'),
+                html = template();
+            $("#trizen_room_rules_data").append(html);
+        });
+        $(document).on('click', '.trizen_room_rules_remove', function (e) {
+            e.preventDefault();
+            $(this).parent().remove();
+        });
+    });
+
 
     /* Select to Select2 convert */
     $(document).ready(function() {

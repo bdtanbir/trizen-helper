@@ -25,6 +25,7 @@
     border-radius: .25rem;
 }
 #trizen_room_other_facility_add:focus,
+#trizen_room_rules_add:focus,
 #trizen_hotel_room_extra_service_add:focus,
 #trizen_hotel_faqs_add:focus,
 .select2-container--default .select2-search--dropdown .select2-search__field:focus,
@@ -217,16 +218,19 @@
     background: #ffffff;
     color: #000000;
 }
+.trizen-room-rules-metabox .field-group:first-child,
 .trizen-room-other-facility-metabox .field-group:first-child,
 .trizen-hotel-features-repeater-metabox .field-group:first-child {
     margin-top: 25px;
 }
+.trizen-room-rules-metabox .field-group,
 .trizen-room-other-facility-metabox .field-group,
 .trizen-hotel-features-repeater-metabox .field-group {
     margin-top: 15px;
     display: flex;
     align-items: flex-end;
 }
+.trizen-hotel-information-wrap .form-settings .trizen-room-rules-metabox label,
 .trizen-hotel-information-wrap .form-settings .trizen-room-other-facility-metabox label,
 .trizen-hotel-infos-content .form-settings .trizen-hotel-features-repeater-metabox label {
     margin-bottom: 0;
@@ -240,6 +244,7 @@
     margin-bottom: 5px;
 }
 .trizen-room-other-facility-metabox .field-group .trizen_room_other_facility_remove,
+.trizen-room-rules-metabox .field-group .trizen_room_rules_remove,
 .trizen-hotel-features-repeater-metabox .field-group .trizen_hotel_features_remove {
     border: none;
     padding: 0;
@@ -252,12 +257,14 @@
     font-size: 15px;
     width: 35px;
 }
+.trizen-room-rules-metabox .field-group .trizen_room_rules_remove:hover,
 .trizen-room-other-facility-metabox .field-group .trizen_room_other_facility_remove:hover,
 .hotel-accordion-item .hotel-accordion-title .trizen_hotel_room_extra_service_remove:hover,
 .hotel-accordion-item .hotel-accordion-title .trizen_hotel_faq_remove:hover,
 .trizen-hotel-features-repeater-metabox .field-group .trizen_hotel_features_remove:hover {
     background: #e40707;
 }
+.trizen-room-rules-metabox .field-group .trizen_room_rules_remove:focus,
 .trizen-room-other-facility-metabox .field-group .trizen_room_other_facility_remove:focus,
 .hotel-accordion-item .hotel-accordion-title .trizen_hotel_faq_remove:focus,
 .hotel-accordion-item .hotel-accordion-title a:focus,
@@ -341,6 +348,7 @@
 #trizen_hotel_faqs_data {
     margin-top: 20px;
 }
+#trizen_room_rules_add,
 #trizen_room_other_facility_add,
 #trizen_hotel_room_extra_service_add,
 #trizen_hotel_faqs_add {
@@ -449,9 +457,11 @@
 .room_other_facility_setting .field-group input {
     width: 500px;
 }
+.trizen-hotel-information-wrap .form-settings .trizen-room-rules-metabox label,
 .trizen-hotel-information-wrap .form-settings .trizen-room-other-facility-metabox label {
     width: 500px;
 }
+.trizen-hotel-information-wrap .form-settings .trizen-room-rules-metabox label span,
 .trizen-hotel-information-wrap .form-settings .trizen-room-other-facility-metabox label span {
     display: inline-block;
     line-height: 20px;
