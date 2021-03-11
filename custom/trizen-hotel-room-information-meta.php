@@ -8,8 +8,6 @@ $room_footage = get_post_meta(get_the_ID(), 'trizen_hotel_room_footage', true);
 
 // Hotel Room Extra Services
 $trizen_hotel_room_extra_services_data = get_post_meta(get_the_ID(), 'trizen_hotel_extra_services_data_group', true);
-$trizen_hotel_room_extra_service_title = get_post_meta(get_the_ID(), 'trizen_hotel_room_extra_service_title', true);
-$trizen_hotel_room_extra_service_price = get_post_meta(get_the_ID(), 'trizen_hotel_room_extra_service_price', true);
 
 $trizen_room_other_facility_data = get_post_meta(get_the_ID(), 'trizen_room_other_facility_data_group', true);
 $trizen_room_rules_data = get_post_meta(get_the_ID(), 'trizen_room_rules_data_group', true);
@@ -51,28 +49,28 @@ $hotel_rooms = new WP_Query($default);
                     </span>
 
 					<?php
-					$html = '<div><ul class="trizen_hotel_room_img_gallery_mtb">';
-					$hidden = array();
-					if( $images = get_posts( array(
-						'post_type'      => 'attachment',
-						'orderby'        => 'post__in',
-						'order'          => 'ASC',
-						'post__in'       => explode(',',get_post_meta(get_the_ID(), 'trizen_hotel_room_image_gallery', true)),
-						'numberposts'    => -1,
-						'post_mime_type' => 'image'
-					) ) ) {
-						foreach( $images as $image ) {
-							$hidden[] = $image->ID;
-							$image_src = wp_get_attachment_image_src( $image->ID, array( 80, 80 ) );
-							$image_src = str_replace('-150x150', '', $image_src);
-							$html .= '<li data-id="' . $image->ID .  '">
-                                <img src="'.$image_src[0].'" alt="'.__("Image", "trizen-helper").'"><a href="#" class="trizen_hotel_room_img_gallery_remove">'.__("+", "trizen-helper").'</a></li>';
-						}
-					}
-					$html .= '</ul><div style="clear:both"></div></div>';
-					$html .= '<input type="hidden" name="trizen_hotel_room_image_gallery" value="' . join(',',$hidden) . '" /><a href="#" class="button trizen-btn trizen_upload_hotel_room_gallery_button">'.__("Add Images", "trizen-helper").'</a>';
+                    $html   = '<div><ul class="trizen_hotel_room_img_gallery_mtb">';
+                    $hidden = array();
+                    if ( $images = get_posts( array(
+                        'post_type'      => 'attachment',
+                        'orderby'        => 'post__in',
+                        'order'          => 'ASC',
+                        'post__in'       => explode( ',', get_post_meta( get_the_ID(), 'trizen_hotel_room_image_gallery', true ) ),
+                        'numberposts'    => - 1,
+                        'post_mime_type' => 'image'
+                    ) ) ) {
+                        foreach ( $images as $image ) {
+                            $hidden[]  = $image->ID;
+                            $image_src = wp_get_attachment_image_src( $image->ID, array( 80, 80 ) );
+                            $image_src = str_replace( '-150x150', '', $image_src );
+                            $html      .= '<li data-id="' . $image->ID . '">
+                            <img src="' . $image_src[0] . '" alt="' . __( "Image", "trizen-helper" ) . '"><a href="#" class="trizen_hotel_room_img_gallery_remove">' . __( "+", "trizen-helper" ) . '</a></li>';
+                        }
+                    }
+                    $html .= '</ul><div style="clear:both"></div></div>';
+                    $html .= '<input type="hidden" name="trizen_hotel_room_image_gallery" value="' . join( ',', $hidden ) . '" /><a href="#" class="button trizen-btn trizen_upload_hotel_room_gallery_button">' . __( "Add Images", "trizen-helper" ) . '</a>';
 
-					echo $html;
+                    echo $html;
 					?>
 
                 </div>

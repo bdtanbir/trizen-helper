@@ -141,16 +141,16 @@ if(!function_exists('trizen_register_meta_boxes')) {
 
 		/* Hotel Room Extra Services */
 		$room_extra_service_oldfield = get_post_meta($post_id, 'trizen_hotel_extra_services_data_group', true);
-		if($_POST['trizen_hotel_room_extra_service_title']) {
-			$newfield      = array();
-			$trizen_hotel_room_extra_service_title   = $_POST['trizen_hotel_room_extra_service_title'];
-			$trizen_hotel_room_extra_service_price = $_POST['trizen_hotel_room_extra_service_price'];
+		if ( $_POST['trizen_hotel_room_extra_service_title'] ) {
+			$newfield                                          = array();
+			$trizen_hotel_room_extra_service_title             = $_POST['trizen_hotel_room_extra_service_title'];
+			$trizen_hotel_room_extra_service_price             = $_POST['trizen_hotel_room_extra_service_price'];
 			$trizen_hotel_room_extra_service_price_designation = $_POST['trizen_hotel_room_extra_service_price_designation'];
-			$count = count( $trizen_hotel_room_extra_service_title );
+			$count                                             = count( $trizen_hotel_room_extra_service_title );
 			for ( $i = 0; $i < $count; $i ++ ) {
 				if ( $trizen_hotel_room_extra_service_title[ $i ] != '' ) :
-					$newfield[ $i ]['trizen_hotel_room_extra_service_title']   = stripslashes( strip_tags( $trizen_hotel_room_extra_service_title[ $i ] ) );
-					$newfield[ $i ]['trizen_hotel_room_extra_service_price'] = stripslashes( $trizen_hotel_room_extra_service_price[ $i ] ); // and however you want to sanitize
+					$newfield[ $i ]['trizen_hotel_room_extra_service_title']             = stripslashes( strip_tags( $trizen_hotel_room_extra_service_title[ $i ] ) );
+					$newfield[ $i ]['trizen_hotel_room_extra_service_price']             = stripslashes( $trizen_hotel_room_extra_service_price[ $i ] ); // and however you want to sanitize
 					$newfield[ $i ]['trizen_hotel_room_extra_service_price_designation'] = stripslashes( $trizen_hotel_room_extra_service_price_designation[ $i ] ); // and however you want to sanitize
 				endif;
 			}
@@ -164,13 +164,14 @@ if(!function_exists('trizen_register_meta_boxes')) {
 
 		/* Hotel Room other facility */
 		$room_other_facility_oldfield = get_post_meta($post_id, 'trizen_room_other_facility_data_group', true);
-		if($_POST['trizen_room_other_facility_title']) {
-			$newfield      = array();
-			$trizen_room_other_facility_title   = $_POST['trizen_room_other_facility_title'];
-			$count = count( $trizen_room_other_facility_title );
+		$trizen_room_other_facility_title_chk = get_post_meta($post_id, 'trizen_room_other_facility_title', true);
+		if ( $_POST['trizen_room_other_facility_title'] ) {
+			$newfield                         = array();
+			$trizen_room_other_facility_title = $_POST['trizen_room_other_facility_title'];
+			$count                            = count( $trizen_room_other_facility_title );
 			for ( $i = 0; $i < $count; $i ++ ) {
 				if ( $trizen_room_other_facility_title[ $i ] != '' ) :
-					$newfield[ $i ]['trizen_room_other_facility_title']   = stripslashes( strip_tags( $trizen_room_other_facility_title[ $i ] ) );
+					$newfield[ $i ]['trizen_room_other_facility_title'] = stripslashes( strip_tags( $trizen_room_other_facility_title[ $i ] ) );
 				endif;
 			}
 		}
@@ -182,13 +183,13 @@ if(!function_exists('trizen_register_meta_boxes')) {
 
 		/* Hotel Room Rules */
 		$room_rules_oldfield = get_post_meta($post_id, 'trizen_room_rules_data_group', true);
-		if($_POST['trizen_room_rules_title']) {
-			$newfield      = array();
-			$trizen_room_rules_title   = $_POST['trizen_room_rules_title'];
-			$count = count( $trizen_room_rules_title );
+		if ( $_POST['trizen_room_rules_title'] ) {
+			$newfield                = array();
+			$trizen_room_rules_title = $_POST['trizen_room_rules_title'];
+			$count                   = count( $trizen_room_rules_title );
 			for ( $i = 0; $i < $count; $i ++ ) {
 				if ( $trizen_room_rules_title[ $i ] != '' ) :
-					$newfield[ $i ]['trizen_room_rules_title']   = stripslashes( strip_tags( $trizen_room_rules_title[ $i ] ) );
+					$newfield[ $i ]['trizen_room_rules_title'] = stripslashes( strip_tags( $trizen_room_rules_title[ $i ] ) );
 				endif;
 			}
 		}
