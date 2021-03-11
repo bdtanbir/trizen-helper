@@ -369,6 +369,66 @@
     margin-bottom: 0;
     padding: 10px 15px;
 }
+.form-settings .form-input {
+    position: relative;
+}
+.form-settings .range-bubble {
+    background: #287dfa;
+    color: white;
+    padding: 4px 12px;
+    position: absolute;
+    border-radius: 4px;
+    left: 50%;
+    transform: translateX(-50%);
+    top: -40px;
+}
+.form-settings .range-bubble::after {
+    content: "";
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    background: #287dfa;
+    bottom: -3px;
+    left: 47%;
+    transform: rotate(45deg);
+}
+.form-settings .form-input input[type="range"] {
+    padding: 0;
+    border: none;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+}
+.form-settings .form-input input[type="range"]:focus {
+    outline: none;
+}
+.form-settings .form-input input[type="range"]::-webkit-slider-runnable-track {
+    width: 100%;
+    height: 4px;
+    cursor: pointer;
+    animate: 0.2s;
+    background: #287dfa;
+    border-radius: 25px;
+}
+.form-settings .form-input input[type="range"]::-webkit-slider-thumb {
+    height: 20px;
+    width: 20px;
+    border-radius: 50%;
+    background: #ffffff;
+    box-shadow: 0 0 10px 0 rgba(0,0,0, 0.1);
+    border: 3px solid #287dfa;
+    cursor: pointer;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    margin-top: -7px;
+}
+.w-600 {
+    max-width: 600px;
+}
+#room_number_of_adults_setting .form-input {
+    margin-top: 20px;
+}
 
 
 

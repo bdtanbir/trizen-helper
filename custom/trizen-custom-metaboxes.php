@@ -126,6 +126,7 @@ if(!function_exists('trizen_register_meta_boxes')) {
 			'trizen_hotel_room_extra_service_title',
 			'trizen_hotel_room_extra_service_price',
 			'trizen_hotel_room_extra_service_price_designation',
+			'trizen_room_facility_num_of_adults',
 		];
 		foreach ( $fields as $field ) {
 			if ( array_key_exists( $field, $_POST ) ) {

@@ -2,6 +2,7 @@
 
 $room_price = get_post_meta(get_the_ID(), 'trizen_room_price', true);
 $number_of_room = get_post_meta(get_the_ID(), 'trizen_hotel_room_number', true);
+$number_of_adults = get_post_meta(get_the_ID(), 'trizen_room_facility_num_of_adults', true);
 
 // Hotel Room Extra Services
 $trizen_hotel_room_extra_services_data = get_post_meta(get_the_ID(), 'trizen_hotel_extra_services_data_group', true);
@@ -24,6 +25,9 @@ $hotel_rooms = new WP_Query($default);
 			</li>
 			<li class="tab-link nav-pill" href="tab-room-price">
 				<?php esc_html_e('Room Price', 'trizen-helper'); ?>
+			</li>
+			<li class="tab-link nav-pill" href="tab-room-facility">
+				<?php esc_html_e('Room Facility', 'trizen-helper'); ?>
 			</li>
 		</ul>
 		<div class="trizen-hotel-infos-content">
@@ -107,10 +111,10 @@ $hotel_rooms = new WP_Query($default);
 			<div class="tab-content" id="tab-room-price">
 				<div class="form-settings" id="room_price_setting">
 					<label for="trizen_room_price" class="title">
-						<?php esc_html_e('Room Price', 'trizen-helper'); ?>
+						<?php esc_html_e('Price($)', 'trizen-helper'); ?>
 					</label>
 					<span class="description">
-                        <?php esc_html_e('Enter your room price here', 'trizen-helper'); ?>
+                        <?php esc_html_e('The price of room per one night', 'trizen-helper'); ?>
                     </span>
 					<div class="form-input">
 						<input
@@ -155,7 +159,7 @@ $hotel_rooms = new WP_Query($default);
                                     </div>
                                     <div class="form-group">
                                         <label for="trizen_hotel_room_extra_service_price_designation" class="title">
-                                            <?php esc_html_e('Price Designation', 'trizen-helper'); ?>
+                                            <?php esc_html_e('Price Designation', 'trizen-helper'); ?> <code><?php esc_html_e('eg: Per 1 ...', 'trizen-helper'); ?></code>
                                         </label>
                                         <input name="trizen_hotel_room_extra_service_price_designation[]" id="trizen_hotel_room_extra_service_price_designation" />
                                     </div>
@@ -192,7 +196,7 @@ $hotel_rooms = new WP_Query($default);
                                             </div>
                                             <div class="form-group">
                                                 <label for="trizen_hotel_room_extra_service_price_designation" class="title" name="trizen_hotel_room_extra_service_price_designation[]">
-                                                    <?php esc_html_e('Price Designation', 'trizen-helper'); ?>
+                                                    <?php esc_html_e('Price Designation', 'trizen-helper'); ?> <code><?php esc_html_e('eg: Per 1 ...', 'trizen-helper'); ?></code>
                                                 </label>
                                                 <input name="trizen_hotel_room_extra_service_price_designation[]" id="trizen_hotel_room_extra_service_price_designation" value="<?php if($field['trizen_hotel_room_extra_service_price_designation'] != '') echo esc_attr( $field['trizen_hotel_room_extra_service_price_designation'] ); ?>" />
                                             </div>
@@ -208,6 +212,27 @@ $hotel_rooms = new WP_Query($default);
                     </div>
 				</div>
 			</div>
+
+            <div class="tab-content" id="tab-room-facility">
+                <div class="form-settings" id="room_number_of_adults_setting">
+                    <label for="trizen_room_facility_num_of_adults" class="title">
+			            <?php esc_html_e('Number of adults', 'trizen-helper'); ?>
+                    </label>
+                    <span class="description">
+                        <?php esc_html_e('Number of adults in room', 'trizen-helper'); ?>
+                    </span>
+                    <div class="form-input w-600">
+                        <input
+                            id="trizen_room_facility_num_of_adults"
+                            name="trizen_room_facility_num_of_adults"
+                            class="trizen_room_facility_num_of_adults"
+                            type="range"
+                            value="<?php if(!empty($number_of_adults)) { echo esc_attr($number_of_adults); } else { esc_attr_e('0','trizen-helper');} ?>"
+                            placeholder="<?php esc_attr_e('Number of adults', 'trizen-helper'); ?>" />
+                        <output class="range-bubble"></output>
+                    </div>
+                </div>
+            </div>
 		</div>
 	</div>
 </div>
