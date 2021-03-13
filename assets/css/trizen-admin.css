@@ -1,5 +1,6 @@
 
 
+#trizen-hotel-badge-meta input,
 .trizen-hotel-infos-content .form-settings textarea,
 .trizen-hotel-infos-content .form-settings input,
 .trizen-rpwt-fields select,
@@ -24,6 +25,7 @@
     border: 1px solid rgba(128,137,150,.2);
     border-radius: .25rem;
 }
+#trizen-hotel-badge-meta input:focus,
 #trizen_room_other_facility_add:focus,
 #trizen_room_rules_add:focus,
 #trizen_hotel_room_extra_service_add:focus,
@@ -40,6 +42,7 @@
 .trizen-hotel-infos-content .form-settings textarea {
     height: 120px;
 }
+#trizen-hotel-badge-meta label,
 .trizen-rpwt-fields label {
     font-size: 14px;
     color: #0d233e;

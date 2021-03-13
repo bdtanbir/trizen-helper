@@ -16,6 +16,14 @@ if(!function_exists('trizen_register_meta_boxes')) {
 			'high'
 		);
 		add_meta_box(
+			'trizen-hotel-badge-meta',
+			__( 'Badge Title', 'trizen-helper' ),
+			'trizen_hotel_badge_callback',
+			'ts_hotel',
+			'side',
+			'low'
+		);
+		add_meta_box(
 			'trizen-hotel-room-infos-meta',
 			__( 'Room Information', 'trizen-helper' ),
 			'trizen_hotel_room_infos_callback',
@@ -49,6 +57,7 @@ if(!function_exists('trizen_register_meta_boxes')) {
 			'trizen_hotel_features_icon',
 			'trizen_hotel_faqs_title',
 			'trizen_hotel_faqs_content',
+			'trizen_hotel_badge_title',
 		];
 		foreach ( $fields as $field ) {
 			if ( array_key_exists( $field, $_POST ) ) {
@@ -215,6 +224,25 @@ if(!function_exists('trizen_register_meta_boxes')) {
 	function trizen_hotel_room_infos_callback() {
 		require_once TRIZEN_HELPER_PATH.'custom/trizen-hotel-room-information-meta.php';
 	}
+
+	/**
+	 * Meta box display callback.
+	 */
+	function trizen_hotel_badge_callback() {
+		$badge_title = get_post_meta(get_the_ID(), 'trizen_hotel_badge_title', true);
+		?>
+		<div class="form-group">
+			<label for="trizen_hotel_badge_title">
+				<?php esc_html_e('Badge Title', 'trizen-helper'); ?>
+			</label>
+			<input
+				id="trizen_hotel_badge_title"
+				class="widefat"
+				name="trizen_hotel_badge_title"
+				type="text"
+				value="<?php echo esc_attr($badge_title); ?>">
+		</div>
+	<?php }
 }
 
 
