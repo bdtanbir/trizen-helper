@@ -239,7 +239,7 @@ $trizen_hotel_faqs_content = get_post_meta(get_the_ID(), 'trizen_hotel_faqs_cont
                                     <button type="button" class="button button-secondary trizen_hotel_faq_remove dashicons dashicons-trash">
                                     </button>
                                 </h3>
-                                <div class="accordion-content" id="content-<?php echo get_the_ID(); ?>">
+                                <div class="accordion-content active" id="content-<?php echo get_the_ID(); ?>">
                                     <div class="form-group">
                                         <label for="trizen_hotel_faqs_title" class="title">
                                             <?php esc_html_e('Title', 'trizen-helper'); ?>

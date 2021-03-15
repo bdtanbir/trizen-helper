@@ -188,7 +188,7 @@ class trizen_hpa_widget extends WP_Widget {
 		if(isset($instance['trizen_hpa_title'])) {
 			$trizen_hpa_title = $instance['trizen_hpa_title'];
 		} else {
-			$trizen_hpa_title = __('POPULARh', 'trizen-helper');
+			$trizen_hpa_title = __('POPULAR', 'trizen-helper');
 		}
 
 		// PART 1: Display the fields

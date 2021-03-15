@@ -152,7 +152,7 @@ $hotel_rooms = new WP_Query($default);
                                     <button type="button" class="button button-secondary trizen_hotel_room_extra_service_remove dashicons dashicons-trash">
                                     </button>
                                 </h3>
-                                <div class="accordion-content" id="room-extra-services-<?php echo get_the_ID(); ?>">
+                                <div class="accordion-content active" id="room-extra-services-<?php echo get_the_ID(); ?>">
                                     <div class="form-group">
                                         <label for="trizen_hotel_room_extra_service_title" class="title">
                                             <?php esc_html_e('Title', 'trizen-helper'); ?>
