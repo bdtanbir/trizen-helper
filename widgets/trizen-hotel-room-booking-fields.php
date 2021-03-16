@@ -184,7 +184,7 @@ class trizen_hrbf_widget extends WP_Widget {
                 <button class="theme-btn text-center w-100 mb-2 upper font-medium btn_hotel_booking btn-book-ajax"
                         type="submit"
                         name="submit" >
-                    <?php echo __( 'Book Now', 'trizen-helper' ) ?>
+                    <?php esc_html_e( 'Book Now', 'trizen-helper' ) ?>
                     <i class="fa fa-spinner fa-spin d-none hide"></i>
                 </button>
                 <!-- <a href="cart.html" class="theme-btn text-center w-100 mb-2">

@@ -30,6 +30,8 @@ function trizen_helper_load()
 	require_once TRIZEN_HELPER_PATH.'widgets/trizen-hotel-organized-by.php';
 	require_once TRIZEN_HELPER_PATH.'widgets/trizen-hotel-price-and-availability.php';
 	require_once TRIZEN_HELPER_PATH.'widgets/trizen-hotel-room-booking-fields.php';
+	require_once TRIZEN_HELPER_PATH.'inc/trizen-helper.booking.php';
+	require_once TRIZEN_HELPER_PATH.'custom/trizen-helper.class-admin-room.php';
 }
 
 
@@ -72,7 +74,7 @@ function trizen_helper_scripts() {
     wp_localize_script('jquery', 'ts_params', [
         'theme_url' => get_template_directory_uri(),
         'site_url' => site_url(),
-        'ajax_url' => admin_url('/admin-ajax.php'),
+        'ajax_url' => admin_url('admin-ajax.php'),
         'loading_url' => admin_url('/images/wpspin_light.gif'),
         'st_search_nonce' => wp_create_nonce("st_search_security"),
         'free_text' => __('Free', 'trizen-helper'),
