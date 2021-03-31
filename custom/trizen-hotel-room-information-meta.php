@@ -37,6 +37,9 @@ $hotel_rooms = new WP_Query($default);
 			<li class="tab-link nav-pill" href="tab-room-rules">
 				<?php esc_html_e('Rules', 'trizen-helper'); ?>
 			</li>
+			<li class="tab-link nav-pill" href="tab-room-availability">
+				<?php esc_html_e('Availability', 'trizen-helper'); ?>
+			</li>
 		</ul>
 		<div class="trizen-hotel-infos-content">
 			<div class="tab-content current" id="tab-room-general">
@@ -92,7 +95,7 @@ $hotel_rooms = new WP_Query($default);
 
 	                        echo '
 	                        <option value="'.$postid_one.'" '.selected( $postid_one, $hotel_rooms_select, false ).'>
-	                            '.$title_one.'
+	                            '.esc_html($title_one).'
                             </option>
 	                        ';
                         } ?>
@@ -275,7 +278,6 @@ $hotel_rooms = new WP_Query($default);
                     </div>
                 </div>
             </div>
-
             <div class="tab-content" id="tab-room-other-facility">
                 <div class="form-settings" id="room_other_facility_setting">
                     <label for="trizen_room_other_facility" class="title">
@@ -325,7 +327,6 @@ $hotel_rooms = new WP_Query($default);
                     <!-- End -->
                 </div>
             </div>
-
             <div class="tab-content" id="tab-room-rules">
                 <div class="form-settings" id="room_rules_setting">
                     <label for="trizen_room_rules" class="title">
@@ -355,11 +356,11 @@ $hotel_rooms = new WP_Query($default);
 						if( !empty( $trizen_room_rules_data ) ) {
 							foreach( $trizen_room_rules_data as $index => $field ) { ?>
                                 <div class="field-group">
-                                    <label for="trizen_room_rules_title-<?php echo esc_attr__($index, 'trizen-helper'); ?>">
+                                    <label for="trizen_room_rules_title-<?php echo esc_attr($index); ?>">
                                         <span>
                                             <?php esc_html_e('Title', 'trizen-helper'); ?>
                                         </span>
-                                        <input id="trizen_room_rules_title-<?php echo esc_attr__($index, 'trizen-helper'); ?>" type="text" name="trizen_room_rules_title[]" value="<?php if($field['trizen_room_rules_title'] != '') echo esc_attr( $field['trizen_room_rules_title'] ); ?>" />
+                                        <input id="trizen_room_rules_title-<?php echo esc_attr($index); ?>" type="text" name="trizen_room_rules_title[]" value="<?php if($field['trizen_room_rules_title'] != '') echo esc_attr( $field['trizen_room_rules_title'] ); ?>" />
                                     </label>
 
                                     <button type="button" class="button button-secondary trizen_room_rules_remove dashicons dashicons-trash">
@@ -374,6 +375,9 @@ $hotel_rooms = new WP_Query($default);
                     </button>
                     <!-- End -->
                 </div>
+            </div>
+            <div class="tab-content" id="tab-room-availability">
+                <?php include_once TRIZEN_HELPER_PATH . 'custom/trizen-room-availability.php'; ?>
             </div>
 		</div>
 	</div>

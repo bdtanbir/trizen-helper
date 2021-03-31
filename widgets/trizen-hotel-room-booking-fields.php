@@ -36,14 +36,21 @@ class trizen_hrbf_widget extends WP_Widget {
             echo $args['before_title'] . esc_html( $trizen_hrbf_title ) . $args['after_title'];
         }
 
-        // $hotel_id  = get_post_meta( get_the_ID(), 'room_parent', true );
+		while ( have_posts() ): the_post();
 		$room_id   = get_the_ID();
-		$hotel_id  = get_post_meta( get_the_ID(), 'room_parent', true );
+		$hotel_id  = get_post_meta( get_the_ID(), 'trizen_hotel_room_select', true );
         ?>
         <form id="form-booking-inpage single-room-form" class="form single-room-form hotel-room-booking-form" method="post">
             <input name="action" value="hotel_add_to_cart" type="hidden">
             <input name="item_id" value="<?php echo esc_attr($hotel_id); ?>" type="hidden">
             <input name="room_id" value="<?php echo esc_attr($room_id); ?>" type="hidden">
+            <?php
+            $current_calendar = get_current_available_calendar(get_the_ID());
+            $current_calendar_reverb = date('m/d/Y', strtotime($current_calendar));
+            $start          = get( 'start', date( getDateFormat(), strtotime($current_calendar)) );
+            $end            = get( 'end', date( getDateFormat(), strtotime( "+ 1 day", strtotime($current_calendar)) ) );
+            $date           = get( 'date', date( 'd/m/Y h:i a', strtotime($current_calendar) ) . '-' . date( 'd/m/Y h:i a', strtotime( '+1 day', strtotime($current_calendar) ) ) );
+            ?>
 
 
 
@@ -52,48 +59,57 @@ class trizen_hrbf_widget extends WP_Widget {
                     <!-- <form action="#"> -->
                         <div class="input-box">
                             <label class="label-text" for="input-check-in">
-                                <?php esc_html_e('Check-In', 'trizen-helper'); ?>
+                                <?php esc_html_e('Check In', 'trizen-helper'); ?>
                             </label>
                             <div class="form-group">
                                 <span class="la la-calendar form-icon"></span>
-                                <input id="input-check-in" class="date-range form-control" type="text" name="daterange-single">
+<!--                                <input id="input-check-in" value="--><?php //echo esc_attr($start); ?><!--" class="date-range form-control" type="text" name="check_in">-->
                             </div>
                         </div>
                         <div class="input-box">
                             <label class="label-text" for="input-check-out">
-                                <?php esc_html_e('Check-out', 'trizen-helper'); ?>
+                                <?php esc_html_e('Check out', 'trizen-helper'); ?>
                             </label>
                             <div class="form-group">
                                 <span class="la la-calendar form-icon"></span>
-                                <input id="input-check-out" class="date-range form-control" type="text" name="daterange-single">
+<!--                                <input id="input-check-out" value="--><?php //echo esc_html($end); ?><!--" class="date-range form-control" type="text" name="check_out">-->
+
+
+                                <input type="hidden" class="check-in-input"
+                                       value="<?php echo esc_attr( $start ) ?>" name="check_in">
+                                <input type="hidden" class="check-out-input"
+                                       value="<?php echo esc_attr( $end ) ?>" name="check_out">
+                                <input type="text" class="check-in-out date-range form-control"
+                                       data-room-id="<?php echo esc_attr($room_id) ?>"
+                                       value="<?php echo esc_attr( $date ); ?>" name="date">
                             </div>
                         </div>
-                        <div class="input-box">
+                        <!--<div class="input-box">
                             <label class="label-text" for="input-form-select">
-                                <?php esc_html_e('Rooms', 'trizen-helper'); ?>
+                                <?php /*esc_html_e('Rooms', 'trizen-helper'); */?>
                             </label>
-                            <?php if($room_query->have_posts()) { ?>
+                            <?php /*if($room_query->have_posts()) { */?>
                                 <div class="form-group">
                                     <div class="select-contain w-auto">
-                                        <select id="input-form-select" class="select-contain-select">
+                                        <select id="input-form-select" class="select-contain-select" name="room-for-hotel">
                                             <option value="0">
-                                                <?php esc_html_e('Select Room', 'trizen-helper'); ?>
+                                                <?php /*esc_html_e('Select Room', 'trizen-helper'); */?>
                                             </option>
 
-                                            <?php while($room_query->have_posts()) { $room_query->the_post(); 
+                                            <?php /*while($room_query->have_posts()) { $room_query->the_post();
                                                 $title_one = get_the_title();
                                                 $postid_one = get_the_ID();
                                                 
                                                 echo '<option value="'.esc_attr($postid_one).'">
                                                 '.esc_html($title_one).'
                                                     </option>';
-                                                } wp_reset_query(); ?>
+                                                } wp_reset_query(); */?>
 
                                         </select>
                                     </div>
                                 </div>
-                            <?php } ?>
-                        </div>
+                            <?php /*} */?>
+                        </div>-->
                     <!-- </form> -->
                 </div>
             </div>
@@ -106,7 +122,7 @@ class trizen_hrbf_widget extends WP_Widget {
                         <div class="qtyDec">
                             <i class="la la-minus"></i>
                         </div>
-                        <input id="hotel-room-adult-input" type="text" name="qtyInput" value="<?php esc_attr_e('0', 'trizen'); ?>">
+                        <input id="hotel-room-adult-input" type="text" name="adult_number" value="<?php esc_attr_e('0', 'trizen'); ?>">
                         <div class="qtyInc">
                             <i class="la la-plus"></i>
                         </div>
@@ -120,7 +136,7 @@ class trizen_hrbf_widget extends WP_Widget {
                         <div class="qtyDec">
                             <i class="la la-minus"></i>
                         </div>
-                        <input id="hotel-room-children-input" type="text" name="qtyInput" value="<?php esc_attr_e('0', 'trizen'); ?>">
+                        <input id="hotel-room-children-input" type="text" name="children_number" value="<?php esc_attr_e('0', 'trizen'); ?>">
                         <div class="qtyInc">
                             <i class="la la-plus"></i>
                         </div>
@@ -134,7 +150,7 @@ class trizen_hrbf_widget extends WP_Widget {
                         <div class="qtyDec">
                             <i class="la la-minus"></i>
                         </div>
-                        <input id="hotel-room-infants-input" type="text" name="qtyInput" value="<?php esc_attr_e('0', 'trizen'); ?>">
+                        <input id="hotel-room-infants-input" type="text" name="infants_number" value="<?php esc_attr_e('0', 'trizen'); ?>">
                         <div class="qtyInc">
                             <i class="la la-plus"></i>
                         </div>
@@ -157,8 +173,8 @@ class trizen_hrbf_widget extends WP_Widget {
                                     $extra_price_title = strtolower(str_replace(' ', '-', $item['trizen_hotel_room_extra_service_title']));
                                     ?>
                                     <div class="custom-checkbox">
-                                        <input type="checkbox" name="<?php echo esc_attr($extra_price_title); ?>" id="<?php echo esc_attr($extra_price_title); echo esc_attr('-'.$key); ?>" value="<?php echo esc_attr($item['trizen_hotel_room_extra_service_price']); ?>" />
-                                        <label for="<?php echo esc_attr($extra_price_title); echo esc_attr('-'.$key); ?>" class="d-flex justify-content-between align-items-center">
+                                        <input type="checkbox" name="<?php echo esc_attr($extra_price_title); ?>" id="<?php echo esc_attr($extra_price_title); echo __('-','trizen-helper').esc_attr($key); ?>" value="<?php echo esc_attr($item['trizen_hotel_room_extra_service_price']); ?>" />
+                                        <label for="<?php echo esc_attr($extra_price_title); echo __('-','trizen-helper').esc_attr($key); ?>" class="d-flex justify-content-between align-items-center">
                                             <?php echo esc_html($item['trizen_hotel_room_extra_service_title']); ?>
                                             <span class="text-black font-weight-regular">
                                                 <?php esc_html_e('$', 'trizen-helper'); echo esc_html($item['trizen_hotel_room_extra_service_price']); echo esc_html($item['trizen_hotel_room_extra_service_price_designation']); ?>
@@ -174,13 +190,13 @@ class trizen_hrbf_widget extends WP_Widget {
                                 <?php esc_html_e('Your Price', 'trizen-helper'); ?>
                             </p>
                             <p class="d-flex align-items-center">
-                                <span class="font-size-17 text-black"><?php esc_html_e('$', 'trizen-helper'); ?></span> <input type="text" name="total" class="num" value="<?php if(!empty($room_price)) { echo esc_attr($room_price); } else { esc_attr_e('0.00', 'trizen-helper'); } ?>" readonly="readonly"/><span><?php esc_html_e('/ per room', 'trizen-helper'); ?></span>
+                                <span class="font-size-17 text-black"><?php esc_html_e('$', 'trizen-helper'); ?></span> <input type="text" name="total" class="num" value="<?php if(!empty($room_price)) { echo esc_attr($room_price); } else { esc_attr_e('0', 'trizen-helper'); } ?>" readonly="readonly"/><span><?php esc_html_e('/ per room', 'trizen-helper'); ?></span>
                             </p>
                         </div>
                     <!-- </form> -->
                 </div>
             </div>
-            <div class="btn-box">
+            <div class="btn-box submit-group">
                 <button class="theme-btn text-center w-100 mb-2 upper font-medium btn_hotel_booking btn-book-ajax"
                         type="submit"
                         name="submit" >
@@ -197,6 +213,7 @@ class trizen_hrbf_widget extends WP_Widget {
         </form>
 
 		<?php
+		endwhile;
 
 
 		// After widget code, if any

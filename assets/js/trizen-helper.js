@@ -1,4 +1,5 @@
 
+/*
 (function ($) {
     // single hotel room booking ajax
     $('form.hotel-room-booking-form').on('click', 'button.btn-book-ajax', function (e) {
@@ -42,4 +43,4 @@
     });
 
 
-})(jQuery);
+})(jQuery);*/

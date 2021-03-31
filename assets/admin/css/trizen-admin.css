@@ -2,6 +2,7 @@
 
 #trizen-hotel-badge-meta input,
 .trizen-hotel-infos-content .form-settings textarea,
+.trizen-hotel-infos-content .form-settings select,
 .trizen-hotel-infos-content .form-settings input,
 .trizen-rpwt-fields select,
 .trizen-rpwt-fields input {
@@ -34,6 +35,7 @@
 .form-settings .select2-container--default .select2-selection--single:focus,
 .trizen-hotel-infos-content .form-settings textarea:focus,
 .trizen-hotel-infos-content .form-settings input:focus,
+.trizen-hotel-infos-content .form-settings select:focus,
 .trizen-rpwt-fields input:focus {
     outline: none;
     box-shadow: none;
@@ -139,16 +141,27 @@
     font-weight: 500;
     margin-bottom: 10px;
 }
+.trizen-hotel-infos-content .calendar-wrapper .form-settings .field-group label {
+    font-size: 14px;
+}
+.trizen-hotel-infos-content .calendar-wrapper .form-settings .field-group {
+    margin-bottom: 15px;
+}
 .trizen-hotel-infos-content .form-settings .description {
     display: block;
     font-style: italic;
     margin-bottom: 6px;
 }
+.trizen-hotel-infos-content .form-settings select,
 .trizen-hotel-infos-content .form-settings input {
     border-color: #d4d4d4;
     padding-top: 10px;
     padding-bottom: 10px;
     max-width: 600px;
+}
+.trizen-hotel-infos-content .calendar-wrapper .form-settings .field-group input[type="submit"],
+.trizen-hotel-infos-content .calendar-wrapper .form-settings .field-group select {
+    width: auto;
 }
 .trizen-hotel-infos-content .form-settings .trizen-btn {
     font-size: 15px;
@@ -470,6 +483,17 @@
     line-height: 20px;
     font-size: 16px;
     margin-bottom: 5px;
+}
+
+.calendar-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+}
+.calendar-wrapper .left-side {
+    width: 40%;
+}
+.calendar-wrapper .right-side {
+    width: 60%;
 }
 
 

@@ -190,21 +190,21 @@ $trizen_hotel_faqs_content = get_post_meta(get_the_ID(), 'trizen_hotel_faqs_cont
 		                if( !empty( $trizen_hotel_features_data ) ) {
 			                foreach( $trizen_hotel_features_data as $index => $field ) { ?>
                                 <div class="field-group">
-                                    <label for="trizen_hotel_features_title-<?php echo esc_attr__($index, 'trizen-helper'); ?>">
+                                    <label for="trizen_hotel_features_title-<?php echo esc_attr($index); ?>">
                                         <span>
                                             <?php esc_html_e('Title', 'trizen-helper'); ?>
                                         </span>
-                                        <input id="trizen_hotel_features_title-<?php echo esc_attr__($index, 'trizen-helper'); ?>" type="text" name="trizen_hotel_features_title[]" value="<?php if($field['trizen_hotel_features_title'] != '') echo esc_attr( $field['trizen_hotel_features_title'] ); ?>" />
+                                        <input id="trizen_hotel_features_title-<?php echo esc_attr($index); ?>" type="text" name="trizen_hotel_features_title[]" value="<?php if($field['trizen_hotel_features_title'] != '') echo esc_attr( $field['trizen_hotel_features_title'] ); ?>" />
                                     </label>
 
-                                    <label for="trizen_hotel_features_stitle-<?php echo esc_attr__($index, 'trizen-helper'); ?>">
+                                    <label for="trizen_hotel_features_stitle-<?php echo esc_attr($index); ?>">
                                         <span><?php esc_html_e('Sub Title', 'trizen-helper'); ?></span>
-                                        <input id="trizen_hotel_features_stitle-<?php echo esc_attr__($index, 'trizen-helper'); ?>" type="text" name="trizen_hotel_features_stitle[]" value="<?php if($field['trizen_hotel_features_stitle'] != '') echo esc_attr( $field['trizen_hotel_features_stitle'] ); ?>" />
+                                        <input id="trizen_hotel_features_stitle-<?php echo esc_attr($index); ?>" type="text" name="trizen_hotel_features_stitle[]" value="<?php if($field['trizen_hotel_features_stitle'] != '') echo esc_attr( $field['trizen_hotel_features_stitle'] ); ?>" />
                                     </label>
 
-                                    <label for="trizen_hotel_features_icon-<?php echo esc_attr__($index, 'trizen-helper'); ?>">
+                                    <label for="trizen_hotel_features_icon-<?php echo esc_attr($index); ?>">
                                         <span><?php esc_html_e('Icon Class', 'trizen-helper'); ?></span>
-                                        <input id="trizen_hotel_features_icon-<?php echo esc_attr__($index, 'trizen-helper'); ?>" type="text" name="trizen_hotel_features_icon[]" value="<?php if($field['trizen_hotel_features_icon'] != '') echo esc_attr( $field['trizen_hotel_features_icon'] ); ?>" />
+                                        <input id="trizen_hotel_features_icon-<?php echo esc_attr($index); ?>" type="text" name="trizen_hotel_features_icon[]" value="<?php if($field['trizen_hotel_features_icon'] != '') echo esc_attr( $field['trizen_hotel_features_icon'] ); ?>" />
                                     </label>
 
                                     <button type="button" class="button button-secondary trizen_hotel_features_remove dashicons dashicons-trash">
