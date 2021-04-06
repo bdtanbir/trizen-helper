@@ -1030,7 +1030,6 @@ button {
     cursor: pointer;
 }
 .fn-gantt .bar .fn-label .price {
-    /* line-height: 40px; */
     font-size: 10px;
 }
 .gantt .panel-price-wrapper {

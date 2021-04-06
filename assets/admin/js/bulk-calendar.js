@@ -14,28 +14,16 @@ jQuery(function ($) {
         })
     }
     $('select[name=post-id]', '#form-bulk-edit').on('change', function() {
-        if ( $('select[name=post-id]', '#form-bulk-edit').find(':selected').data('price-by-per-person') == 'on' ) {
-            $('input[name=adult-price-bulk]', '#form-bulk-edit').parent().show();
-            $('input[name=children-price-bulk]', '#form-bulk-edit').parent().show();
-            $('input[name=price-bulk]', '#form-bulk-edit').parent().hide();
-        } else {
-            $('input[name=adult-price-bulk]', '#form-bulk-edit').parent().hide();
-            $('input[name=children-price-bulk]', '#form-bulk-edit').parent().hide();
-            $('input[name=price-bulk]', '#form-bulk-edit').parent().show();
-        }
+        $('input[name=adult-price-bulk]', '#form-bulk-edit').parent().hide();
+        $('input[name=children-price-bulk]', '#form-bulk-edit').parent().hide();
+        $('input[name=price-bulk]', '#form-bulk-edit').parent().show();
     });
     $('#calendar-bulk-edit').on('click', function (event) {
-        if ($('#form-bulk-edit').length) {
+        if ( $( ' #form-bulk-edit ' ).length ) {
             $('select[name=post-id]', '#form-bulk-edit').on('change', function() {
-                if ( $('select[name=post-id]', '#form-bulk-edit').find(':selected').data('price-by-per-person') == 'on' ) {
-                    $('input[name=adult-price-bulk]', '#form-bulk-edit').parent().show();
-                    $('input[name=children-price-bulk]', '#form-bulk-edit').parent().show();
-                    $('input[name=price-bulk]', '#form-bulk-edit').parent().hide();
-                } else {
-                    $('input[name=adult-price-bulk]', '#form-bulk-edit').parent().hide();
-                    $('input[name=children-price-bulk]', '#form-bulk-edit').parent().hide();
-                    $('input[name=price-bulk]', '#form-bulk-edit').parent().show();
-                }
+                $('input[name=adult-price-bulk]', '#form-bulk-edit').parent().hide();
+                $('input[name=children-price-bulk]', '#form-bulk-edit').parent().hide();
+                $('input[name=price-bulk]', '#form-bulk-edit').parent().show();
             });
             $('#form-bulk-edit').fadeIn()
         }
@@ -47,18 +35,18 @@ jQuery(function ($) {
             data = data_first
         } else {
             data = {
-                'data': data1,
-                'posts_per_page': posts_per_page,
-                'total': total,
-                'current_page': current_page,
-                'all_days': all_days,
-                'post_id': post_id,
-                'action': 'trizen_calendar_bulk_edit_form'
+                'data'           : data1,
+                'posts_per_page' : posts_per_page,
+                'total'          : total,
+                'current_page'   : current_page,
+                'all_days'       : all_days,
+                'post_id'        : post_id,
+                'action'         : 'trizen_calendar_bulk_edit_form'
             }
         }
         $.post(ajaxurl, data, function (respon, textStatus, xhr) {
             if (typeof(respon) == 'object') {
-                if (respon.status == 2) {
+                if ( respon.status == 2 ) {
                     step_add_bulk(respon.data, respon.posts_per_page, respon.total, respon.current_page, respon.all_days, respon.post_id, container, '')
                 } else {
                     $('#form-bulk-edit .form-message', container).html(respon.message);
@@ -68,12 +56,12 @@ jQuery(function ($) {
             flag_save_bulk = !1
         }, 'json')
     }
-    if ($('#form-bulk-edit').length) {
+    if ( $( ' #form-bulk-edit ' ).length ) {
         $('#calendar-bulk-save').on('click', function (event) {
-            var parent = $(this).closest('#form-bulk-edit');
+            var parent    = $(this).closest('#form-bulk-edit');
             var container = $(this).closest('.calendar-wrapper');
             if (flag_save_bulk) return !1;
-            flag_save_bulk = !0;
+            flag_save_bulk  = !0;
             var day_of_week = [];
             $('input[name="day-of-week[]"]:checked', parent).each(function (i) {
                 day_of_week[i] = $(this).val()
@@ -134,19 +122,19 @@ jQuery(function ($) {
                 var post_select_id = $('select[name="post-id"]', parent).val()
             }
             var data = {
-                'day-of-week': day_of_week,
-                'day-of-month': day_of_month,
-                'months': months,
-                'years': years,
-                'price_bulk': $('input[name="price-bulk"]').val(),
-                'adult-price_bulk': $('input[name="adult-price-bulk"]').val(),
-                'children-price_bulk': $('input[name="children-price-bulk"]').val(),
-                'infant-price_bulk': $('input[name="infant-price-bulk"]').val(),
-                'starttime': starttime_unique_arr,
-                'post_id': post_select_id,
-                'status': $('select[name="status"]', parent).val(),
-                'calendar_groupday': calendar_groupday,
-                'action': 'trizen_calendar_bulk_edit_form'
+                'day-of-week'         : day_of_week,
+                'day-of-month'        : day_of_month,
+                'months'              : months,
+                'years'               : years,
+                'price_bulk'          : $('input[name="price-bulk"]').val(),
+                'adult-price_bulk'    : $('input[name="adult-price-bulk"]').val(),
+                'children-price_bulk' : $('input[name="children-price-bulk"]').val(),
+                'infant-price_bulk'   : $('input[name="infant-price-bulk"]').val(),
+                'starttime'           : starttime_unique_arr,
+                'post_id'             : post_select_id,
+                'status'              : $('select[name="status"]', parent).val(),
+                'calendar_groupday'   : calendar_groupday,
+                'action'              : 'trizen_calendar_bulk_edit_form'
             };
             $('.form-message', parent).html('');
             $('.overlay, .overlay-form', parent).addClass('open').fadeIn();
