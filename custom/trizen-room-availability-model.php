@@ -465,7 +465,7 @@ class TS_Model {
 //			$data['adult_number']=get_post_meta($data['post_id'],'adult_number',true);
 //			$data['child_number']=get_post_meta($data['post_id'],'child_number',true);
 //			$data['allow_full_day']=get_post_meta($data['post_id'],'allow_full_day',true);
-			$data['number']=get_post_meta($data['post_id'],'trizen_hotel_room_number',true);
+			$data['number']=get_post_meta($data['post_id'],'number_room',true);
 
 			return $this->insert($data);
 		}

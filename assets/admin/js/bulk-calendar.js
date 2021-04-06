@@ -53,7 +53,7 @@ jQuery(function ($) {
                 'current_page': current_page,
                 'all_days': all_days,
                 'post_id': post_id,
-                'action': 'traveler_calendar_bulk_edit_form'
+                'action': 'trizen_calendar_bulk_edit_form'
             }
         }
         $.post(ajaxurl, data, function (respon, textStatus, xhr) {
@@ -146,7 +146,7 @@ jQuery(function ($) {
                 'post_id': post_select_id,
                 'status': $('select[name="status"]', parent).val(),
                 'calendar_groupday': calendar_groupday,
-                'action': 'traveler_calendar_bulk_edit_form'
+                'action': 'trizen_calendar_bulk_edit_form'
             };
             $('.form-message', parent).html('');
             $('.overlay, .overlay-form', parent).addClass('open').fadeIn();

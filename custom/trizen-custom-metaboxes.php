@@ -131,7 +131,7 @@ if(!function_exists('trizen_register_meta_boxes')) {
 
 		$fields = [
 			'price',
-			'trizen_hotel_room_number',
+			'number_room',
 			'trizen_hotel_room_extra_service_title',
 			'trizen_hotel_room_extra_service_price',
 			'trizen_hotel_room_extra_service_price_designation',

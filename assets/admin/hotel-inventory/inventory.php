@@ -1,7 +1,7 @@
 <?php
 
 
-add_action( 'wp_ajax_traveler_calendar_bulk_edit_form', 'traveler_calendar_bulk_edit_form' );
+add_action( 'wp_ajax_trizen_calendar_bulk_edit_form', 'trizen_calendar_bulk_edit_form' );
 add_action( 'wp_ajax_ts_add_room_number_inventory', 'ts_add_room_number_inventory' );
 add_action( 'wp_ajax_ts_fetch_inventory', 'ts_fetch_inventory' );
 
@@ -57,7 +57,7 @@ function ts_fetch_inventory() {
 
 function featch_dataroom($hotel_id, $post_id, $post_name, $start, $end)
 {
-	$number_room         = (int)get_post_meta($post_id, 'trizen_hotel_room_number', true);
+	$number_room         = (int)get_post_meta($post_id, 'number_room', true);
 	$allow_fullday       = get_post_meta($hotel_id, 'allow_full_day', true);
 	$base_price          = (float)get_post_meta($post_id, 'price', true);
 	$adult_price         = floatval(get_post_meta($post_id, 'adult_price', true));
@@ -202,10 +202,9 @@ function featch_dataroom($hotel_id, $post_id, $post_name, $start, $end)
 	return $return;
 }
 
-function ts_add_room_number_inventory()
-{
+function ts_add_room_number_inventory() {
 	$room_id     = post( 'room_id', '' );
-	$number_room = post( 'trizen_hotel_room_number', '' );
+	$number_room = post( 'number_room', '' );
 
 	$current_user = wp_get_current_user();
 	$roles        = $current_user->roles;
@@ -260,7 +259,7 @@ function ts_add_room_number_inventory()
 		echo json_encode( $return );
 		die;
 	}
-	$res = update_post_meta( $room_id, 'trizen_hotel_room_number', $number_room );
+	$res = update_post_meta( $room_id, 'number_room', $number_room );
 
 	//Update number room in available table
 	$update_number_room = TS_Model::inst()
@@ -284,8 +283,7 @@ function ts_add_room_number_inventory()
 	}
 }
 
-function trizen_get_availability( $post_id = '', $check_in = '', $check_out = '', $table = null )
-{
+function trizen_get_availability( $post_id = '', $check_in = '', $check_out = '', $table = null ) {
 	if(empty($table))
 		$table = 'st_availability';
 	global $wpdb;
@@ -319,8 +317,7 @@ function trizen_get_availability( $post_id = '', $check_in = '', $check_out = ''
 
 	return $return;
 }
-function trizen_split_availability( $result = [], $check_in = '', $check_out = '' )
-{
+function trizen_split_availability( $result = [], $check_in = '', $check_out = '' ) {
 	$return = [];
 
 	if ( !empty( $result ) ) {
@@ -360,7 +357,6 @@ function trizen_split_availability( $result = [], $check_in = '', $check_out = '
 			];
 		}
 	}
-
 	return $return;
 }
 function traveler_delete_availability( $id = '', $table = null ) {
@@ -376,10 +372,8 @@ function traveler_delete_availability( $id = '', $table = null ) {
 			'id' => $id
 		]
 	);
-
 }
-function trizen_insert_availability( $post_id = '', $check_in = '', $check_out = '', $price = '', $adult_price = '', $children_price = '', $infant_price = '', $starttime = '', $status = '', $group_day = '', $table = null )
-{
+function trizen_insert_availability( $post_id = '', $check_in = '', $check_out = '', $price = '', $adult_price = '', $children_price = '', $infant_price = '', $starttime = '', $status = '', $group_day = '', $table = null ) {
 	if(empty($table))
 		$table = 'st_availability';
 	global $wpdb;
@@ -396,25 +390,25 @@ function trizen_insert_availability( $post_id = '', $check_in = '', $check_out =
 			'status'       => $status,
 			'groupday'     => 1,
 		];
-		if($table=='st_rental_availability'){
+		if( $table == 'st_rental_availability' ){
 			unset($data_insert['adult_price']);
 			unset($data_insert['child_price']);
 			unset($data_insert['infant_price']);
 		}
-		if ( $table=='st_room_availability' ) {
+		if ( $table == 'st_room_availability' ) {
 			unset($data_insert['infant_price']);
 		}
-		if($table=='st_room_availability'){
+		if( $table == 'st_room_availability' ){
 			$parent_id = get_post_meta($post_id, 'trizen_hotel_room_select', true);
 			unset($data_insert['groupday']);
-			$data_insert['post_type'] = 'hotel_room';
-			$data_insert['number'] = get_post_meta($post_id, 'number_room', true);
+			$data_insert['post_type']      = 'hotel_room';
+			$data_insert['number']         = get_post_meta($post_id, 'number_room', true);
 			$data_insert['allow_full_day'] = get_post_meta($post_id, 'allow_full_day', true);
 			$data_insert['booking_period'] = get_post_meta($parent_id, 'hotel_booking_period', true);
-			$data_insert['adult_number'] = get_post_meta($post_id, 'adult_number', true);
-			$data_insert['child_number'] = get_post_meta($post_id, 'children_number', true);
-			$data_insert['is_base'] = 0;
-			$data_insert['parent_id'] = $parent_id;
+			$data_insert['adult_number']   = get_post_meta($post_id, 'adult_number', true);
+			$data_insert['child_number']   = get_post_meta($post_id, 'children_number', true);
+			$data_insert['is_base']        = 0;
+			$data_insert['parent_id']      = $parent_id;
 		}
 		if($table == 'st_tour_availability' or $table == 'st_activity_availability') {
 			$data_insert['starttime'] = $starttime;
@@ -438,29 +432,29 @@ function trizen_insert_availability( $post_id = '', $check_in = '', $check_out =
 				'groupday'     => 0,
 			];
 
-			if($table=='st_rental_availability'){
+			if( $table == 'st_rental_availability' ){
 				unset($data_insert['adult_price']);
 				unset($data_insert['child_price']);
 				unset($data_insert['infant_price']);
 			}
-			if ( $table=='st_room_availability' ) {
+			if ( $table == 'st_room_availability' ) {
 				unset($data_insert['infant_price']);
 			}
-			if($table=='st_room_availability'){
+			if($table == 'st_room_availability'){
 				$parent_id = get_post_meta($post_id, 'trizen_hotel_room_select', true);
 				unset($data_insert['groupday']);
-				$data_insert['post_type'] = 'hotel_room';
-				$data_insert['number'] = get_post_meta($post_id, 'number_room', true);
+				$data_insert['post_type']      = 'hotel_room';
+				$data_insert['number']         = get_post_meta($post_id, 'number_room', true);
 				$data_insert['allow_full_day'] = get_post_meta($post_id, 'allow_full_day', true);
 				$data_insert['booking_period'] = get_post_meta($parent_id, 'hotel_booking_period', true);
-				$data_insert['adult_number'] = get_post_meta($post_id, 'adult_number', true);
-				$data_insert['child_number'] = get_post_meta($post_id, 'children_number', true);
-				$data_insert['is_base'] = 0;
-				$data_insert['parent_id'] = $parent_id;
+				$data_insert['adult_number']   = get_post_meta($post_id, 'adult_number', true);
+				$data_insert['child_number']   = get_post_meta($post_id, 'children_number', true);
+				$data_insert['is_base']        = 0;
+				$data_insert['parent_id']      = $parent_id;
 			}
 			if($table == 'st_tour_availability' or $table == 'st_activity_availability'){
 				$data_insert['starttime'] = $starttime;
-				$data_insert['is_base'] = 0;
+				$data_insert['is_base']   = 0;
 			}
 			$wpdb->insert(
 				$wpdb->prefix . $table,
@@ -473,7 +467,7 @@ function trizen_insert_availability( $post_id = '', $check_in = '', $check_out =
 function insert_calendar_bulk( $data, $posts_per_page, $total, $current_page, $all_days, $post_id )
 {
 	$post_type = get_post_type($post_id);
-	$table = '';
+	$table     = '';
 	switch ($post_type){
 		case 'ts_tours':
 			$table = 'st_tour_availability';
@@ -584,7 +578,7 @@ function change_allday_to_group( $all_days = [] )
 
 	return $return;
 }
-function traveler_calendar_bulk_edit_form() {
+function trizen_calendar_bulk_edit_form() {
 	$post_id = (int)post( 'post_id', 0 );
 	if ( $post_id > 0 ) {
 
@@ -597,7 +591,7 @@ function traveler_calendar_bulk_edit_form() {
 			if ( $current_page > ceil( $total / $posts_per_page ) ) {
 				echo json_encode( [
 					'status'  => 1,
-					'message' => '<div class="text-success">' . __( 'Added successful.', 'trizen-helper' ) . '</div>'
+					'message' => '<div class="text-success">' . esc_html__( 'Added successful.', 'trizen-helper' ) . '</div>'
 				] );
 				die;
 			} else {
@@ -649,7 +643,7 @@ function traveler_calendar_bulk_edit_form() {
 		if ( !is_numeric( $price ) || !is_numeric( $adult_price ) || !is_numeric( $children_price ) || !is_numeric( $infant_price ) ) {
 			echo json_encode( [
 				'status'  => 0,
-				'message' => '<div class="text-error">' . __( 'The price field is not a number.', 'trizen-helper' ) . '</div>'
+				'message' => '<div class="text-error">' . esc_html__( 'The price field is not a number.', 'trizen-helper' ) . '</div>'
 			] );
 			die;
 		}
@@ -761,7 +755,7 @@ function traveler_calendar_bulk_edit_form() {
 			} else {
 				echo json_encode( [
 					'status'  => 0,
-					'message' => '<div class="text-error">' . __( 'The months field is required.', 'trizen-helper' ) . '</div>'
+					'message' => '<div class="text-error">' . esc_html__( 'The months field is required.', 'trizen-helper' ) . '</div>'
 				] );
 				die;
 			}
@@ -769,14 +763,14 @@ function traveler_calendar_bulk_edit_form() {
 		} else {
 			echo json_encode( [
 				'status'  => 0,
-				'message' => '<div class="text-error">' . __( 'The years field is required.', 'trizen-helper' ) . '</div>'
+				'message' => '<div class="text-error">' . esc_html__( 'The years field is required.', 'trizen-helper' ) . '</div>'
 			] );
 			die;
 		}
 	} else {
 		echo json_encode( [
 			'status'  => 0,
-			'message' => '<div class="text-error">' . __( 'The room field is required.', 'trizen-helper' ) . '</div>'
+			'message' => '<div class="text-error">' . esc_html__( 'The room field is required.', 'trizen-helper' ) . '</div>'
 		] );
 		die;
 	}

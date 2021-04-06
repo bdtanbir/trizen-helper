@@ -212,7 +212,7 @@ if (is_admin()) {
 		$check_out     = request('end', '');
 		$price_ori     = floatval(get_post_meta($post_id, 'price', true));
 		$default_state = get_post_meta($post_id, 'default_state', true);
-		$number_room   = intval(get_post_meta($post_id, 'trizen_hotel_room_number', true));
+		$number_room   = intval(get_post_meta($post_id, 'number_room', true));
 		if (get_post_type($post_id) == 'hotel_room') {
 			$data = _getdataHotel($post_id, $check_in, $check_out);
 			for ($i = intval($check_in); $i <= intval($check_out); $i = strtotime('+1 day', $i)) {

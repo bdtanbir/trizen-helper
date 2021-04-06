@@ -1,7 +1,7 @@
 <?php
 
 $room_price       = get_post_meta(get_the_ID(), 'price', true);
-$number_of_room   = get_post_meta(get_the_ID(), 'trizen_hotel_room_number', true);
+$number_of_room   = get_post_meta(get_the_ID(), 'number_room', true);
 $number_of_adults = get_post_meta(get_the_ID(), 'trizen_room_facility_num_of_adults', true);
 $number_of_beds   = get_post_meta(get_the_ID(), 'trizen_room_facility_num_of_beds', true);
 $room_footage     = get_post_meta(get_the_ID(), 'trizen_hotel_room_footage', true);
@@ -107,7 +107,7 @@ $hotel_rooms = new WP_Query($default);
 				</div>
 
                 <div class="form-settings" id="hotel_room_number">
-                    <label for="trizen_hotel_room_number" class="title">
+                    <label for="number_room" class="title">
 						<?php esc_html_e('Number of Rooms', 'trizen-helper'); ?>
                     </label>
                     <span class="description">
@@ -115,8 +115,8 @@ $hotel_rooms = new WP_Query($default);
                     </span>
                     <div class="form-input">
                         <input
-                            id="trizen_hotel_room_number"
-                            name="trizen_hotel_room_number"
+                            id="number_room"
+                            name="number_room"
                             type="text"
                             value="<?php echo esc_attr($number_of_room); ?>"
                             placeholder="<?php esc_attr_e('Number of rooms', 'trizen-helper'); ?>" />

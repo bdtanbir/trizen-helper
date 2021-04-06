@@ -299,7 +299,7 @@ function getCouponPrice(){
 //	global $wpdb;
 ////	$result = get_availability( $base_id, $check_in, $check_out );
 //
-//	$number         = get_post_meta( $base_id, 'trizen_hotel_room_number', true );
+//	$number         = get_post_meta( $base_id, 'number_room', true );
 //	$parent_id      = get_post_meta( $base_id, 'trizen_hotel_room_select', true );
 ////	$booking_period = get_post_meta( $parent_id, 'hotel_booking_period', true );
 ////	$allow_full_day = get_post_meta( $base_id, 'allow_full_day', true );
@@ -426,11 +426,11 @@ function get_current_available_calendar($post_id) {
 			if (empty($max_people))
 				$max_people = 0;
 		} elseif ($post_type == 'hotel_room') {
-			$max_people = get_post_meta($post_id, 'trizen_hotel_room_number', true);
+			$max_people = get_post_meta($post_id, 'number_room', true);
 			if (empty($max_people))
 				$max_people = 0;
 		} elseif ($post_type == 'ts_rental') {
-			$max_people = get_post_meta($post_id, 'trizen_hotel_room_number', true);
+			$max_people = get_post_meta($post_id, 'number_room', true);
 			if (empty($max_people))
 				$max_people = 0;
 		}
@@ -742,7 +742,7 @@ function do_add_to_cart()
 		return false;
 	}
 	$check_out       = convertDateFormat( $check_out );
-	$room_num_search = intval(request('trizen_hotel_room_number', ''));
+	$room_num_search = intval(request('number_room', ''));
 
 	$adult_number = intval( request( 'trizen_room_facility_num_of_adults', '' ) );
 	if ( $adult_number <= 0 ) $adult_number = 1;
@@ -774,7 +774,7 @@ function do_add_to_cart()
 		return false;
 	}
 
-	$num_room = intval( get_post_meta( $room_origin, 'trizen_hotel_room_number', true ) );
+	$num_room = intval( get_post_meta( $room_origin, 'number_room', true ) );
 	$adult    = intval( get_post_meta( $room_origin, 'trizen_room_facility_num_of_adults', true ) );
 	if ( $adult == 0 ) {
 		$adult = 1;

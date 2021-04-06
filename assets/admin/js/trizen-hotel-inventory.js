@@ -87,7 +87,7 @@
     $(function () {
         'use strict';
         var body           = $('body');
-        var inventory      = $('.st-inventory', body).wpInventory();
+        var inventory      = $('.ts-inventory', body).wpInventory();
         var inventory_data = inventory.data('Inventory');
         $('body').on('click', '.tabs li[href="tab-hotel-inventory"], .calendar-bulk-room-close', function(){
             var start = moment().format();
@@ -96,43 +96,43 @@
                 'action' : 'ts_fetch_inventory',
                 'start'  : moment(start).format("YYYY-MM-DD"),
                 'end'    : moment(end).format("YYYY-MM-DD"),
-                'post_id': $('.st-inventory', body).data('id')
+                'post_id': $('.ts-inventory', body).data('id')
             };
             inventory_data.render(start, end, ajaxurl, data);
         });
-        $('.st-inventory', body).on('wpbooking_update_price_inventory', function (ev, start, end) {
+        $('.ts-inventory', body).on('wpbooking_update_price_inventory', function (ev, start, end) {
             var data = {
                 'action' : 'ts_fetch_inventory',
                 'start'  : moment(start).format("YYYY-MM-DD"),
                 'end'    : moment(end).format("YYYY-MM-DD"),
-                'post_id': $('.st-inventory', body).data('id')
+                'post_id': $('.ts-inventory', body).data('id')
             };
             inventory_data.render(start, end, ajaxurl, data);
         });
-        $('.st-inventory', body).on('wpbooking_next_month_inventory', function (ev, start, end) {
+        $('.ts-inventory', body).on('wpbooking_next_month_inventory', function (ev, start, end) {
             var data = {
                 'action' : 'ts_fetch_inventory',
                 'start'  : moment(end).format("YYYY-MM-DD"),
                 'end'    : moment(end).add(30, 'days').format("YYYY-MM-DD"),
-                'post_id': $('.st-inventory', body).data('id')
+                'post_id': $('.ts-inventory', body).data('id')
             };
             inventory_data.render(moment(end).format(), moment(end).add(30, 'days').format(), ajaxurl, data);
         });
-        $('.st-inventory', body).on('wpbooking_prev_month_inventory', function (ev, start, end) {
+        $('.ts-inventory', body).on('wpbooking_prev_month_inventory', function (ev, start, end) {
             var data = {
                 'action' : 'ts_fetch_inventory',
                 'start'  : moment(start).subtract(30, 'days').format("YYYY-MM-DD"),
                 'end'    : moment(start).format("YYYY-MM-DD"),
-                'post_id': $('.st-inventory', body).data('id')
+                'post_id': $('.ts-inventory', body).data('id')
             };
             inventory_data.render(moment(start).subtract(30, 'days').format(), moment(start).format(), ajaxurl, data);
         });
-        $('.st-inventory', body).on('wpbooking_now_inventory', function (ev, start, end) {
+        $('.ts-inventory', body).on('wpbooking_now_inventory', function (ev, start, end) {
             var data = {
                 'action' : 'ts_fetch_inventory',
                 'start'  : moment().format("YYYY-MM-DD"),
                 'end'    : moment().add(30, 'days').format("YYYY-MM-DD"),
-                'post_id': $('.st-inventory', body).data('id')
+                'post_id': $('.ts-inventory', body).data('id')
             };
             inventory_data.render(moment().format(), moment().add(30, 'days').format(), ajaxurl, data);
         });
@@ -159,7 +159,7 @@
             }
         });
 
-        var goto = $('.st-inventory-goto', form).on('click', function (ev) {
+        var goto = $('.ts-inventory-goto', form).on('click', function (ev) {
             ev.preventDefault();
             var start = check_in.val();
             var end   = check_out.val();
@@ -168,7 +168,7 @@
                     'action' : 'ts_fetch_inventory',
                     'start'  : moment(start).format("YYYY-MM-DD"),
                     'end'    : moment(end).format("YYYY-MM-DD"),
-                    'post_id': $('.st-inventory', body).data('id')
+                    'post_id': $('.ts-inventory', body).data('id')
                 };
                 inventory_data.render(moment(start).format(), moment(end).format(), ajaxurl, data);
             }
@@ -180,7 +180,7 @@
                 'action' : 'ts_fetch_inventory',
                 'start'  : moment().format("YYYY-MM-DD"),
                 'end'    : moment().add(30, 'days').format("YYYY-MM-DD"),
-                'post_id': $('.st-inventory', body).data('id')
+                'post_id': $('.ts-inventory', body).data('id')
             };
             inventory_data.render(moment().format(), moment().add(30, 'days').format(), ajaxurl, data);
         });
@@ -205,9 +205,9 @@
                 dataType: "json",
                 url: ajaxurl,
                 data: {
-                    'room_id' : $('input[name="input-room-id"]', parent).val(),
+                    'room_id'     : $('input[name="input-room-id"]', parent).val(),
                     'number_room' : number_room,
-                    'action' : 'ts_add_room_number_inventory'
+                    'action'      : 'ts_add_room_number_inventory'
                 },
                 success: function (response) {
                     if(response.status == '1'){
@@ -220,7 +220,7 @@
                         'action' : 'ts_fetch_inventory',
                         'start'  : moment().format("YYYY-MM-DD"),
                         'end'    : moment().add(30, 'days').format("YYYY-MM-DD"),
-                        'post_id': $('.st-inventory', body).data('id')
+                        'post_id': $('.ts-inventory', body).data('id')
                     };
                     inventory_data.render(moment().format(), moment().add(30, 'days').format(), ajaxurl, data);
                 },
