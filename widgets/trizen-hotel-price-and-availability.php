@@ -19,7 +19,7 @@ class trizen_hpa_widget extends WP_Widget {
 		// outputs the content of the widget
 		// PART 1: Extracting the arguments + getting the values
 		extract($args);
-		$trizen_hpa_title         = apply_filters('widget_title', $instance['trizen_hpa_title']);
+		$trizen_hpa_title = apply_filters('widget_title', $instance['trizen_hpa_title']);
 
 
 
@@ -30,7 +30,7 @@ class trizen_hpa_widget extends WP_Widget {
 
 
 		$hotel_regular_price = get_post_meta( get_the_ID(), 'trizen_hotel_regular_price', true );
-		$hotel_sale_price    = get_post_meta( get_the_ID(), 'trizen_hotel_sale_price', true );
+		$hotel_sale_price    =  get_post_meta( get_the_ID(), 'trizen_hotel_sale_price', true );
 		?>
 
         <div class="sidebar-widget-item">
@@ -42,15 +42,15 @@ class trizen_hpa_widget extends WP_Widget {
                 if(!empty($hotel_regular_price) && !empty($hotel_sale_price)) { ?>
                     <p>
                         <span class="text-form"><?php esc_html_e('From', 'trizen-helper'); ?></span>
-                        <span class="text-value ml-2 mr-1">$<?php echo esc_html($hotel_sale_price); ?></span>
-                        <span class="before-price">$<?php echo esc_html($hotel_regular_price); ?></span>
+                        <span class="text-value ml-2 mr-1"><?php esc_html_e('$', 'trizen-helper'); echo esc_html($hotel_sale_price); ?></span>
+                        <span class="before-price"><?php esc_html_e('$', 'trizen-helper'); echo esc_html($hotel_regular_price); ?></span>
                     </p>
                 <?php } else {
                     if(!empty($hotel_regular_price)) {
                         ?>
                         <p>
                             <span class="text-form"><?php esc_html_e('From', 'trizen-helper'); ?></span>
-                            <span class="text-value ml-2">$<?php echo esc_html($hotel_regular_price); ?></span>
+                            <span class="text-value ml-2"><?php esc_html_e('$', 'trizen-helper'); echo esc_html($hotel_regular_price); ?></span>
                         </p>
                         <?php
                     } else {
@@ -79,7 +79,9 @@ class trizen_hpa_widget extends WP_Widget {
                         </div>
                     </div>
                     <div class="input-box">
-                        <label class="label-text" for="select-room"><?php esc_html_e('Rooms', 'trizen-helper'); ?></label>
+                        <label class="label-text" for="select-room">
+                            <?php esc_html_e('Rooms', 'trizen-helper'); ?>
+                        </label>
                         <div class="form-group">
                             <div class="select-contain w-auto">
                                 <select id="select-room" class="select-contain-select">
@@ -108,7 +110,7 @@ class trizen_hpa_widget extends WP_Widget {
         <div class="sidebar-widget-item">
             <div class="qty-box mb-2 d-flex align-items-center justify-content-between">
                 <label class="font-size-16" for="adults-num">
-                    <?php esc_html_e('Adults', 'trizen-elper'); ?> <span><?php esc_html_e('Age 18+', 'trizen-helper'); ?></span>
+                    <?php esc_html_e('Adults', 'trizen-helper'); ?> <span><?php esc_html_e('Age 18+', 'trizen-helper'); ?></span>
                 </label>
                 <div class="qtyBtn d-flex align-items-center">
                     <div class="qtyDec"><i class="la la-minus"></i></div>
@@ -118,7 +120,7 @@ class trizen_hpa_widget extends WP_Widget {
             </div>
             <div class="qty-box mb-2 d-flex align-items-center justify-content-between">
                 <label class="font-size-16" for="children-num">
-                    <?php esc_html_e('Children', 'trizen-elper'); ?> <span><?php esc_html_e('2-12 years old', 'trizen-helper'); ?></span>
+                    <?php esc_html_e('Children', 'trizen-helper'); ?> <span><?php esc_html_e('2-12 years old', 'trizen-helper'); ?></span>
                 </label>
                 <div class="qtyBtn d-flex align-items-center">
                     <div class="qtyDec"><i class="la la-minus"></i></div>
@@ -136,7 +138,7 @@ class trizen_hpa_widget extends WP_Widget {
             </div>
         </div>
         <div class="btn-box pt-2">
-            <a href="tour-booking.html" class="theme-btn text-center w-100 mb-2">
+            <a href="" class="theme-btn text-center w-100 mb-2">
                 <i class="la la-shopping-cart mr-2 font-size-18"></i><?php esc_html_e('Book Now', 'trizen-helper'); ?>
             </a>
             <a href="#" class="theme-btn text-center w-100 theme-btn-transparent">
@@ -171,8 +173,8 @@ class trizen_hpa_widget extends WP_Widget {
 	 */
 	public function update( $new_instance, $old_instance ) {
 		// processes widget options to be saved
-		$instance                            = array();
-		$instance['trizen_hpa_title']        = $new_instance['trizen_hpa_title'];
+		$instance                     = array();
+		$instance['trizen_hpa_title'] = $new_instance['trizen_hpa_title'];
 		return $instance;
 	}
 
@@ -195,7 +197,7 @@ class trizen_hpa_widget extends WP_Widget {
 		?>
 			<p>
 				<label for="<?php echo esc_attr($this->get_field_id('trizen_hpa_title')); ?>">
-					<?php echo esc_html__('Title', 'trizen-helper'); ?>
+					<?php esc_html_e('Title', 'trizen-helper'); ?>
 				</label>
 				<input class="widefat"
 				       id="<?php echo esc_attr($this->get_field_id('trizen_hpa_title')); ?>"

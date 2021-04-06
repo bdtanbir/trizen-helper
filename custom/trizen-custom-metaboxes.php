@@ -72,15 +72,15 @@ if(!function_exists('trizen_register_meta_boxes')) {
 		$oldfield = get_post_meta($post_id, 'trizen_hotel_features_data_group', true);
 		if($_POST['trizen_hotel_features_title']) {
 			$newfield      = array();
-			$trizen_hotel_features_title   = $_POST['trizen_hotel_features_title'];
-			$trizen_hotel_features_stitle = $_POST['trizen_hotel_features_stitle'];
-			$trizen_hotel_features_icon = $_POST['trizen_hotel_features_icon'];
+			$trizen_hotel_features_title  = $_POST['trizen_hotel_features_title'];
+			$trizen_hotel_features_stitle =   $_POST['trizen_hotel_features_stitle'];
+			$trizen_hotel_features_icon   =     $_POST['trizen_hotel_features_icon'];
 			$count = count( $trizen_hotel_features_title );
 			for ( $i = 0; $i < $count; $i ++ ) {
 				if ( $trizen_hotel_features_title[ $i ] != '' ) :
-					$newfield[ $i ]['trizen_hotel_features_title']   = stripslashes( strip_tags( $trizen_hotel_features_title[ $i ] ) );
-					$newfield[ $i ]['trizen_hotel_features_stitle'] = stripslashes( $trizen_hotel_features_stitle[ $i ] ); // and however you want to sanitize
-					$newfield[ $i ]['trizen_hotel_features_icon'] = stripslashes( $trizen_hotel_features_icon[ $i ] ); // and however you want to sanitize
+					$newfield[ $i ]['trizen_hotel_features_title']  = stripslashes( strip_tags( $trizen_hotel_features_title[ $i ] ) );
+					$newfield[ $i ]['trizen_hotel_features_stitle'] =   stripslashes( $trizen_hotel_features_stitle[ $i ] ); // and however you want to sanitize
+					$newfield[ $i ]['trizen_hotel_features_icon']   =     stripslashes( $trizen_hotel_features_icon[ $i ] ); // and however you want to sanitize
 				endif;
 			}
 		}
@@ -100,7 +100,7 @@ if(!function_exists('trizen_register_meta_boxes')) {
 			for ( $i = 0; $i < $count; $i ++ ) {
 				if ( $trizen_hotel_faqs_title[ $i ] != '' ) :
 					$newfield[ $i ]['trizen_hotel_faqs_title']   = stripslashes( strip_tags( $trizen_hotel_faqs_title[ $i ] ) );
-					$newfield[ $i ]['trizen_hotel_faqs_content'] = stripslashes( $trizen_hotel_faqs_content[ $i ] ); // and however you want to sanitize
+					$newfield[ $i ]['trizen_hotel_faqs_content'] =  stripslashes( $trizen_hotel_faqs_content[ $i ] ); // and however you want to sanitize
 				endif;
 			}
 		}
@@ -130,7 +130,7 @@ if(!function_exists('trizen_register_meta_boxes')) {
 		}
 
 		$fields = [
-			'trizen_room_price',
+			'price',
 			'trizen_hotel_room_number',
 			'trizen_hotel_room_extra_service_title',
 			'trizen_hotel_room_extra_service_price',
@@ -173,7 +173,6 @@ if(!function_exists('trizen_register_meta_boxes')) {
 
 		/* Hotel Room other facility */
 		$room_other_facility_oldfield = get_post_meta($post_id, 'trizen_room_other_facility_data_group', true);
-		$trizen_room_other_facility_title_chk = get_post_meta($post_id, 'trizen_room_other_facility_title', true);
 		if ( $_POST['trizen_room_other_facility_title'] ) {
 			$newfield                         = array();
 			$trizen_room_other_facility_title = $_POST['trizen_room_other_facility_title'];

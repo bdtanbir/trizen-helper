@@ -29,7 +29,7 @@ class trizen_hrbf_widget extends WP_Widget {
 		// Before widget code, if any
 		echo $args['before_widget'];
 
-        $room_price = get_post_meta(get_the_ID(), 'trizen_room_price', true);
+        $room_price = get_post_meta(get_the_ID(), 'price', true);
         $trizen_hotel_room_extra_service_data    = get_post_meta(get_the_ID(), 'trizen_hotel_extra_services_data_group', true);
 
         if(!empty($trizen_hrbf_title)) {

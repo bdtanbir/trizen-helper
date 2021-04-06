@@ -39,7 +39,7 @@ function trizen_custom_post_types() {
 	];
 	register_post_type( 'ts_hotel', $args );
 
-	$name   = __( 'Hotel Facilities', 'trizen-helper' );
+	$name   = esc_html__( 'Hotel Facilities', 'trizen-helper' );
 	$labels = [
 		'name'              => $name,
 		'singular_name'     => $name,
@@ -170,7 +170,7 @@ function trizen_custom_post_types() {
 	];
 	register_post_type( 'hotel_room', $args );
 
-	$name   = __( 'Room Facilities', 'trizen-helper' );
+	$name   = esc_html__( 'Room Facilities', 'trizen-helper' );
 	$labels = [
 		'name'              => $name,
 		'singular_name'     => $name,
@@ -185,10 +185,10 @@ function trizen_custom_post_types() {
 		'menu_name'         => $name,
 	];
 	$args   = [
-		'hierarchical' => true,
-		'labels'       => $labels,
-		'show_ui'      => 'edit.php?post_type=hotel_room',
-		'query_var'    => true,
+		'hierarchical'      => true,
+		'labels'            => $labels,
+		'show_ui'           => 'edit.php?post_type=hotel_room',
+		'query_var'         => true,
 		'show_admin_column' => true,
 	];
 	register_taxonomy( 'room_facilities', 'hotel_room', $args );

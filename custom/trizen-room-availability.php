@@ -45,19 +45,28 @@ global $post;
             </div>
 
             <div class="field-group">
+                <div class="form-message">
+                    <p></p>
+                </div>
+            </div>
+
+            <div class="field-group">
                 <input type="hidden" name="calendar_post_id" value="<?php echo esc_attr($post->ID); ?>">
                 <input type="submit" id="calendar_submit" class="option-tree-ui-button button trizen-btn" name="calendar_submit" value="<?php esc_attr_e('Update', 'trizen-helper'); ?>">
                 <button type="button" id="calendar-bulk-edit" class="option-tree-ui-button trizen-btn" style="float: right;">
                     <?php esc_html_e('Bulk Edit', 'trizen-helper'); ?>
                 </button>
             </div>
+
         </div>
     </div>
     <div class="right-side">
-        <div class="calendar-content form-settings"></div>
+        <div class="form-settings">
+            <div class="calendar-content"></div>
 
-        <div class="overlay">
-            <span class="spinner is-active"></span>
+            <div class="overlay">
+                <span class="spinner is-active"></span>
+            </div>
         </div>
     </div>
 </div>

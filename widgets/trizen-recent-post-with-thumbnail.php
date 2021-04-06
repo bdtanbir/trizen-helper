@@ -20,15 +20,15 @@ class trizen_rpwt_widget extends WP_Widget {
 		// PART 1: Extracting the arguments + getting the values
 		extract($args);
 		$trizen_rpwt_title         = apply_filters('widget_title', $instance['trizen_rpwt_title']);
-		$trizen_rpwt_post_number   = $instance['trizen_rpwt_post_number'];
-		$trizen_rpwt_post_number2   = $instance['trizen_rpwt_post_number2'];
-		$trizen_rpwt_post_number3   = $instance['trizen_rpwt_post_number3'];
-		$trizen_rpwt_post_ids   = $instance['trizen_rpwt_post_ids'];
-		$trizen_rpwt_post2_ids   = $instance['trizen_rpwt_post2_ids'];
-		$trizen_rpwt_post3_ids   = $instance['trizen_rpwt_post3_ids'];
-		$trizen_rpwt_post_ids_exp = explode(',', $trizen_rpwt_post_ids);
-		$trizen_rpwt_post2_ids_exp = explode(',', $trizen_rpwt_post2_ids);
-		$trizen_rpwt_post3_ids_exp = explode(',', $trizen_rpwt_post3_ids);
+		$trizen_rpwt_post_number   =  $instance['trizen_rpwt_post_number'];
+		$trizen_rpwt_post_number2  =   $instance['trizen_rpwt_post_number2'];
+		$trizen_rpwt_post_number3  =    $instance['trizen_rpwt_post_number3'];
+		$trizen_rpwt_post_ids      =     $instance['trizen_rpwt_post_ids'];
+		$trizen_rpwt_post2_ids     =      $instance['trizen_rpwt_post2_ids'];
+		$trizen_rpwt_post3_ids     =       $instance['trizen_rpwt_post3_ids'];
+		$trizen_rpwt_post_ids_exp  =        explode(',', $trizen_rpwt_post_ids);
+		$trizen_rpwt_post2_ids_exp =         explode(',', $trizen_rpwt_post2_ids);
+		$trizen_rpwt_post3_ids_exp =          explode(',', $trizen_rpwt_post3_ids);
 
 		// Before widget code, if any
 		echo $args['before_widget'];
@@ -42,8 +42,8 @@ class trizen_rpwt_widget extends WP_Widget {
 			if(!empty($trizen_rpwt_post_ids)) {
 				$default1 = [
 					'posts_per_page' => $trizen_rpwt_post_number,
-					'post_type'      => 'post',
-                    'post__in'       => $trizen_rpwt_post_ids_exp
+					'post_type'      =>  'post',
+                    'post__in'       =>   $trizen_rpwt_post_ids_exp
 				];
 			} else {
 				$default1 = [
@@ -56,13 +56,13 @@ class trizen_rpwt_widget extends WP_Widget {
 			if(!empty($trizen_rpwt_post2_ids)) {
 				$default2 = [
 					'posts_per_page' => $trizen_rpwt_post_number2,
-					'post_type'      => 'post',
-                    'post__in'       => $trizen_rpwt_post2_ids_exp
+					'post_type'      =>  'post',
+                    'post__in'       =>   $trizen_rpwt_post2_ids_exp
 				];
 			} else {
 				$default2 = [
 					'posts_per_page' => $trizen_rpwt_post_number2,
-					'post_type'      => 'post',
+					'post_type'      =>  'post',
 				];
 			}
 			$post_query2 = new WP_Query( $default2 );
@@ -70,13 +70,13 @@ class trizen_rpwt_widget extends WP_Widget {
 			if(!empty($trizen_rpwt_post3_ids)) {
 				$default3 = [
 					'posts_per_page' => $trizen_rpwt_post_number3,
-					'post_type'      => 'post',
-                    'post__in'       => $trizen_rpwt_post3_ids_exp
+					'post_type'      =>  'post',
+                    'post__in'       =>   $trizen_rpwt_post3_ids_exp
 				];
 			} else {
 				$default3 = [
 					'posts_per_page' => $trizen_rpwt_post_number3,
-					'post_type'      => 'post',
+					'post_type'      =>  'post',
 				];
 			}
 			$post_query3 = new WP_Query( $default3 );
@@ -85,111 +85,119 @@ class trizen_rpwt_widget extends WP_Widget {
 				?>
 				<div class="section-tab section-tab-2 pb-3">
 					<ul class="nav nav-tabs" id="myTab3" role="tablist">
-						<li class="nav-item">
-							<a class="nav-link" id="recent-tab" data-toggle="tab" href="#recent" role="tab" aria-controls="recent" aria-selected="true">
-								Recent
-							</a>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link active" id="popular-tab" data-toggle="tab" href="#popular" role="tab" aria-controls="popular" aria-selected="false">
-								Popular
-							</a>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link" id="new-tab" data-toggle="tab" href="#new" role="tab" aria-controls="new" aria-selected="false">
-								New
-							</a>
-						</li>
+                        <?php if($post_query1->have_posts()) { ?>
+                            <li class="nav-item">
+                                <a class="nav-link" id="recent-tab" data-toggle="tab" href="#recent" role="tab" aria-controls="recent" aria-selected="true">
+                                    <?php esc_html_e('Recent', 'trizen-helper'); ?>
+                                </a>
+                            </li>
+                        <?php } if($post_query2->have_posts()) { ?>
+                            <li class="nav-item">
+                                <a class="nav-link active" id="popular-tab" data-toggle="tab" href="#popular" role="tab" aria-controls="popular" aria-selected="false">
+                                    <?php esc_html_e('Popular', 'trizen-helper'); ?>
+                                </a>
+                            </li>
+                        <?php } if ($post_query3->have_posts()) { ?>
+                            <li class="nav-item">
+                                <a class="nav-link" id="new-tab" data-toggle="tab" href="#new" role="tab" aria-controls="new" aria-selected="false">
+                                    <?php esc_html_e('New', 'trizen-helper'); ?>
+                                </a>
+                            </li>
+                        <?php } ?>
 					</ul>
 				</div>
 				<div class="tab-content" id="myTabContent">
-					<div class="tab-pane " id="recent" role="tabpanel" aria-labelledby="recent-tab">
-						<?php
-						while ($post_query1->have_posts()) {
-							$post_query1->the_post();
-							if(get_the_post_thumbnail() || get_the_title()) {
-								?>
-								<div class="card-item card-item-list recent-post-card">
-									<?php if(!empty(get_the_post_thumbnail())) { ?>
-										<div class="card-img">
-											<a href="<?php the_permalink(); ?>" class="d-block">
-												<?php the_post_thumbnail(); ?>
-											</a>
-										</div>
-									<?php } ?>
-                                    <div class="card-body">
-                                        <?php if(!empty(get_the_title())) { ?>
-                                            <h3 class="card-title">
-                                                <a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
-                                            </h3>
+                    <?php if($post_query1->have_posts()) { ?>
+                        <div class="tab-pane" id="recent" role="tabpanel" aria-labelledby="recent-tab">
+                            <?php
+                            while ($post_query1->have_posts()) {
+                                $post_query1->the_post();
+                                if(get_the_post_thumbnail() || get_the_title()) {
+                                    ?>
+                                    <div class="card-item card-item-list recent-post-card">
+                                        <?php if(!empty(get_the_post_thumbnail())) { ?>
+                                            <div class="card-img">
+                                                <a href="<?php the_permalink(); ?>" class="d-block">
+                                                    <?php the_post_thumbnail(); ?>
+                                                </a>
+                                            </div>
                                         <?php } ?>
-                                        <p class="card-meta">
-                                            <span class="post__date"> <?php the_time( get_option( 'date_format' ) ); ?></span>
-                                        </p>
-                                    </div>
-								</div>
-								<?php
-							}
-						} ?>
-					</div><!-- end tab-pane -->
-					<div class="tab-pane fade show active" id="popular" role="tabpanel" aria-labelledby="popular-tab">
-						<?php
-						while ($post_query2->have_posts()) {
-							$post_query2->the_post();
-							if(get_the_post_thumbnail() || get_the_title()) {
-								?>
-                                <div class="card-item card-item-list recent-post-card">
-									<?php if(!empty(get_the_post_thumbnail())) { ?>
-                                        <div class="card-img">
-                                            <a href="<?php the_permalink(); ?>" class="d-block">
-												<?php the_post_thumbnail(); ?>
-                                            </a>
+                                        <div class="card-body">
+                                            <?php if(!empty(get_the_title())) { ?>
+                                                <h3 class="card-title">
+                                                    <a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
+                                                </h3>
+                                            <?php } ?>
+                                            <p class="card-meta">
+                                                <span class="post__date"> <?php the_time( get_option( 'date_format' ) ); ?></span>
+                                            </p>
                                         </div>
-									<?php } ?>
-                                    <div class="card-body">
-										<?php if(!empty(get_the_title())) { ?>
-                                            <h3 class="card-title">
-                                                <a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
-                                            </h3>
-										<?php } ?>
-                                        <p class="card-meta">
-                                            <span class="post__date"> <?php the_time( get_option( 'date_format' ) ); ?></span>
-                                        </p>
                                     </div>
-                                </div>
-								<?php
-							}
-						} ?>
-					</div><!-- end tab-pane -->
-					<div class="tab-pane " id="new" role="tabpanel" aria-labelledby="new-tab">
-						<?php
-						while ($post_query3->have_posts()) {
-							$post_query3->the_post();
-							if(get_the_post_thumbnail() || get_the_title()) {
-								?>
-                                <div class="card-item card-item-list recent-post-card">
-									<?php if(!empty(get_the_post_thumbnail())) { ?>
-                                        <div class="card-img">
-                                            <a href="<?php the_permalink(); ?>" class="d-block">
-												<?php the_post_thumbnail(); ?>
-                                            </a>
+                                    <?php
+                                }
+                            } ?>
+                        </div><!-- end tab-pane -->
+                    <?php } if ($post_query2->have_posts()) { ?>
+                        <div class="tab-pane fade show active" id="popular" role="tabpanel" aria-labelledby="popular-tab">
+                            <?php
+                            while ($post_query2->have_posts()) {
+                                $post_query2->the_post();
+                                if(get_the_post_thumbnail() || get_the_title()) {
+                                    ?>
+                                    <div class="card-item card-item-list recent-post-card">
+                                        <?php if(!empty(get_the_post_thumbnail())) { ?>
+                                            <div class="card-img">
+                                                <a href="<?php the_permalink(); ?>" class="d-block">
+                                                    <?php the_post_thumbnail(); ?>
+                                                </a>
+                                            </div>
+                                        <?php } ?>
+                                        <div class="card-body">
+                                            <?php if(!empty(get_the_title())) { ?>
+                                                <h3 class="card-title">
+                                                    <a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
+                                                </h3>
+                                            <?php } ?>
+                                            <p class="card-meta">
+                                                <span class="post__date"> <?php the_time( get_option( 'date_format' ) ); ?></span>
+                                            </p>
                                         </div>
-									<?php } ?>
-                                    <div class="card-body">
-										<?php if(!empty(get_the_title())) { ?>
-                                            <h3 class="card-title">
-                                                <a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
-                                            </h3>
-										<?php } ?>
-                                        <p class="card-meta">
-                                            <span class="post__date"> <?php the_time( get_option( 'date_format' ) ); ?></span>
-                                        </p>
                                     </div>
-                                </div>
-								<?php
-							}
-						} ?>
-					</div><!-- end tab-pane -->
+                                    <?php
+                                }
+                            } ?>
+                        </div><!-- end tab-pane -->
+                    <?php } if($post_query3->have_posts()) { ?>
+                        <div class="tab-pane " id="new" role="tabpanel" aria-labelledby="new-tab">
+                            <?php
+                            while ($post_query3->have_posts()) {
+                                $post_query3->the_post();
+                                if(get_the_post_thumbnail() || get_the_title()) {
+                                    ?>
+                                    <div class="card-item card-item-list recent-post-card">
+                                        <?php if(!empty(get_the_post_thumbnail())) { ?>
+                                            <div class="card-img">
+                                                <a href="<?php the_permalink(); ?>" class="d-block">
+                                                    <?php the_post_thumbnail(); ?>
+                                                </a>
+                                            </div>
+                                        <?php } ?>
+                                        <div class="card-body">
+                                            <?php if(!empty(get_the_title())) { ?>
+                                                <h3 class="card-title">
+                                                    <a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
+                                                </h3>
+                                            <?php } ?>
+                                            <p class="card-meta">
+                                                <span class="post__date"> <?php the_time( get_option( 'date_format' ) ); ?></span>
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <?php
+                                }
+                            } ?>
+                        </div><!-- end tab-pane -->
+                    <?php } ?>
 				</div>
 				<?php
 			} ?>
@@ -213,14 +221,14 @@ class trizen_rpwt_widget extends WP_Widget {
 	 */
 	public function update( $new_instance, $old_instance ) {
 		// processes widget options to be saved
-		$instance                            = array();
-		$instance['trizen_rpwt_title']        = $new_instance['trizen_rpwt_title'];
-		$instance['trizen_rpwt_post_number']  = $new_instance['trizen_rpwt_post_number'];
-		$instance['trizen_rpwt_post_number2']  = $new_instance['trizen_rpwt_post_number2'];
-		$instance['trizen_rpwt_post_number3']  = $new_instance['trizen_rpwt_post_number3'];
-		$instance['trizen_rpwt_post_ids']  = $new_instance['trizen_rpwt_post_ids'];
-		$instance['trizen_rpwt_post2_ids']  = $new_instance['trizen_rpwt_post2_ids'];
-		$instance['trizen_rpwt_post3_ids']  = $new_instance['trizen_rpwt_post3_ids'];
+		$instance                             = array();
+		$instance['trizen_rpwt_title']        =  $new_instance['trizen_rpwt_title'];
+		$instance['trizen_rpwt_post_number']  =   $new_instance['trizen_rpwt_post_number'];
+		$instance['trizen_rpwt_post_number2'] =    $new_instance['trizen_rpwt_post_number2'];
+		$instance['trizen_rpwt_post_number3'] =     $new_instance['trizen_rpwt_post_number3'];
+		$instance['trizen_rpwt_post_ids']     =      $new_instance['trizen_rpwt_post_ids'];
+		$instance['trizen_rpwt_post2_ids']    =       $new_instance['trizen_rpwt_post2_ids'];
+		$instance['trizen_rpwt_post3_ids']    =        $new_instance['trizen_rpwt_post3_ids'];
 		return $instance;
 	}
 
@@ -274,7 +282,7 @@ class trizen_rpwt_widget extends WP_Widget {
 		<div class="trizen-rpwt-fields">
 			<p>
 				<label for="<?php echo esc_attr($this->get_field_id('trizen_rpwt_title')); ?>">
-					<?php echo esc_html__('Title:', 'trizen-helper'); ?>
+					<?php esc_html_e('Title:', 'trizen-helper'); ?>
 				</label>
 				<input class="widefat"
 				       id="<?php echo esc_attr($this->get_field_id('trizen_rpwt_title')); ?>"
@@ -283,10 +291,12 @@ class trizen_rpwt_widget extends WP_Widget {
 				       value="<?php echo esc_attr($trizen_rpwt_title); ?>" />
 			</p>
             <hr>
-            <h2><?php esc_html_e('Recent Posts', 'trizen-helper'); ?></h2>
+            <h2>
+                <?php esc_html_e('Recent Posts', 'trizen-helper'); ?>
+            </h2>
 			<p>
 				<label for="<?php echo esc_attr($this->get_field_id('trizen_rpwt_post_ids')); ?>">
-					<?php echo esc_html__('Post ID(s):', 'trizen-helper'); ?>
+					<?php esc_html_e('Post ID(s):', 'trizen-helper'); ?>
 				</label>
 				<input
                     class="widefat"
@@ -300,7 +310,7 @@ class trizen_rpwt_widget extends WP_Widget {
 			</p>
 			<p>
 				<label for="<?php echo esc_attr($this->get_field_id('trizen_rpwt_post_number')); ?>">
-					<?php echo esc_html__('Number of Posts Show:', 'trizen-helper'); ?>
+					<?php esc_html_e('Number of Posts Show:', 'trizen-helper'); ?>
 				</label>
 				<input
 					id="<?php echo esc_attr($this->get_field_id('trizen_rpwt_post_number')); ?>"
@@ -310,10 +320,12 @@ class trizen_rpwt_widget extends WP_Widget {
 					placeholder="<?php echo esc_attr__('3', 'trizen-helper'); ?>" />
 			</p>
             <hr>
-            <h2><?php esc_html_e('Popular Posts', 'trizen-helper'); ?></h2>
+            <h2>
+                <?php esc_html_e('Popular Posts', 'trizen-helper'); ?>
+            </h2>
 			<p>
 				<label for="<?php echo esc_attr($this->get_field_id('trizen_rpwt_post2_ids')); ?>">
-					<?php echo esc_html__('Post ID(s):', 'trizen-helper'); ?>
+					<?php esc_html_e('Post ID(s):', 'trizen-helper'); ?>
 				</label>
 				<input
                     class="widefat"
@@ -327,20 +339,20 @@ class trizen_rpwt_widget extends WP_Widget {
 			</p>
 			<p>
 				<label for="<?php echo esc_attr($this->get_field_id('trizen_rpwt_post_number2')); ?>">
-					<?php echo esc_html__('Number of Posts Show:', 'trizen-helper'); ?>
+					<?php esc_html_e('Number of Posts Show:', 'trizen-helper'); ?>
 				</label>
 				<input
 					id="<?php echo esc_attr($this->get_field_id('trizen_rpwt_post_number2')); ?>"
 					name="<?php echo esc_attr($this->get_field_name('trizen_rpwt_post_number2')); ?>"
 					type="number"
 					value="<?php echo esc_attr($trizen_rpwt_post_number2); ?>"
-					placeholder="<?php echo esc_attr__('3', 'trizen-helper'); ?>" />
+					placeholder="<?php esc_attr_e('3', 'trizen-helper'); ?>" />
 			</p>
             <hr>
             <h2><?php esc_html_e('New Posts', 'trizen-helper'); ?></h2>
 			<p>
 				<label for="<?php echo esc_attr($this->get_field_id('trizen_rpwt_post3_ids')); ?>">
-					<?php echo esc_html__('Post ID(s):', 'trizen-helper'); ?>
+					<?php esc_html_e('Post ID(s):', 'trizen-helper'); ?>
 				</label>
 				<input
                     class="widefat"
@@ -354,14 +366,14 @@ class trizen_rpwt_widget extends WP_Widget {
 			</p>
 			<p>
 				<label for="<?php echo esc_attr($this->get_field_id('trizen_rpwt_post_number3')); ?>">
-					<?php echo esc_html__('Number of Posts Show:', 'trizen-helper'); ?>
+					<?php esc_html_e('Number of Posts Show:', 'trizen-helper'); ?>
 				</label>
 				<input
 					id="<?php echo esc_attr($this->get_field_id('trizen_rpwt_post_number3')); ?>"
 					name="<?php echo esc_attr($this->get_field_name('trizen_rpwt_post_number3')); ?>"
 					type="number"
 					value="<?php echo esc_attr($trizen_rpwt_post_number3); ?>"
-					placeholder="<?php echo esc_attr__('3', 'trizen-helper'); ?>" />
+					placeholder="<?php esc_attr_e('3', 'trizen-helper'); ?>" />
 			</p>
 		</div>
 		<?php

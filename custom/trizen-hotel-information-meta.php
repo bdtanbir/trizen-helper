@@ -12,14 +12,14 @@ if(empty($hotel_video)) {
 
 // Hotel Features
 $trizen_hotel_features_data   = get_post_meta(get_the_ID(), 'trizen_hotel_features_data_group', true);
-$trizen_hotel_features_title  = get_post_meta(get_the_ID(), 'trizen_hotel_features_title', true);
-$trizen_hotel_features_stitle = get_post_meta(get_the_ID(), 'trizen_hotel_features_stitle', true);
-$trizen_hotel_features_icon   = get_post_meta(get_the_ID(), 'trizen_hotel_features_icon', true);
+$trizen_hotel_features_title  =  get_post_meta(get_the_ID(), 'trizen_hotel_features_title', true);
+$trizen_hotel_features_stitle =   get_post_meta(get_the_ID(), 'trizen_hotel_features_stitle', true);
+$trizen_hotel_features_icon   =    get_post_meta(get_the_ID(), 'trizen_hotel_features_icon', true);
 
 // Hotel Faqs
 $trizen_hotel_faqs_data    = get_post_meta(get_the_ID(), 'trizen_hotel_faqs_data_group', true);
-$trizen_hotel_faqs_title   = get_post_meta(get_the_ID(), 'trizen_hotel_faqs_title', true);
-$trizen_hotel_faqs_content = get_post_meta(get_the_ID(), 'trizen_hotel_faqs_content', true);
+$trizen_hotel_faqs_title   =  get_post_meta(get_the_ID(), 'trizen_hotel_faqs_title', true);
+$trizen_hotel_faqs_content =   get_post_meta(get_the_ID(), 'trizen_hotel_faqs_content', true);
 ?>
 <div class="trizen-hotel-information-wrap">
     <div class="nav-pill-main-div">
@@ -38,6 +38,9 @@ $trizen_hotel_faqs_content = get_post_meta(get_the_ID(), 'trizen_hotel_faqs_cont
             </li>
             <li class="tab-link nav-pill" href="tab-hotel-faqs">
                 <?php esc_html_e('Hotel Faqs', 'trizen-helper'); ?>
+            </li>
+            <li class="tab-link nav-pill" href="tab-hotel-inventory">
+                <?php esc_html_e('Inventory', 'trizen-helper'); ?>
             </li>
         </ul>
         <div class="trizen-hotel-infos-content">
@@ -67,33 +70,37 @@ $trizen_hotel_faqs_content = get_post_meta(get_the_ID(), 'trizen_hotel_faqs_cont
                     <span class="description">
                         <?php esc_html_e('Upload one or many images to make a hotel image gallery for customers', 'trizen-helper'); ?>
                     </span>
-		            <?php
 
-		            $html = '<div><ul class="trizen_hotel_img_gallery_mtb">';
-		            $hidden = array();
-		            if( $images = get_posts( array(
-			            'post_type'      => 'attachment',
-			            'orderby'        => 'post__in',
-			            'order'          => 'ASC',
-			            'post__in'       => explode(',',get_post_meta(get_the_ID(), 'trizen_hotel_image_gallery', true)),
-			            'numberposts'    => -1,
-			            'post_mime_type' => 'image'
-		            ) ) ) {
+                    <div>
+                        <ul class="trizen_hotel_img_gallery_mtb">
+                            <?php
+                            $hidden = array();
+                            if( $images = get_posts( array(
+                                'post_type'      => 'attachment',
+                                'orderby'        => 'post__in',
+                                'order'          => 'ASC',
+                                'post__in'       => explode(',',get_post_meta(get_the_ID(), 'trizen_hotel_image_gallery', true)),
+                                'numberposts'    => -1,
+                                'post_mime_type' => 'image'
+                            ) ) ) {
 
-			            foreach( $images as $image ) {
-				            $hidden[] = $image->ID;
-				            $image_src = wp_get_attachment_image_src( $image->ID, array( 80, 80 ) );
-				            $image_src = str_replace('-150x150', '', $image_src);
-				            $html .= '<li data-id="' . $image->ID .  '">
-                                <img src="'.$image_src[0].'" alt="'.__("Image", "trizen-helper").'"><a href="#" class="trizen_hotel_img_gallery_remove">'.__("+", "trizen-helper").'</a></li>';
-			            }
+                                foreach( $images as $image ) {
+                                    $hidden[]  = $image->ID;
+                                    $image_src = wp_get_attachment_image_src( $image->ID, array( 80, 80 ) );
+                                    $image_src = str_replace('-150x150', '', $image_src);
+                                    echo '<li data-id="' . $image->ID .  '">
+                                        <img src="'.$image_src[0].'" alt="'.esc_attr__("Image", "trizen-helper").'"><a href="#" class="trizen_hotel_img_gallery_remove">'.esc_html__("+", "trizen-helper").'</a></li>';
+                                }
 
-		            }
-		            $html .= '</ul><div style="clear:both"></div></div>';
-		            $html .= '<input type="hidden" name="trizen_hotel_image_gallery" value="' . join(',',$hidden) . '" /><a href="#" class="button trizen-btn trizen_upload_hotel_gallery_button">'.__("Add Images", "trizen-helper").'</a>';
-
-		            echo $html;
-		            ?>
+                            }
+                            ?>
+                        </ul>
+                        <div style="clear:both"></div>
+                    </div>
+                    <input type="hidden" name="trizen_hotel_image_gallery" value="<?php echo join(',',$hidden); ?>" />
+                    <a href="#" class="button trizen-btn trizen_upload_hotel_gallery_button">
+                        <?php esc_html_e("Add Images", "trizen-helper"); ?>
+                    </a>
                 </div>
 
                 <div class="form-settings" id="hotel_details_video_setting">
@@ -294,6 +301,9 @@ $trizen_hotel_faqs_content = get_post_meta(get_the_ID(), 'trizen_hotel_faqs_cont
                         </button>
                     </div>
                 </div>
+            </div>
+            <div class="tab-content" id="tab-hotel-inventory">
+		        <?php include_once TRIZEN_HELPER_PATH . 'custom/trizen-hotel-inventory.php'; ?>
             </div>
         </div>
     </div>

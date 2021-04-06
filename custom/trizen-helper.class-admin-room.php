@@ -14,7 +14,7 @@ add_action( 'admin_menu', 'trizen_room_booking_add_menu_page');
  **/
 function __hotel_room_booking_page()
 {
-    echo '<h1>Hello I am Working Fine okk!.</h1>';
+    echo '<h1>'.esc_html__('Hotel Room Booking', 'trizen-helper').'</h1>';
 	/*$section = isset( $_GET[ 'section' ] ) ? $_GET[ 'section' ] : FALSE;
 
 	if ( $section ) {
@@ -64,7 +64,7 @@ function _delete_items()
 			wp_delete_post( $id, TRUE );
 
 	}
-	__( "Delete item(s) success", 'trizen-helper' );
+	esc_html__( "Delete item(s) success", 'trizen-helper' );
 
 }
 
@@ -96,17 +96,17 @@ function load_view($slug, $name = false, $data = []) {
 function get_history_bookings($type = "ts_hotel", $offset, $limit, $author = false) {
 	global $wpdb;
 
-	$where = '';
-	$join = '';
+	$where  = '';
+	$join   = '';
 	$select = '';
 
 	if (isset($_GET['ts_date_start']) and $_GET['ts_date_start']) {
 
 		if ($type == 'ts_cars') {
-			$date = ( date('m/d/Y', strtotime($_GET['ts_date_start'])) );
+			$date   = ( date('m/d/Y', strtotime($_GET['ts_date_start'])) );
 			$where .= " AND {$wpdb->prefix}ts_order_item_meta.check_in >= '{$date}'";
 		} else {
-			$date = strtotime(date('Y-m-d', strtotime($_GET['ts_date_start'])));
+			$date   = strtotime(date('Y-m-d', strtotime($_GET['ts_date_start'])));
 			$where .= " AND CAST({$wpdb->prefix}ts_order_item_meta.check_in_timestamp as UNSIGNED) >= {$date}";
 		}
 	}
@@ -114,16 +114,16 @@ function get_history_bookings($type = "ts_hotel", $offset, $limit, $author = fal
 	if (isset($_GET['ts_date_end']) and $_GET['ts_date_end']) {
 
 		if ($type == 'ts_cars') {
-			$date = ( date('m/d/Y', strtotime($_GET['ts_date_end'])) );
+			$date   = ( date('m/d/Y', strtotime($_GET['ts_date_end'])) );
 			$where .= " AND {$wpdb->prefix}ts_order_item_meta.check_in <= '{$date}'";
 		} else {
-			$date = strtotime(date('Y-m-d', strtotime($_GET['ts_date_start'])));
+			$date   = strtotime(date('Y-m-d', strtotime($_GET['ts_date_start'])));
 			$where .= " AND CAST({$wpdb->prefix}ts_order_item_meta.check_in_timestamp as UNSIGNED) <= {$date}";
 		}
 	}
 
 	if ($c_name = get('ts_custommer_name')) {
-		$join .= " INNER JOIN {$wpdb->prefix}postmeta as mt3 on mt3.post_id= {$wpdb->prefix}ts_order_item_meta.order_item_id";
+		$join  .= " INNER JOIN {$wpdb->prefix}postmeta as mt3 on mt3.post_id= {$wpdb->prefix}ts_order_item_meta.order_item_id";
 		$where .= ' AND  mt3.meta_key=\'ts_first_name\'
              ';
 		$where .= ' AND mt3.meta_value like \'%' . esc_sql($c_name) . '%\'';
@@ -173,7 +173,7 @@ function _get_currency_book_history( $post_id )
 function format_money_raw( $money = '', $symbol = false, $precision = 2, $template = null )
 {
 	if ( $money == 0 ) {
-		return __( "Free", 'trizen-helper' );
+		return esc_html__( "Free", 'trizen-helper' );
 	}
 
 	/*if ( !$symbol ) {
@@ -233,14 +233,16 @@ if (!function_exists('ts_admin_print_order_item_guest_name')) {
 		if (!empty($data['guest_name'])) {
 			?>
 			<div class="form-row">
-				<label class="form-label" for=""><?php esc_html_e('Guest Name', 'trizen-helper') ?></label>
+				<label class="form-label" for="">
+                    <?php esc_html_e('Guest Name', 'trizen-helper') ?>
+                </label>
 				<div class="controls">
 					<?php
 					$guest_title = isset($data['guest_title']) ? $data['guest_title'] : [];
-					$html = [];
+					$html        = [];
 					foreach ($data['guest_name'] as $k => $name) {
-						$str = isset($guest_title[$k]) ? ts_guest_title_to_text($guest_title[$k]) . ' ' : '';
-						$str .= $name;
+						$str    = isset($guest_title[$k]) ? ts_guest_title_to_text($guest_title[$k]) . ' ' : '';
+						$str   .= $name;
 						$html[] = $str;
 					}
 					echo implode(', ', $html);

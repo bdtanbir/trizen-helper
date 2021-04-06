@@ -17,7 +17,7 @@ class trizen_helper_social_profile_icons_widget extends WP_Widget {
 	public function widget( $args, $instance ) {
 		extract( $args );
 		$social_icons = trizen_helper_get_social_icons();
-		$title        = apply_filters( 'widget_title', $instance['title'] );
+		$title        =  apply_filters( 'widget_title', $instance['title'] );
 
 		echo $args['before_widget'];
 		?>
@@ -71,7 +71,7 @@ class trizen_helper_social_profile_icons_widget extends WP_Widget {
 		$instance['dribbble']    = strip_tags( $new_instance['dribbble'] );
 		$instance['flickr']      = strip_tags( $new_instance['flickr'] );
 		$instance['behance']     = strip_tags( $new_instance['behance'] );
-		$instance['linkedin-in']    = strip_tags( $new_instance['linkedin-in'] );
+		$instance['linkedin-in'] = strip_tags( $new_instance['linkedin-in'] );
 
 		return $instance;
 	}
@@ -130,7 +130,7 @@ class trizen_helper_social_profile_icons_widget extends WP_Widget {
 			?>
 			<p>
 				<label for="<?php echo esc_attr($this->get_field_id( $sci )) ; ?>">
-					<?php echo esc_html( ucfirst( $sci ) . " " . __( 'URL', 'trizen-helper' ) ); ?>:
+					<?php echo ucfirst( $sci ) . " " . esc_html__( 'URL', 'trizen-helper' ); ?>:
 				</label>
 				<br/>
 				<input class="widefat"

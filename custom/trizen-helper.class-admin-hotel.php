@@ -27,7 +27,6 @@ function __hotel_booking_page()
 				_delete_items();
 				break;
 		}
-//		echo balanceTags( load_view( 'hotel/booking_index', FALSE ) );
 		include_once TRIZEN_HELPER_PATH.'inc/admin/views/hotel/booking_index.php';
 	}
 

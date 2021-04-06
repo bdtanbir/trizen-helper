@@ -54,16 +54,16 @@ class TS_Model {
 	protected $ignore_create_table = FALSE;
 
 
-	protected $_where_query = array();
-	protected $_join_query = array();
+	protected $_where_query  = array();
+	protected $_join_query   = array();
 	protected $_select_query = array();
-	protected $_order_query = array();
-	protected $_limit_query = array();
-	protected $_last_query = array();
-	protected $_last_result = array();
-	protected $_groupby = array();
-	protected $_having = array();
-	protected $_like_query = array();
+	protected $_order_query  = array();
+	protected $_limit_query  = array();
+	protected $_last_query   = array();
+	protected $_last_result  = array();
+	protected $_groupby      = array();
+	protected $_having       = array();
+	protected $_like_query   = array();
 
 
 
@@ -304,13 +304,13 @@ class TS_Model {
 	 */
 	public function _clear_query()
 	{
-		$this->_where_query = array();
+		$this->_where_query  = array();
 		$this->_select_query = array();
-		$this->_order_query = array();
-		$this->_limit_query = array();
-		$this->_join_query = array();
-		$this->_groupby = array();
-		$this->_having = array();
+		$this->_order_query  = array();
+		$this->_limit_query  = array();
+		$this->_join_query   = array();
+		$this->_groupby      = array();
+		$this->_having       = array();
 	}
 
 	/**
@@ -388,8 +388,8 @@ class TS_Model {
 			}
 			$set .= $wpdb->prepare("$key={$prepare},",$value);
 		}
-		$set = substr($set, 0, -1);
-		$query = "UPDATE " . $table_name . " SET " . $set;
+		$set    = substr($set, 0, -1);
+		$query  = "UPDATE " . $table_name . " SET " . $set;
 		$query .= $where;
 		$this->_last_query = $query;
 		$this->_clear_query();
@@ -413,14 +413,14 @@ class TS_Model {
 		global $wpdb;
 		$table_name = $wpdb->prefix . $this->table_name;
 
-		$set = FALSE;
-		$set_data = array();
+		$set         = FALSE;
+		$set_data    = array();
 		$set_columns = FALSE;
 
 		foreach ($data as $key => $value) {
 			//if(!array_key_exists($key,$this->columns)) continue;
-			$set .= "%s,";
-			$set_data[] = $value;
+			$set        .= "%s,";
+			$set_data[]  = $value;
 			$set_columns.=$key.',';
 		}
 
@@ -448,8 +448,8 @@ class TS_Model {
 			'price'       => '',
 			'status'      => '',
 			'is_base'     => 0,
-			'adult_price' => '',
-			'child_price' => '',
+//			'adult_price' => '',
+//			'child_price' => '',
 		));
 		$where = [
 			'post_id'=>$data['post_id'],
@@ -462,10 +462,10 @@ class TS_Model {
 			unset($data['check_in']);
 			return $this->where($where)->update($data);
 		}else{
-			$data['adult_number']=get_post_meta($data['post_id'],'adult_number',true);
-			$data['child_number']=get_post_meta($data['post_id'],'child_number',true);
-			$data['allow_full_day']=get_post_meta($data['post_id'],'allow_full_day',true);
-			$data['number']=get_post_meta($data['post_id'],'number_room',true);
+//			$data['adult_number']=get_post_meta($data['post_id'],'adult_number',true);
+//			$data['child_number']=get_post_meta($data['post_id'],'child_number',true);
+//			$data['allow_full_day']=get_post_meta($data['post_id'],'allow_full_day',true);
+			$data['number']=get_post_meta($data['post_id'],'trizen_hotel_room_number',true);
 
 			return $this->insert($data);
 		}
@@ -476,3 +476,4 @@ class TS_Model {
 		return self::$_inst;
 	}
 }
+TS_Model::inst();

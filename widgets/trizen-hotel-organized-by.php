@@ -19,12 +19,12 @@ class trizen_hob_widget extends WP_Widget {
 		// outputs the content of the widget
 		// PART 1: Extracting the arguments + getting the values
 		extract($args);
-		$trizen_hob_title         = apply_filters('widget_title', $instance['trizen_hob_title']);
+		$trizen_hob_title = apply_filters('widget_title', $instance['trizen_hob_title']);
 
 
 
 		$author_id = get_post_field( 'post_author', get_the_ID() );
-		$userdata  = get_userdata( $author_id );
+		$userdata  =  get_userdata( $author_id );
 		// Before widget code, if any
 		echo $args['before_widget'];
 
@@ -96,7 +96,7 @@ class trizen_hob_widget extends WP_Widget {
 		?>
 			<p>
 				<label for="<?php echo esc_attr($this->get_field_id('trizen_hob_title')); ?>">
-					<?php echo esc_html__('Title', 'trizen-helper'); ?>
+					<?php esc_html_e('Title', 'trizen-helper'); ?>
 				</label>
 				<input class="widefat"
 				       id="<?php echo esc_attr($this->get_field_id('trizen_hob_title')); ?>"

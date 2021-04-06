@@ -1,16 +1,16 @@
 <?php
 
-$room_price = get_post_meta(get_the_ID(), 'trizen_room_price', true);
-$number_of_room = get_post_meta(get_the_ID(), 'trizen_hotel_room_number', true);
+$room_price       = get_post_meta(get_the_ID(), 'price', true);
+$number_of_room   = get_post_meta(get_the_ID(), 'trizen_hotel_room_number', true);
 $number_of_adults = get_post_meta(get_the_ID(), 'trizen_room_facility_num_of_adults', true);
-$number_of_beds = get_post_meta(get_the_ID(), 'trizen_room_facility_num_of_beds', true);
-$room_footage = get_post_meta(get_the_ID(), 'trizen_hotel_room_footage', true);
+$number_of_beds   = get_post_meta(get_the_ID(), 'trizen_room_facility_num_of_beds', true);
+$room_footage     = get_post_meta(get_the_ID(), 'trizen_hotel_room_footage', true);
 
 // Hotel Room Extra Services
 $trizen_hotel_room_extra_services_data = get_post_meta(get_the_ID(), 'trizen_hotel_extra_services_data_group', true);
 
 $trizen_room_other_facility_data = get_post_meta(get_the_ID(), 'trizen_room_other_facility_data_group', true);
-$trizen_room_rules_data = get_post_meta(get_the_ID(), 'trizen_room_rules_data_group', true);
+$trizen_room_rules_data          = get_post_meta(get_the_ID(), 'trizen_room_rules_data_group', true);
 
 $default = array(
 	'post_type'      => 'ts_hotel',
@@ -51,30 +51,34 @@ $hotel_rooms = new WP_Query($default);
                         <?php esc_html_e('Upload Images to make a gallery image for room.', 'trizen-helper'); ?>
                     </span>
 
-					<?php
-                    $html   = '<div><ul class="trizen_hotel_room_img_gallery_mtb">';
-                    $hidden = array();
-                    if ( $images = get_posts( array(
-                        'post_type'      => 'attachment',
-                        'orderby'        => 'post__in',
-                        'order'          => 'ASC',
-                        'post__in'       => explode( ',', get_post_meta( get_the_ID(), 'trizen_hotel_room_image_gallery', true ) ),
-                        'numberposts'    => - 1,
-                        'post_mime_type' => 'image'
-                    ) ) ) {
-                        foreach ( $images as $image ) {
-                            $hidden[]  = $image->ID;
-                            $image_src = wp_get_attachment_image_src( $image->ID, array( 80, 80 ) );
-                            $image_src = str_replace( '-150x150', '', $image_src );
-                            $html      .= '<li data-id="' . $image->ID . '">
-                            <img src="' . $image_src[0] . '" alt="' . __( "Image", "trizen-helper" ) . '"><a href="#" class="trizen_hotel_room_img_gallery_remove">' . __( "+", "trizen-helper" ) . '</a></li>';
+                    <div>
+                        <ul class="trizen_hotel_room_img_gallery_mtb">
+                        <?php
+                        $hidden = array();
+                        if ( $images = get_posts( array(
+                            'post_type'      => 'attachment',
+                            'orderby'        => 'post__in',
+                            'order'          => 'ASC',
+                            'post__in'       => explode( ',', get_post_meta( get_the_ID(), 'trizen_hotel_room_image_gallery', true ) ),
+                            'numberposts'    => - 1,
+                            'post_mime_type' => 'image'
+                        ) ) ) {
+                            foreach ( $images as $image ) {
+                                $hidden[]  = $image->ID;
+                                $image_src = wp_get_attachment_image_src( $image->ID, array( 80, 80 ) );
+                                $image_src = str_replace( '-150x150', '', $image_src );
+                                echo      '<li data-id="' . $image->ID . '">
+                                <img src="' . $image_src[0] . '" alt="' . esc_attr__( "Image", "trizen-helper" ) . '"><a href="#" class="trizen_hotel_room_img_gallery_remove">' . esc_html__( "+", "trizen-helper" ) . '</a></li>';
+                            }
                         }
-                    }
-                    $html .= '</ul><div style="clear:both"></div></div>';
-                    $html .= '<input type="hidden" name="trizen_hotel_room_image_gallery" value="' . join( ',', $hidden ) . '" /><a href="#" class="button trizen-btn trizen_upload_hotel_room_gallery_button">' . __( "Add Images", "trizen-helper" ) . '</a>';
-
-                    echo $html;
-					?>
+                        ?>
+                        </ul>
+                        <div style="clear:both"></div>
+                    </div>
+                    <input type="hidden" name="trizen_hotel_room_image_gallery" value="<?php echo join( ',', $hidden ); ?>" />
+                    <a href="#" class="button trizen-btn trizen_upload_hotel_room_gallery_button">
+                        <?php esc_html_e("Add Images", "trizen-helper"); ?>
+                    </a>
 
                 </div>
 
@@ -90,11 +94,11 @@ $hotel_rooms = new WP_Query($default);
 					    ?>
                     <select id="trizen_hotel_room_select" class="select-to-select2" name="trizen_hotel_room_select">
                         <?php while ($hotel_rooms->have_posts()) { $hotel_rooms->the_post();
-	                        $title_one = get_the_title();
+	                        $title_one  = get_the_title();
 	                        $postid_one = get_the_ID();
 
 	                        echo '
-	                        <option value="'.$postid_one.'" '.selected( $postid_one, $hotel_rooms_select, false ).'>
+	                        <option value="'.esc_attr($postid_one).'" '.selected( $postid_one, $hotel_rooms_select, false ).'>
 	                            '.esc_html($title_one).'
                             </option>
 	                        ';
@@ -121,7 +125,7 @@ $hotel_rooms = new WP_Query($default);
 			</div>
 			<div class="tab-content" id="tab-room-price">
 				<div class="form-settings" id="room_price_setting">
-					<label for="trizen_room_price" class="title">
+					<label for="price" class="title">
 						<?php esc_html_e('Price($)', 'trizen-helper'); ?>
 					</label>
 					<span class="description">
@@ -129,8 +133,8 @@ $hotel_rooms = new WP_Query($default);
                     </span>
 					<div class="form-input">
 						<input
-							id="trizen_room_price"
-							name="trizen_room_price"
+							id="price"
+							name="price"
 							type="text"
 							value="<?php echo esc_attr($room_price); ?>"
 							placeholder="<?php esc_attr_e('Price', 'trizen-helper'); ?>" />
@@ -138,7 +142,7 @@ $hotel_rooms = new WP_Query($default);
 				</div>
 
 				<div class="form-settings" id="room_extra_services_setting">
-					<label for="trizen_room_price" class="title">
+					<label for="price" class="title">
 						<?php esc_html_e('Extra Services', 'trizen-helper'); ?>
 					</label>
 					<span class="description">
