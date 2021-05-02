@@ -63,7 +63,7 @@ class trizen_hrbf_widget extends WP_Widget {
                             </label>
                             <div class="form-group">
                                 <span class="la la-calendar form-icon"></span>
-<!--                                <input id="input-check-in" value="--><?php //echo esc_attr($start); ?><!--" class="date-range form-control" type="text" name="check_in">-->
+                                <input id="input-check-in" value="<?php echo esc_attr($start); ?>" class="date-range form-control" type="text" name="check_in">
                             </div>
                         </div>
                         <div class="input-box">
@@ -72,16 +72,8 @@ class trizen_hrbf_widget extends WP_Widget {
                             </label>
                             <div class="form-group">
                                 <span class="la la-calendar form-icon"></span>
-<!--                                <input id="input-check-out" value="--><?php //echo esc_html($end); ?><!--" class="date-range form-control" type="text" name="check_out">-->
+                                <input id="input-check-out" value="<?php echo esc_html($end); ?>" class="date-range form-control" type="text" name="check_out">
 
-
-                                <input type="hidden" class="check-in-input"
-                                       value="<?php echo esc_attr( $start ) ?>" name="check_in">
-                                <input type="hidden" class="check-out-input"
-                                       value="<?php echo esc_attr( $end ) ?>" name="check_out">
-                                <input type="text" class="check-in-out date-range form-control"
-                                       data-room-id="<?php echo esc_attr($room_id) ?>"
-                                       value="<?php echo esc_attr( $date ); ?>" name="date">
                             </div>
                         </div>
                         <!--<div class="input-box">
@@ -203,12 +195,9 @@ class trizen_hrbf_widget extends WP_Widget {
                     <?php esc_html_e( 'Book Now', 'trizen-helper' ) ?>
                     <i class="fa fa-spinner fa-spin d-none hide"></i>
                 </button>
-                <!-- <a href="cart.html" class="theme-btn text-center w-100 mb-2">
-                    <?php // esc_html_e('Book Now', 'trizen-helper'); ?>
-                </a> -->
             </div>
             <div class="mt30 message-wrapper">
-                <?php // echo STTemplate::message() ?>
+                <?php echo message() ?>
             </div>
         </form>
 

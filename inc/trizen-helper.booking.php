@@ -55,6 +55,66 @@ function dateDiff($start, $end){
 	return ($end - $start) / (60 * 60 * 24);
 }
 
+/*add_action('ts_availability_cronjob', '__cronjob_fill_availability');
+function __cronjob_fill_availability($offset=0, $limit=-1, $day=null) {
+    global $wpdb;
+    if(!$day){
+        $today=new DateTime(date('Y-m-d'));
+        $today->modify('+ 6 months');
+        $day=$today->modify('+ 1 day');
+    }
+
+    $table='ts_room_availability';
+
+    $rooms = new WP_Query(array(
+        'posts_per_page' => $limit,
+        'post_type'      => 'hotel_room',
+        'offset'         =>  $offset
+    ));
+    $insertBatch=[];
+    $ids=[];
+
+    while ($rooms->have_posts())
+    {
+        $rooms->the_post();
+        $price=get_post_meta(get_the_ID(),'price',true);
+        $parent=get_post_meta(get_the_ID(),'trizen_hotel_room_select',true);
+        $status=get_post_meta(get_the_ID(),'default_state',true);
+        $number=get_post_meta(get_the_ID(),'number_room',true);
+//        $allow_full_day=get_post_meta(get_the_ID(),'allow_full_day',true);
+        $adult_number = intval( get_post_meta( get_the_ID(), 'adult_number', true ) );
+        $child_number = intval( get_post_meta( get_the_ID(), 'children_number', true ) );
+//        $booking_period = intval(get_post_meta($parent, 'hotel_booking_period', true));
+//        if(empty($booking_period)) $booking_period = 0;
+//        if(!$allow_full_day) $allow_full_day='on';
+        $adult_price = get_post_meta( get_the_ID(), 'adult_price', true );
+        $child_price = get_post_meta( get_the_ID(), 'child_price', true );
+
+        $insertBatch[]=$wpdb->prepare("(%d,%d,%d,%d,%s,%d,%s,%d,%s,%d,%d,%d,%d,%d,%d)",$day->getTimestamp(),$day->getTimestamp(),get_the_ID(),$parent,'hotel_room',$number,$status,$price,$adult_number,$child_number,1, $adult_price, $child_price);
+
+        $ids[]=get_the_ID();
+    }
+
+    if(!empty($insertBatch))
+    {
+        $wpdb->query("INSERT IGNORE INTO {$wpdb->prefix}{$table} (check_in,check_out,post_id,parent_id,post_type,`number`,`status`,price,	adult_number,child_number,is_base, adult_price, child_price) VALUES ".implode(",\r\n",$insertBatch));
+
+        // add log
+        //ST_Cronjob_Log_Model::inst()->log('room_fill_availability_'.$day->format('Y_m_d'),json_encode($ids));
+    }
+
+    wp_reset_postdata();
+}
+
+function __changeJoinQuery($join){
+    global $wpdb;
+    $table = $wpdb->prefix . 'ts_room_availability';
+    $table2 = $wpdb->prefix . 'hotel_room';
+    $join .= " INNER JOIN {$table} as tb ON {$wpdb->prefix}posts.ID = tb.post_id";
+    return $join;
+}
+add_filter( 'posts_join', '__changeJoinQuery');*/
+
 function _getdataHotel( $post_id, $check_in, $check_out )
 {
 	global $wpdb;
@@ -67,6 +127,9 @@ function _getdataHotel( $post_id, $check_in, $check_out )
 				`check_out`,
 				`number`,
 				`price`,
+                `status`,
+                `adult_price`,
+                `child_price`
 			FROM
 				{$wpdb->prefix}ts_room_availability
 			WHERE
@@ -132,9 +195,12 @@ function getGroupDay($start = '', $end = ''){
 	return $list;
 }
 
-function getRoomPrice($room_id = ''){
+function getRoomPrice($room_id = '', $check_in = '', $check_out = '', $number_room = 1, $adult_number = '', $child_number = ''){
+    $number_room = !empty($number_room) ? $number_room : 1;
 	$room_id = intval($room_id);
-	$total_price = 0;
+    $default_state = get_post_meta($room_id, 'default_state', true);
+    if(!$default_state) $default_state = 'available';
+    $total_price = 0;
 	/**
 	 *@since 1.2.8
 	 *   sale by number day
@@ -144,7 +210,7 @@ function getRoomPrice($room_id = ''){
 
 	if(get_post_type($room_id) == 'hotel_room'){
 
-		$price_ori = floatval(get_post_meta($room_id, 'trizen_hotel_regular_price', true));
+		$price_ori = floatval(get_post_meta($room_id, 'price', true));
 
 		if($price_ori < 0) $price_ori = 0;
 
@@ -155,6 +221,7 @@ function getRoomPrice($room_id = ''){
 
 
 		// Price wiht custom price
+        $room_origin_id = post_origin($room_id, 'hotel_room');
 		$custom_price = _getdataHotel($room_id);
 
 		/*$groupday = STPrice::getGroupDay($check_in, $check_out);
@@ -835,13 +902,13 @@ function do_add_to_cart()
 	 * @since  2.1.2
 	 * @author dannie
 	 */
-	$partner_create_booking = request('add_booking_partner_field');
+	/*$partner_create_booking = request('add_booking_partner_field');
 	if ( !st_validate_guest_name( $room_id, $adult_number, 0 ) && empty($partner_create_booking)) {
 		set_message( esc_html__( 'Please enter the Guest Name', 'trizen-helper' ), 'danger' );
 		$pass_validate = false;
 
 		return false;
-	}
+	}*/
  	/* end */
 
  	/*$numberday     = dateDiff( $check_in, $check_out );
@@ -898,8 +965,6 @@ function get_cart_link() {
 
 	return apply_filters( 'ts_cart_link', $cart_link );
 }
-
-
 
 /**
  * Create new Woocommerce Product by cart item information
@@ -1140,6 +1205,136 @@ function get_cart() {
     return false;
 }
 
+
+function  _change_wc_order_item_rate($items=[]) {
+    if(!empty($items)) {
+        foreach($items as $key=>$value) {
+            $items[$key]['line_total'] = convert_money($value['line_total']);
+        }
+    }
+    return $items;
+}
+
+function format_money( $money = false, $precision = 0 )
+{
+    $money              = (float)$money;
+    $symbol             = '$';
+    /*
+    $precision          = self::get_current_currency( 'booking_currency_precision', 2 );
+    $thousand_separator = self::get_current_currency( 'thousand_separator', ',' );
+    $decimal_separator  = self::get_current_currency( 'decimal_separator', '.' );*/
+    if ( $money == 0 ) {
+        return __( "Free", 'trizen-helper' );
+    }
+
+    /*if ( $need_convert ) {
+        $money = self::convert_money( $money );
+    }*/
+
+    /*if ( is_array( $precision ) ) {
+        $precision = st()->get_option( 'booking_currency_precision', 2 );
+    }
+
+    if ( $precision ) {
+        $money = round( $money, 2 );
+    }*/
+
+    $template = 'left';
+
+    if ( !$template ) {
+        $template = 'left';
+    }
+//    if ( is_array( $decimal_separator ) ) {
+        $decimal_separator = '.';
+//    }
+//    if ( is_array( $thousand_separator ) ) {
+        $thousand_separator = ',';
+//    }
+    $money = number_format( (float)$money, (int)$precision, $decimal_separator, $thousand_separator );
+
+    switch ( $template ) {
+        case "right":
+            $money_string = $money . $symbol;
+            break;
+        case "left_space":
+            $money_string = $symbol . " " . $money;
+            break;
+        case "right_space":
+            $money_string = $money . " " . $symbol;
+            break;
+        case "left":
+        default:
+            $money_string = $symbol . $money;
+            break;
+    }
+    return $money_string;
+}
+
+
+
+function _get_order_total_price( $post_id, $st_is_woocommerce_checkout = null )
+{
+    /*if ( $st_is_woocommerce_checkout === null )
+        $st_is_woocommerce_checkout = apply_filters( 'st_is_woocommerce_checkout', false );
+    if ( $st_is_woocommerce_checkout ) {*/
+        global $wpdb;
+        $querystr   = "SELECT meta_value FROM  " . $wpdb->prefix . "woocommerce_order_itemmeta
+                WHERE
+                1=1
+                AND order_item_id = '{$post_id}'
+                AND (
+                    meta_key = '_line_total'
+                    OR meta_key = '_line_tax'
+                    OR meta_key = '_ts_booking_fee_price'
+                )
+                ";
+        $price      = $wpdb->get_results( $querystr, OBJECT );
+        $data_price = 0;
+        if ( !empty( $price ) ) {
+            foreach ( $price as $k => $v ) {
+                $data_price += $v->meta_value;
+            }
+        }
+        return $data_price;
+    /*} else {
+        $data_prices = get_post_meta( $post_id, 'data_prices', true );
+        $data_prices = isset($data_prices['price_with_tax']) ? $data_prices['price_with_tax'] : 0;
+        return $data_prices;
+        // return $data_prices['price_with_tax'];
+    }*/
+}
+
+function _get_price_item_order_woo( $order_woo_id )
+{
+    global $wpdb;
+    $querystr   = "SELECT meta_value
+            FROM  " . $wpdb->prefix . "woocommerce_order_itemmeta
+            WHERE
+            1=1
+            AND order_item_id = '{$order_woo_id}'
+            AND (
+                meta_key = '_line_total'
+                OR meta_key = '_line_tax'
+            )
+            ORDER BY meta_key DESC
+            ";
+    $price      = $wpdb->get_results( $querystr, ARRAY_A );
+    $data_price = [];
+    if ( !empty( $price ) ) {
+        $data_price = $price;
+    }
+    return $data_price;
+}
+
+
+
+add_filter('woocommerce_order_get_total', '_change_order_amount_total');
+function _change_order_amount_total($total)
+{
+    $debug = debug_backtrace();
+    if(isset($debug[0]['function']) && $debug[0]['function'] ==='_change_order_amount_total') return $total;
+    return convert_money($total);
+}
 
 
 

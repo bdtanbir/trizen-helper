@@ -1,3 +1,41 @@
+
+
+.calendar-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+}
+.calendar-wrapper .left-side {
+    width: 40%;
+}
+.calendar-wrapper .right-side {
+    width: 60%;
+    position: relative;
+}
+.calendar-wrapper .right-side .form-settings {
+    padding-left: 10px;
+    position: relative;
+}
+.calendar-wrapper .overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+}
+.calendar-wrapper .overlay.open {
+    z-index: 999;
+    background: #00000014;
+}
+.calendar-wrapper .overlay .spinner {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    -webkit-transform: translateX(-50%) translateY(-50%);
+    -ms-transform: translateX(-50%) translateY(-50%);
+    -o-transform: translateX(-50%) translateY(-50%);
+    transform: translateX(-50%) translateY(-50%);
+}
 /* classes attached to <body> */
 .fc-not-allowed,
 .fc-not-allowed .fc-event { /* override events' custom cursors */
@@ -1218,7 +1256,7 @@ A VERTICAL event
     padding-top: 5px;
     padding-bottom: 5px;
     border: 1px solid #ED8323;
-    background-color: #454341;
+    background-color: #287dfa;
 }
 .fc-day-number{
     padding-left: 5px !important;
@@ -1226,7 +1264,8 @@ A VERTICAL event
     border-color: #AAA #AAA transparent #FFF !important;
     border-width: 1px !important;
     border-style: solid !important;
-    background-color: rgb(229,229,229) !important;
+    background-color: #dcdcdc !important;
+    font-weight: 700;
 }
 .fc-unthemed .fc-divider,
 .fc-unthemed .fc-popover,

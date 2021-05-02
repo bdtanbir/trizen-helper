@@ -35,6 +35,8 @@ function trizen_helper_load()
 	require_once TRIZEN_HELPER_PATH.'custom/trizen-helper.class-admin-hotel.php';
 	require_once TRIZEN_HELPER_PATH.'custom/trizen-room-availability-model.php';
 	require_once TRIZEN_HELPER_PATH.'assets/admin/hotel-inventory/inventory.php';
+	require_once TRIZEN_HELPER_PATH.'assets/admin/inc/class.admin.room.php';
+	require_once TRIZEN_HELPER_PATH.'assets/admin/inc/database.helper.php';
 }
 
 
@@ -47,6 +49,12 @@ function trizen_helper_admin_script()
 	wp_enqueue_style(
 		'trizen-available-calendar-css',
 		TRIZEN_HELPER_URI.('assets/admin/css/trizen-available-calendar.css'),
+		'',
+		TRIZEN_HELPER_VERSION
+	);
+	wp_enqueue_style(
+		'fullcalendar-min-css',
+		TRIZEN_HELPER_URI.('assets/admin/css/fullcalendar.min.css'),
 		'',
 		TRIZEN_HELPER_VERSION
 	);
@@ -82,18 +90,18 @@ function trizen_helper_admin_script()
 	);
 	wp_enqueue_script(
 		'lib-fullcalendar-js',
-		TRIZEN_HELPER_URI . ('assets/admin/js/main.min.js'),
+		TRIZEN_HELPER_URI . ('assets/admin/js/fullcalendar.min.js'),
 		array('jquery','lib-moment.js'),
 		null,
 		true
 	);
-	wp_enqueue_script(
+	/*wp_enqueue_script(
 		'lib-locales-all-js',
 		TRIZEN_HELPER_URI . ('assets/admin/js/locales-all.js'),
 		array('jquery', 'lib-fullcalendar-js'),
 		null,
 		true
-	);
+	);*/
 	wp_register_script(
 		'bulk-calendar',
 		TRIZEN_HELPER_URI . ('assets/admin/js/bulk-calendar.js'),
@@ -150,25 +158,25 @@ function trizen_helper_admin_script()
 		'text_process_cancel' => esc_html__('You cancelled the process', 'trizen-helper'),
 		'dateformat'          => getDateFormatJs(null, 'calendar'),
 		'dateformat_convert'  => getDateFormatJs(null, 'admin-calendar'),
-		'please_waite' => __('Please wait...', 'traveler'),
-		'prev_month' => __('prev month', 'traveler'),
-		'next_month' => __('next month', 'traveler'),
+		'please_waite' => __('Please wait...', 'trizen-helper'),
+		'prev_month' => __('prev month', 'trizen-helper'),
+		'next_month' => __('next month', 'trizen-helper'),
 	]);
 
 
 	wp_localize_script('jquery', 'locale_daterangepicker', [
 		'direction' => (is_rtl() || trizen_get_option('right_to_left') == 'on')? 'rtl': 'ltr',
-		'applyLabel' => __('Apply', 'traveler'),
-		'cancelLabel' => __('Cancel', 'traveler'),
-		'fromLabel' => __('From', 'traveler'),
-		'toLabel' => __('To', 'traveler'),
-		'customRangeLabel' => __('Custom', 'traveler'),
-		'daysOfWeek' =>  [__('Su', 'traveler'), __('Mo', 'traveler'), __('Tu', 'traveler'), __('We', 'traveler'), __('Th', 'traveler'), __('Fr', 'traveler'), __('Sa', 'traveler')],
-		'monthNames' => [__('January', 'traveler'), __('February', 'traveler'), __('March', 'traveler'), __('April', 'traveler'), __('May', 'traveler'), __('June', 'traveler'), __('July', 'traveler'), __('August', 'traveler'), __('September', 'traveler'), __('October', 'traveler'), __('November', 'traveler'), __('December', 'traveler')],
+		'applyLabel' => __('Apply', 'trizen-helper'),
+		'cancelLabel' => __('Cancel', 'trizen-helper'),
+		'fromLabel' => __('From', 'trizen-helper'),
+		'toLabel' => __('To', 'trizen-helper'),
+		'customRangeLabel' => __('Custom', 'trizen-helper'),
+		'daysOfWeek' =>  [__('Su', 'trizen-helper'), __('Mo', 'trizen-helper'), __('Tu', 'trizen-helper'), __('We', 'trizen-helper'), __('Th', 'trizen-helper'), __('Fr', 'trizen-helper'), __('Sa', 'trizen-helper')],
+		'monthNames' => [__('January', 'trizen-helper'), __('February', 'trizen-helper'), __('March', 'trizen-helper'), __('April', 'trizen-helper'), __('May', 'trizen-helper'), __('June', 'trizen-helper'), __('July', 'trizen-helper'), __('August', 'trizen-helper'), __('September', 'trizen-helper'), __('October', 'trizen-helper'), __('November', 'trizen-helper'), __('December', 'trizen-helper')],
 		'firstDay' => (int)trizen_get_option('start_week', 0),
-		'today' => __('Today', 'traveler'),
-		'please_waite' => __('Please wait...', 'traveler'),
-		'buttons' => __('buttons', 'traveler'),
+		'today' => __('Today', 'trizen-helper'),
+		'please_waite' => __('Please wait...', 'trizen-helper'),
+		'buttons' => __('buttons', 'trizen-helper'),
 	]);
 }
 add_action('admin_enqueue_scripts', 'trizen_helper_admin_script');

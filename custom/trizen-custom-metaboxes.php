@@ -128,6 +128,9 @@ if(!function_exists('trizen_register_meta_boxes')) {
 		if (isset($_POST['trizen_hotel_room_select'])) {
 			update_post_meta( $post_id, 'trizen_hotel_room_select', $_POST['trizen_hotel_room_select']);
 		}
+		if (isset($_POST['default_state'])) {
+			update_post_meta( $post_id, 'default_state', $_POST['default_state']);
+		}
 
 		$fields = [
 			'price',

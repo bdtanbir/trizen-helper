@@ -5,6 +5,24 @@ global $post;
 
 <div class="calendar-wrapper" data-post-id="<?php echo esc_attr($post->ID); ?>">
     <div class="left-side">
+        <div class="form-settings default-calendar-state">
+            <h1 class="title">
+                <?php esc_html_e('Default calendar state', 'trizen-helper'); ?>
+            </h1>
+            <?php
+            $default_state = get_post_meta( get_the_ID(), 'default_state', true );
+            $avl = 'available';
+            $not_avl = 'not_available';
+            ?>
+            <select name="default_state" id="default_state">
+                <option value="<?php echo esc_attr($avl); ?>" <?php echo selected( $avl, $default_state, false ); ?>>
+                    <?php esc_html_e('Available', 'trizen-helper'); ?>
+                </option>
+                <option value="<?php echo esc_attr($not_avl); ?>" <?php echo selected( $not_avl, $default_state, false ); ?>>
+                    <?php esc_html_e('Not Available', 'trizen-helper'); ?>
+                </option>
+            </select>
+        </div>
         <div class="calendar-form form-settings">
             <h1 class="title">
                 <?php esc_html_e('Calendar', 'trizen-helper'); ?>
