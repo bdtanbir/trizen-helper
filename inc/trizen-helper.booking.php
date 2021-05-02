@@ -144,6 +144,8 @@ function _getdataHotel( $post_id, $check_in, $check_out )
 
 function getRoomPriceOnlyCustomPrice($room_id = '', $check_in = '', $check_out = '', $number_room = 1, $adult_number = '', $child_number = ''){
 	$room_id = intval($room_id);
+    $default_state = get_post_meta($room_id, 'default_state', true);
+    if(!$default_state) $default_state = 'available';
 
 	$hotel_id = get_post_meta($room_id, 'trizen_hotel_room_select', true);
 
@@ -159,19 +161,27 @@ function getRoomPriceOnlyCustomPrice($room_id = '', $check_in = '', $check_out =
 			if(is_array($custom_price) && count($custom_price)){
 				$in_date = false;
 				$price = 0;
+                $status = 'available';
 				foreach($custom_price as $key => $val){
 					if($i >= $val->check_in && $i <= $val->check_out){
+                        $status = $val->status;
 						$price = floatval($val->price);
 						if(!$in_date) $in_date = true;
 					}
 				}
 				if($in_date){
-					$price_key = floatval($price);
+                    if($status == 'available'){
+                        $price_key = floatval($price);
+                    }
 				}else{
-					$price_key = $price_ori;
+                    if($default_state == 'available') {
+                        $price_key = $price_ori;
+                    }
 				}
 			}else{
-				$price_key = $price_ori;
+                if($default_state == 'available') {
+                    $price_key = $price_ori;
+                }
 			}
 			if($i < $check_out){
 				$total_price += $price_key;
@@ -1215,7 +1225,7 @@ function  _change_wc_order_item_rate($items=[]) {
     return $items;
 }
 
-function format_money( $money = false, $precision = 0 )
+function format_money( $money = false, $need_convert = true, $precision = 0 )
 {
     $money              = (float)$money;
     $symbol             = '$';
@@ -1227,9 +1237,9 @@ function format_money( $money = false, $precision = 0 )
         return __( "Free", 'trizen-helper' );
     }
 
-    /*if ( $need_convert ) {
-        $money = self::convert_money( $money );
-    }*/
+    if ( $need_convert ) {
+        $money = convert_money( $money );
+    }
 
     /*if ( is_array( $precision ) ) {
         $precision = st()->get_option( 'booking_currency_precision', 2 );
