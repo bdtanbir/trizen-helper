@@ -226,6 +226,31 @@ $hotel_rooms = new WP_Query($default);
                         </button>
                     </div>
 				</div>
+
+                <div class="form-settings" id="room_price_setting">
+                    <label for="price" class="title">
+                        <?php esc_html_e('Discount Type', 'trizen-helper'); ?>
+                    </label>
+                    <span class="description">
+                        <?php esc_html_e('This only use for discount by number of days. Calculation by: % or fixed', 'trizen-helper'); ?>
+                    </span>
+                    <?php
+                    global $post;
+                    $meta = get_post_meta( $post->ID );
+//                    $discount_type = get_post_meta(get_the_ID(), 'discount_type_no_day', true);
+                    $discount_type_no_day = ( isset( $meta['discount_type_no_day'][0] ) && '' !== $meta['discount_type_no_day'][0] ) ? $meta['discount_type_no_day'][0] : '';
+                    $discount_precent = 'percent';
+                    $discount_fixed = 'fixed';
+                    ?>
+                    <select name="discount_type_no_day" id="discount_type_no_day">
+                        <option value="percent" <?php selected( $discount_type_no_day, 'percent', true); ?>>
+                            Percent (%)
+                        </option>
+                        <option value="fixed" <?php selected( $discount_type_no_day, 'fixed', true); ?>>
+                            Amount
+                        </option>
+                    </select>
+                </div>
 			</div>
             <div class="tab-content" id="tab-room-facility">
                 <div class="form-settings" id="room_number_of_beds_setting">

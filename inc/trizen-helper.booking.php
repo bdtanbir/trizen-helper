@@ -115,6 +115,27 @@ function __changeJoinQuery($join){
 }
 add_filter( 'posts_join', '__changeJoinQuery');*/
 
+add_filter('ts_cart_total_with_out_tax_for_coupon', 're_calculator_totla_price_for_coupon');
+function re_calculator_totla_price_for_coupon($total){
+    $total = getTotal(false, true, true);
+    return $total;
+}
+
+function get_total_with_out_tax_for_coupon( $deposit_calculator = false ) {
+    if ( isset( $_COOKIE['ts_cart'] ) ) {
+        $cart = unserialize(stripslashes(gzuncompress(base64_decode($_COOKIE['ts_cart']))));
+
+        if ( ! empty( $cart ) ) {
+            $total = getTotal();
+            $total = apply_filters( 'ts_cart_total_with_out_tax_for_coupon', $total );
+            return $total;
+        }
+    } else {
+        return 0;
+    }
+
+}
+
 function _getdataHotel( $post_id, $check_in, $check_out )
 {
 	global $wpdb;
@@ -141,6 +162,19 @@ function _getdataHotel( $post_id, $check_in, $check_out )
 	return $results;
 }
 
+function convert_sale_price_by_day( $room_id ){
+    $convert = array();
+    $list_sale_date = get_post_meta($room_id, 'discount_by_day', true);
+    if( !empty( $list_sale_date ) && is_array( $list_sale_date ) ){
+        foreach( $list_sale_date as $key => $item ){
+            if( !empty( $item['number_day']) && !empty( $item['discount']) ){
+                $convert[ (int)$item['number_day'] ] = (float)$item['discount'];
+            }
+        }
+    }
+    krsort($convert);
+    return $convert;
+}
 
 function getRoomPriceOnlyCustomPrice($room_id = '', $check_in = '', $check_out = '', $number_room = 1, $adult_number = '', $child_number = ''){
 	$room_id = intval($room_id);
@@ -232,9 +266,9 @@ function getRoomPrice($room_id = '', $check_in = '', $check_out = '', $number_ro
 
 		// Price wiht custom price
         $room_origin_id = post_origin($room_id, 'hotel_room');
-		$custom_price = _getdataHotel($room_id);
+		$custom_price = _getdataHotel($room_origin_id, $check_in, $check_out);
 
-		/*$groupday = STPrice::getGroupDay($check_in, $check_out);
+		$groupday = getGroupDay($check_in, $check_out);
 
 		if(is_array($groupday) && count($groupday)){
 			foreach($groupday as $key => $date){
@@ -250,23 +284,27 @@ function getRoomPrice($room_id = '', $check_in = '', $check_out = '', $number_ro
 					}
 				}
 
-				$price_tmp = $price_ori;
+                if($in_date){
+                    if($status = 'available'){
+                        $price_tmp = $price;
+                    }
+                }else{
+                    if($default_state == 'available'){
+                        $price_tmp = $price_ori;
+                    }
+                }
 
 				$total_price += $price_tmp;
 				$sale_by_day[] = $price_tmp;
 
 			}
 
-			$convert = self::convert_sale_price_by_day( $room_id );
-
+			$convert = convert_sale_price_by_day( $room_id );
 			$discount_type = get_post_meta( $room_id, 'discount_type_no_day', true);
 			if( !$discount_type ){ $discount_type = 'percent'; }
-
 			if( !empty( $convert ) ){
 				$total_price = 0;
-
-				$total_day = STDate::dateDiff(date('Y-m-d', $check_in), date('Y-m-d', $check_out));
-
+				$total_day = dateDiff(date('Y-m-d', $check_in), date('Y-m-d', $check_out));
 				while( !empty( $convert ) ){
 					foreach( $convert as $key => $discount ){
 						if( $total_day - $key >= 0 ){
@@ -299,7 +337,8 @@ function getRoomPrice($room_id = '', $check_in = '', $check_out = '', $number_ro
 				$total_price -= $total_price * ( $discount_rate / 100 );
 				return $total_price;
 			}
-		}*/
+		}
+        $total_price  = $total_price * $number_room;
 		$total_price -= $total_price * ($discount_rate / 100);
 		return $total_price;
 	}
@@ -332,7 +371,7 @@ function get_carts() {
 	//return isset( $_COOKIE['ts_cart'] ) ? unserialize(stripslashes($_COOKIE['ts_cart'])) : false;
 }
 
-function getExtraPrice($number_room = 0){
+function getExtraPrice($room_id = '', $extra_price = array(), $number_room = 0, $numberday = 0){
 	$total_price = 0;
 	if(isset($extra_price['value']) && is_array($extra_price['value']) && count($extra_price['value'])){
 		foreach($extra_price['value'] as $name => $number){
@@ -595,17 +634,17 @@ function getTotal($div_room = false, $disable_coupon = false, $disable_deposit =
 	 		}*/
 	 		if(get_post_type($post_id) == 'ts_hotel' or get_post_type($post_id) == 'hotel_room'){
 	 			$room_id = intval($val['data']['room_id']);
-//	 			$check_in = $val['data']['check_in'];
-//	 			$check_out = $val['data']['check_out'];
+	 			$check_in = $val['data']['check_in'];
+	 			$check_out = $val['data']['check_out'];
 	 			$number_room = intval($val['number']);
-//	 			$numberday = STDate::dateDiff($check_in, $check_out);
-//	 			$adult_number = intval($val['data']['adult_number']);
-//	 			$child_number = intval($val['data']['child_number']);
+	 			$numberday = dateDiff($check_in, $check_out);
+	 			$adult_number = intval($val['data']['adult_number']);
+	 			$child_number = intval($val['data']['child_number']);
 
-//	 			$sale_price = STPrice::getRoomPrice($room_id, strtotime($check_in), strtotime($check_out), $number_room, $adult_number, $child_number);
+	 			$sale_price = getRoomPrice($room_id, strtotime($check_in), strtotime($check_out), $number_room, $adult_number, $child_number);
 	 			$sale_price = getRoomPrice($room_id);
 	 			$extras = isset($val['data']['extras']) ? $val['data']['extras'] : array();
-	 			$extra_price = getExtraPrice();
+	 			$extra_price = getExtraPrice($room_id, $extras, $number_room, $numberday);
 
 	 			$price_with_tax = getPriceWithTax($sale_price + $extra_price);
 
@@ -778,6 +817,51 @@ function convertDateFormat($date) {
 		return $default;
 	}
 }*/
+
+function get_discount_rate($post_id = '', $check_in = ''){
+    $post_type = get_post_type($post_id);
+    $discount_text = 'discount' ;
+    if($post_type =='st_hotel' or $post_type =='st_rental' or $post_type =='hotel_room') $discount_text = 'discount_rate';
+    $tour_price_by = '';
+    if($post_type == 'st_tours'){
+        $tour_price_by = get_post_meta($post_id, 'tour_price_by', true);
+    }
+    $discount_type = get_post_meta( $post_id, 'discount_type' , true );
+    $discount_rate = floatval(get_post_meta($post_id,$discount_text,true));
+    if($discount_rate < 0) $discount_rate = 0;
+    if($discount_rate > 100 && $discount_type == 'percent') $discount_rate = 100;
+    $is_sale_schedule = get_post_meta($post_id, 'is_sale_schedule', true);
+    if($is_sale_schedule == false || empty($is_sale_schedule)) $is_sale_schedule = 'off';
+    if($is_sale_schedule == 'on'){
+        if($post_type == 'st_tours'){
+            if($tour_price_by != 'fixed_depart'){
+                $sale_from = intval(strtotime(get_post_meta($post_id, 'sale_price_from',true)));
+                $sale_to = intval(strtotime(get_post_meta($post_id, 'sale_price_to',true)));
+                if($sale_from > 0 && $sale_to > 0 && $sale_from < $sale_to){
+                    if($check_in >= $sale_from && $check_in <= $sale_to){
+                        return $discount_rate ;
+                    }else {
+                        return 0 ;
+                    }
+                }
+            }
+        }else{
+            $sale_from = intval(strtotime(get_post_meta($post_id, 'sale_price_from',true)));
+            $sale_to = intval(strtotime(get_post_meta($post_id, 'sale_price_to',true)));
+            if($sale_from > 0 && $sale_to > 0 && $sale_from < $sale_to){
+                if($check_in >= $sale_from && $check_in <= $sale_to){
+                    return $discount_rate ;
+                }else {
+                    return 0 ;
+                }
+            }
+        }
+
+    }else{
+        return $discount_rate;
+    }
+}
+
 function do_add_to_cart()
 {
  	$pass_validate = true;
@@ -824,8 +908,8 @@ function do_add_to_cart()
 	$adult_number = intval( request( 'trizen_room_facility_num_of_adults', '' ) );
 	if ( $adult_number <= 0 ) $adult_number = 1;
 
-	// 	$child_number = intval( request( 'child_number', '' ) );
-	// 	if ( $child_number <= 0 ) $child_number = 0;
+	 	$child_number = intval( request( 'child_number', '' ) );
+	 	if ( $child_number <= 0 ) $child_number = 0;
 
 //	$checkin_ymd  = date( 'Y-m-d', strtotime( $check_in ) );
 //	$checkout_ymd = date( 'Y-m-d', strtotime( $check_out ) );
@@ -856,7 +940,7 @@ function do_add_to_cart()
 	if ( $adult == 0 ) {
 		$adult = 1;
 	}
-	// 	$children = intval( get_post_meta( $room_origin, 'children_number', true ) );
+	 	$children = intval( get_post_meta( $room_origin, 'children_number', true ) );
 
 	if ( $room_num_search > $num_room ) {
 		set_message( __( 'Max of rooms are incorrect.', 'trizen-helper' ), 'danger' );
@@ -870,12 +954,12 @@ function do_add_to_cart()
 
 		return false;
 	}
-	/*if ( $child_number > $children ) {
+	if ( $child_number > $children ) {
 		set_message( __( 'Number of children in the room are incorrect.', 'trizen-helper' ), 'danger' );
 		$pass_validate = false;
 
 		return false;
-	}*/
+	}
 	$today = date( 'm/d/Y' );
 
 	$period = dateDiff( $today, $check_in );
@@ -921,30 +1005,32 @@ function do_add_to_cart()
 	}*/
  	/* end */
 
- 	/*$numberday     = dateDiff( $check_in, $check_out );
+ 	$numberday     = dateDiff( $check_in, $check_out );
  	if ( get_post_meta( $room_origin, 'price_by_per_person', true ) == 'on' ) {
  		$item_price = floatval( get_post_meta( $room_origin, 'adult_price', true ) ) * floatval( $adult_number ) * $numberday + floatval( get_post_meta( $room_origin, 'child_price', true ) ) * floatval( $child_number ) * $numberday;
- 	} else {*/
+ 	} else {
  		$item_price = floatval( get_post_meta( $room_origin, 'price', true ) );
- 	/*}*/
- 	// Extra price added in the new version 1.1.9
+ 	}
+ 	// Extra price added
  	$extras = request( 'extra_price', [] );
 
- 	$extra_price   = '4';
- 	$sale_price    = '3';
+ 	$extra_price   = getExtraPrice( $room_origin, $extras, $room_num_search, $numberday );
+ 	$sale_price    = getRoomPrice( $room_origin, strtotime( $check_in ), strtotime( $check_out ), $room_num_search, $adult_number, $child_number );
+
+    $discount_rate = get_discount_rate( $room_origin, strtotime( $check_in ) );
  	$data          = [
  		'item_price'      => $item_price,
- 		// 'ori_price'       => $sale_price + $extra_price,
+        'ori_price'       => $sale_price + $extra_price,
  		'check_in'        => $check_in,
  		'check_out'       => $check_out,
  		'room_num_search' => $room_num_search,
  		'room_id'         => $room_id,
  		'adult_number'    => $adult_number,
-// 		'child_number'    => $child_number,
+ 		'child_number'    => $child_number,
  		'extras'          => $extras,
  		'extra_price'     => $extra_price,
 // 		'commission'      => TravelHelper::get_commission( $item_id ),
-// 		'discount_rate'   => $discount_rate,
+ 		'discount_rate'   => $discount_rate,
  		'guest_title'     => post( 'guest_title' ),
  		'guest_name'      => post( 'guest_name' ),
  	];
@@ -1216,6 +1302,7 @@ function get_cart() {
 }
 
 
+//add_filter('woocommerce_order_get_items', '_change_wc_order_item_rate');
 function  _change_wc_order_item_rate($items=[]) {
     if(!empty($items)) {
         foreach($items as $key=>$value) {

@@ -68,31 +68,6 @@ function _delete_items()
 
 }
 
-
-function load_view($slug, $name = false, $data = []) {
-
-	extract($data);
-
-	if ($name) {
-		$slug = $slug . '-' . $name;
-	}
-
-	//Find template in folder inc/admin/views/
-	$template = locate_template('inc/admin/views/' . $slug . '.php');
-
-
-	//If file not found
-	if (is_file($template)) {
-		ob_start();
-
-		include $template;
-
-		$data = @ob_get_clean();
-
-		return $data;
-	}
-}
-
 function get_history_bookings($type = "ts_hotel", $offset, $limit, $author = false) {
 	global $wpdb;
 
@@ -137,7 +112,7 @@ function get_history_bookings($type = "ts_hotel", $offset, $limit, $author = fal
             SELECT SQL_CALC_FOUND_ROWS  {$wpdb->prefix}posts.* from {$wpdb->prefix}ts_order_item_meta
             {$join}
             INNER JOIN {$wpdb->prefix}posts ON {$wpdb->prefix}posts.ID = {$wpdb->prefix}ts_order_item_meta.order_item_id
-            WHERE 1=1 AND st_booking_post_type = '{$type}' AND type='normal_booking' {$where}
+            WHERE 1=1 AND ts_booking_post_type = '{$type}' AND type='normal_booking' {$where}
             ORDER BY {$wpdb->prefix}ts_order_item_meta.id DESC
             LIMIT {$offset},{$limit}
             ";
