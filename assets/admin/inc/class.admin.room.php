@@ -9,6 +9,8 @@ if ( !class_exists( 'TSAdminRoom' ) ) {
         static $_table_version = "1.3.6";
         static $booking_page;
         protected $post_type = 'hotel_room';
+        protected static $_cachedAlCurrency = [];
+//        private static $_booking_primary_currency;
 
         protected $order_id=false;
 
@@ -81,10 +83,10 @@ if ( !class_exists( 'TSAdminRoom' ) ) {
                     'type' => 'varchar',
                     'length' => 255
                 ],
-                /*'discount_rate' => [
+                'discount_rate' => [
                     'type' => 'varchar',
                     'length' => 255
-                ],*/
+                ],
                 'adult_number' => [
                     'type' => 'varchar',
                     'length' => 255
@@ -192,8 +194,80 @@ if ( !class_exists( 'TSAdminRoom' ) ) {
 
         }
 
-        static function inst()
-        {
+
+
+        static function get_current_currency( $need = false ){
+            //Check session of user first
+            if ( isset( $_SESSION[ 'currency' ][ 'name' ] ) ) {
+                $name = $_SESSION[ 'currency' ][ 'name' ];
+                if ( $session_currency = self::find_currency( $name ) ) {
+                    if ( $need and isset( $session_currency[ $need ] ) ) return $session_currency[ $need ];
+                    return $session_currency;
+                }
+            }
+            return self::get_default_currency( $need );
+        }
+
+
+        /**
+         * return Default Currency
+         * */
+        static function get_default_currency( $need = false ){
+            //If user dont set the primary currency, we take the first of list all currency
+            $all_currency = self::get_currency();
+
+
+            if ( isset( $all_currency[ 0 ] ) ) {
+                if ( $need and isset( $all_currency[ 0 ][ $need ] ) ) return $all_currency[ 0 ][ $need ];
+
+                return $all_currency[ 0 ];
+            }
+        }
+
+
+        /**
+         * Return All Currencies
+         *
+         *
+         * */
+        static function get_currency( $theme_option = false ){
+            $all = self::$_cachedAlCurrency;
+            //return array for theme options choise
+            if ( $theme_option ) {
+                $choice = [];
+                if ( !empty( $all ) and is_array( $all ) ) {
+                    foreach ( $all as $key => $value ) {
+                        $choice[] = [
+                            'label' => $value[ 'title' ],
+                            'value' => $value[ 'name' ]
+                        ];
+                    }
+                }
+                return $choice;
+            }
+            return $all;
+        }
+
+
+        /**
+         * @todo Find currency by name, return false if not found
+         * */
+        static function find_currency( $currency_name, $compare_key = 'name' ) {
+            $currency_name = esc_attr( $currency_name );
+
+            $all_currency = self::$_cachedAlCurrency;
+            if ( !empty( $all_currency ) ) {
+                foreach ( $all_currency as $key ) {
+                    if ( $key[ $compare_key ] == $currency_name ) {
+                        return $key;
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        static function inst() {
             if ( !self::$_inst ) {
                 self::$_inst = new self();
             }

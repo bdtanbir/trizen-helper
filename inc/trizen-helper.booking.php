@@ -373,15 +373,17 @@ function get_carts() {
 
 function getExtraPrice($room_id = '', $extra_price = array(), $number_room = 0, $numberday = 0){
 	$total_price = 0;
-	if(isset($extra_price['value']) && is_array($extra_price['value']) && count($extra_price['value'])){
-		foreach($extra_price['value'] as $name => $number){
-			$price_item = floatval($extra_price['price'][$name]);
+    $price_unit = get_post_meta($room_id, 'extra_price_unit', true);
+//    $extra_price = get_post_meta($room_id, 'trizen_hotel_extra_services_data_group', true);
+//	if(isset($extra_price) && is_array($extra_price) && count($extra_price)){
+		foreach($extra_price as $number){
+			$price_item = $number['trizen_hotel_room_extra_service_price'];
 			if($price_item <= 0) $price_item = 0;
-			$number_item = intval($extra_price['value'][$name]);
-			if($number_item <= 0) $number_item = 0;
-			$total_price += $price_item * $number_item;
+//			$number_item = intval($number['trizen_hotel_room_extra_service_price']);
+//			if($number_item <= 0) $number_item = 0;
+			$total_price += $price_item;
 		}
-	}
+//	}
 	return $total_price * $number_room;
 }
 
@@ -558,51 +560,15 @@ function get_current_available_calendar($post_id) {
 	return date('Y-m-d');
 }
 
-/*function convert_money( $money = false, $rate = false, $round = true )
-{
-	if ( !$money ) $money = 0;
-	if ( !$rate ) {
-		$current_rate = get_current_currency( 'rate' );
-		$current      = get_current_currency( 'name' );
-
-		$default = self::get_default_currency( 'name' );
-
-		if ( $current != $default )
-			$money = $money * $current_rate;
-	} else {
-		$current_rate = $rate;
-		$money        = $money * $current_rate;
-	}
-	if ( $round ) {
-		return round( (float)$money, 2 );
-	} else {
-		return (float)$money;
-	}
-}*/
-
-
-/*function get_current_currency( $need = false )
-{
-
-	//Check session of user first
-
-	if ( isset( $_SESSION[ 'currency' ][ 'name' ] ) ) {
-		$name = $_SESSION[ 'currency' ][ 'name' ];
-
-		if ( $session_currency = self::find_currency( $name ) ) {
-			if ( $need and isset( $session_currency[ $need ] ) ) return $session_currency[ $need ];
-
-			return $session_currency;
-		}
-	}
-
-	return self::get_default_currency( $need );
-}*/
-
 function convert_money($money = false, $rate = false, $round = true) {
 	if (!$money)
 		$money = 0;
 	if (!$rate) {
+        /*$current_rate = TSAdminRoom::get_current_currency( 'rate' );
+        $current      = TSAdminRoom::get_current_currency( 'name' );
+
+        $default = TSAdminRoom::get_default_currency( 'name' );*/
+
 		$current_rate = '$';
 		$current = '$';
 
@@ -642,7 +608,6 @@ function getTotal($div_room = false, $disable_coupon = false, $disable_deposit =
 	 			$child_number = intval($val['data']['child_number']);
 
 	 			$sale_price = getRoomPrice($room_id, strtotime($check_in), strtotime($check_out), $number_room, $adult_number, $child_number);
-	 			$sale_price = getRoomPrice($room_id);
 	 			$extras = isset($val['data']['extras']) ? $val['data']['extras'] : array();
 	 			$extra_price = getExtraPrice($room_id, $extras, $number_room, $numberday);
 
@@ -821,7 +786,7 @@ function convertDateFormat($date) {
 function get_discount_rate($post_id = '', $check_in = ''){
     $post_type = get_post_type($post_id);
     $discount_text = 'discount' ;
-    if($post_type =='st_hotel' or $post_type =='st_rental' or $post_type =='hotel_room') $discount_text = 'discount_rate';
+    if($post_type =='ts_hotel' or $post_type =='st_rental' or $post_type =='hotel_room') $discount_text = 'discount_rate';
     $tour_price_by = '';
     if($post_type == 'st_tours'){
         $tour_price_by = get_post_meta($post_id, 'tour_price_by', true);
@@ -910,6 +875,14 @@ function do_add_to_cart()
 
 	 	$child_number = intval( request( 'child_number', '' ) );
 	 	if ( $child_number <= 0 ) $child_number = 0;
+
+    /*$trizen_hotel_room_extra_service_data    = get_post_meta(get_the_ID(), 'trizen_hotel_extra_services_data_group', true);
+    if($trizen_hotel_room_extra_service_data) {
+        foreach ($trizen_hotel_room_extra_service_data as $key => $item) {
+            $extra_price_title = strtolower(str_replace(' ', '-', $item['trizen_hotel_room_extra_service_title']));
+            $extra_service_price = request($extra_price_title, '');
+        }
+    }*/
 
 //	$checkin_ymd  = date( 'Y-m-d', strtotime( $check_in ) );
 //	$checkout_ymd = date( 'Y-m-d', strtotime( $check_out ) );
@@ -1012,7 +985,8 @@ function do_add_to_cart()
  		$item_price = floatval( get_post_meta( $room_origin, 'price', true ) );
  	}
  	// Extra price added
- 	$extras = request( 'extra_price', [] );
+ 	$extras = request( 'trizen_hotel_extra_services_data_group', [] );
+// 	$extras = get_post_meta(get_the_ID(), 'trizen_hotel_extra_services_data_group', true);
 
  	$extra_price   = getExtraPrice( $room_origin, $extras, $room_num_search, $numberday );
  	$sale_price    = getRoomPrice( $room_origin, strtotime( $check_in ), strtotime( $check_out ), $room_num_search, $adult_number, $child_number );
@@ -1315,11 +1289,14 @@ function  _change_wc_order_item_rate($items=[]) {
 function format_money( $money = false, $need_convert = true, $precision = 0 )
 {
     $money              = (float)$money;
-    $symbol             = '$';
-    /*
-    $precision          = self::get_current_currency( 'booking_currency_precision', 2 );
-    $thousand_separator = self::get_current_currency( 'thousand_separator', ',' );
-    $decimal_separator  = self::get_current_currency( 'decimal_separator', '.' );*/
+    /*$symbol             = TSAdminRoom::get_current_currency( 'symbol' );
+    $precision          = TSAdminRoom::get_current_currency( 'booking_currency_precision', 2 );
+    $thousand_separator = TSAdminRoom::get_current_currency( 'thousand_separator', ',' );
+    $decimal_separator  = TSAdminRoom::get_current_currency( 'decimal_separator', '.' );*/
+    $symbol             = get_woocommerce_currency_symbol();
+    $precision          = TSAdminRoom::get_current_currency( 'booking_currency_precision', 2 );
+    $thousand_separator = TSAdminRoom::get_current_currency( 'thousand_separator', ',' );
+    $decimal_separator  = TSAdminRoom::get_current_currency( 'decimal_separator', '.' );
     if ( $money == 0 ) {
         return __( "Free", 'trizen-helper' );
     }
@@ -1330,23 +1307,24 @@ function format_money( $money = false, $need_convert = true, $precision = 0 )
 
     /*if ( is_array( $precision ) ) {
         $precision = st()->get_option( 'booking_currency_precision', 2 );
-    }
+    }*/
 
     if ( $precision ) {
         $money = round( $money, 2 );
-    }*/
+    }
 
     $template = 'left';
 
     if ( !$template ) {
         $template = 'left';
     }
-//    if ( is_array( $decimal_separator ) ) {
-        $decimal_separator = '.';
-//    }
-//    if ( is_array( $thousand_separator ) ) {
+
+    if ( is_array( $decimal_separator ) ) {
+        $decimal_separator =  '.';
+    }
+    if ( is_array( $thousand_separator ) ) {
         $thousand_separator = ',';
-//    }
+    }
     $money = number_format( (float)$money, (int)$precision, $decimal_separator, $thousand_separator );
 
     switch ( $template ) {
@@ -1369,8 +1347,7 @@ function format_money( $money = false, $need_convert = true, $precision = 0 )
 
 
 
-function _get_order_total_price( $post_id, $st_is_woocommerce_checkout = null )
-{
+function _get_order_total_price( $post_id, $st_is_woocommerce_checkout = null ) {
     /*if ( $st_is_woocommerce_checkout === null )
         $st_is_woocommerce_checkout = apply_filters( 'st_is_woocommerce_checkout', false );
     if ( $st_is_woocommerce_checkout ) {*/

@@ -39,23 +39,29 @@ class trizen_hrbf_widget extends WP_Widget {
 		while ( have_posts() ): the_post();
 		$room_id   = get_the_ID();
 		$hotel_id  = get_post_meta( get_the_ID(), 'trizen_hotel_room_select', true );
+
+        $adult_number = request( 'adult_number', 1 );
+        $child_number = request( 'child_number', '' );
+
+        $current_calendar = get_current_available_calendar(get_the_ID());
+        $current_calendar_reverb = date('m/d/Y', strtotime($current_calendar));
+        $start          = get( 'start', date( getDateFormat(), strtotime($current_calendar)) );
+        $end            = get( 'end', date( getDateFormat(), strtotime( "+ 1 day", strtotime($current_calendar)) ) );
+        $date           = get( 'date', date( 'd/m/Y h:i a', strtotime($current_calendar) ) . '-' . date( 'd/m/Y h:i a', strtotime( '+1 day', strtotime($current_calendar) ) ) );
+        $room_num_search = (int)get( 'room_num_search', 1 );
+        if ( $room_num_search <= 0 ) $room_num_search = 1;
+
+
+        $sale_price  = getRoomPrice( $room_id, strtotime( $start ), strtotime( $end ), $room_num_search, $adult_number, $child_number );
+            $numberday = dateDiff( $start, $end );
         ?>
         <form id="form-booking-inpage single-room-form" class="form single-room-form hotel-room-booking-form" method="post">
             <input name="action" value="hotel_add_to_cart" type="hidden">
             <input name="item_id" value="<?php echo esc_attr($hotel_id); ?>" type="hidden">
             <input name="room_id" value="<?php echo esc_attr($room_id); ?>" type="hidden">
-            <?php
-            $current_calendar = get_current_available_calendar(get_the_ID());
-            $current_calendar_reverb = date('m/d/Y', strtotime($current_calendar));
-            $start          = get( 'start', date( getDateFormat(), strtotime($current_calendar)) );
-            $end            = get( 'end', date( getDateFormat(), strtotime( "+ 1 day", strtotime($current_calendar)) ) );
-            $date           = get( 'date', date( 'd/m/Y h:i a', strtotime($current_calendar) ) . '-' . date( 'd/m/Y h:i a', strtotime( '+1 day', strtotime($current_calendar) ) ) );
-            ?>
-
-
 
             <div class="sidebar-widget-item">
-                <div class="contact-form-action">
+                <div class="contact-form-action"  data-availability-date="<?php echo esc_attr($current_calendar_reverb); ?>">
                     <!-- <form action="#"> -->
                         <div class="input-box">
                             <label class="label-text" for="input-check-in">
@@ -63,7 +69,7 @@ class trizen_hrbf_widget extends WP_Widget {
                             </label>
                             <div class="form-group">
                                 <span class="la la-calendar form-icon"></span>
-                                <input id="input-check-in" value="<?php echo esc_attr($start); ?>" class="date-range form-control" type="text" name="check_in">
+                                <input id="input-check-in" value="<?php echo esc_attr($start); ?>" class="date-range form-control" type="text" name="check_in" readonly>
                             </div>
                         </div>
                         <div class="input-box">
@@ -72,7 +78,7 @@ class trizen_hrbf_widget extends WP_Widget {
                             </label>
                             <div class="form-group">
                                 <span class="la la-calendar form-icon"></span>
-                                <input id="input-check-out" value="<?php echo esc_html($end); ?>" class="date-range form-control" type="text" name="check_out">
+                                <input id="input-check-out" value="<?php echo esc_html($end); ?>" class="date-range form-control" type="text" name="check_out" readonly>
 
                             </div>
                         </div>
@@ -91,7 +97,7 @@ class trizen_hrbf_widget extends WP_Widget {
                                             <?php /*while($room_query->have_posts()) { $room_query->the_post();
                                                 $title_one = get_the_title();
                                                 $postid_one = get_the_ID();
-                                                
+
                                                 echo '<option value="'.esc_attr($postid_one).'">
                                                 '.esc_html($title_one).'
                                                     </option>';
@@ -182,7 +188,21 @@ class trizen_hrbf_widget extends WP_Widget {
                                 <?php esc_html_e('Your Price', 'trizen-helper'); ?>
                             </p>
                             <p class="d-flex align-items-center">
-                                <span class="font-size-17 text-black"><?php esc_html_e('$', 'trizen-helper'); ?></span> <input type="text" name="total" class="num" value="<?php if(!empty($room_price)) { echo esc_attr($room_price); } else { esc_attr_e('0', 'trizen-helper'); } ?>" readonly="readonly"/><span><?php esc_html_e('/ per room', 'trizen-helper'); ?></span>
+                                <?php
+                                /*echo __('from ', 'trizen-helper');
+                                echo sprintf( '<span class="price">%s</span>', format_money($sale_price) );
+                                echo '<span class="unit">';
+
+                                echo '</span>';*/
+                                ?>
+
+                                <!--<span class="font-size-17 text-black">
+                                    <?php /*esc_html_e('$', 'trizen-helper'); */?>
+                                </span>-->
+                                <input id="room-price" type="text" name="total" class="num" value="<?php echo format_money($sale_price) ?>" readonly="readonly"/>
+                                <span>
+                                    <?php echo sprintf( _n( '/ per room', '/%d per rooms', $numberday, 'trizen-helper' ), $numberday ); ?>
+                                </span>
                             </p>
                         </div>
                     <!-- </form> -->

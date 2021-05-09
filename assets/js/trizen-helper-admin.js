@@ -231,6 +231,16 @@ jQuery(function ($) {
                 html = template();
             $("#trizen_hotel_features_data").append(html);
         });
+        $(document).on('click', '.hotel-accordion-item .hotel-accordion-title', function (e) {
+            e.preventDefault();
+            $(".hotel-accordion-item").removeClass('active')
+            $(".hotel-accordion-item .accordion-content").removeClass('active')
+            $(this).parent().addClass('active');
+        });
+        $(document).on('click', '.hotel-accordion-item.active .hotel-accordion-title', function (e) {
+            e.preventDefault();
+            $(this).parent().removeClass('active');
+        });
         $(document).on('click', '.trizen_hotel_features_remove', function (e) {
             e.preventDefault();
             $(this).parent().remove();

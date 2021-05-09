@@ -146,10 +146,11 @@ if(!function_exists('trizen_register_meta_boxes')) {
 			'trizen_hotel_room_footage',
 			'trizen_room_other_facility_title',
 			'trizen_room_rules_title',
+			'discount_rate',
 		];
 		foreach ( $fields as $field ) {
 			if ( array_key_exists( $field, $_POST ) ) {
-				update_post_meta( $post_id, $field, wp_kses_post( $_POST[$field] ) );
+				update_post_meta( $post_id, $field, sanitize_text_field( $_POST[$field] ) );
 			}
 		}
 

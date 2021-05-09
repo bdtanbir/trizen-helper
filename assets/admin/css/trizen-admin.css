@@ -318,8 +318,12 @@
     display: none;
     padding: 20px 20px 20px;
 }
+.hotel-accordion-item.active .accordion-content,
 .hotel-accordion-item .accordion-content.active {
     display: block;
+}
+.hotel-accordion-item .accordion-content.active {
+    display: none;
 }
 .hotel-accordion-item {
     -webkit-border-radius: 8px;
