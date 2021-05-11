@@ -36,7 +36,8 @@ function trizen_helper_load()
 	require_once TRIZEN_HELPER_PATH.'custom/trizen-room-availability-model.php';
 	require_once TRIZEN_HELPER_PATH.'assets/admin/hotel-inventory/inventory.php';
 	require_once TRIZEN_HELPER_PATH.'assets/admin/inc/class.admin.room.php';
-	require_once TRIZEN_HELPER_PATH.'assets/admin/inc/database.helper.php';
+    require_once TRIZEN_HELPER_PATH.'assets/admin/inc/database.helper.php';
+    require_once TRIZEN_HELPER_PATH.'assets/admin/inc/class.review.php';
 }
 
 

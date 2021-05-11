@@ -1412,4 +1412,93 @@ function _change_order_amount_total($total)
 
 
 
+if (!function_exists('ts_get_profile_avatar')) {
+    function ts_get_profile_avatar($id, $size) {
+        $gravatar_pic_url = get_avatar($id, $size, null, TSAdminRoom::get_alt_image());
+        return $gravatar_pic_url;
+    }
+}
+
+function rate_to_string($star, $max = 5) {
+    $html = '';
+
+    if ($star > $max)
+        $star = $max;
+
+    $moc1 = (int) $star;
+
+    for ($i = 1; $i <= $moc1; $i++) {
+        $html .= '<li><i class="fa  fa-star"></i></li>';
+    }
+
+    $new = $max - $star;
+
+    $du = round((float) $star - $moc1, 1);
+
+    if ($du >= 0.2 and $du <= 0.9) {
+        $html .= '<li><i class="fa  fa-star-half-o"></i></li>';
+    } elseif ($du) {
+        $html .= '<li><i class="fa  fa-star-o"></i></li>';
+    }
+
+    for ($i = 1; $i <= $new; $i++) {
+        $html .= '<li><i class="fa  fa-star-o"></i></li>';
+    }
+
+    return apply_filters('ts_rate_to_string', $html);
+}
+
+
+function get_review_stats()
+{
+    $review_stat = trizen_get_option( 'hotel_review_stats' );
+
+    return $review_stat;
+}
+
+function save_review_stats( $comment_id )
+{
+    $comemntObj = get_comment( $comment_id );
+    $post_id    = $comemntObj->comment_post_ID;
+
+
+    if ( get_post_type( $post_id ) == 'ts_hotel' ) {
+        $all_stats       = get_review_stats();
+        $ts_review_stats = post( 'ts_review_stats' );
+
+        if ( !empty( $all_stats ) && is_array( $all_stats ) ) {
+            $total_point = 0;
+            foreach ( $all_stats as $key => $value ) {
+                if ( isset( $ts_review_stats[ $value[ 'title' ] ] ) ) {
+                    $total_point += $ts_review_stats[ $value[ 'title' ] ];
+                    //Now Update the Each Stat Value
+                    update_comment_meta( $comment_id, 'ts_stat_' . sanitize_title( $value[ 'title' ] ), $ts_review_stats[ $value[ 'title' ] ] );
+                }
+            }
+
+            $avg = round( $total_point / count( $all_stats ), 1 );
+
+            //Update comment rate with avg point
+            $rate = wp_filter_nohtml_kses( $avg );
+            if ( $rate > 5 ) {
+                //Max rate is 5
+                $rate = 5;
+            }
+            update_comment_meta( $comment_id, 'comment_rate', $rate );
+            //Now Update the Stats Value
+            update_comment_meta( $comment_id, 'ts_review_stats', $ts_review_stats );
+        }
+
+
+    }
+
+    if ( post( 'comment_rate' ) ) {
+        update_comment_meta( $comment_id, 'comment_rate', post( 'comment_rate' ) );
+    }
+    //review_stats
+    $avg = TSReview::get_avg_rate( $post_id );
+
+    update_post_meta( $post_id, 'rate_review', $avg );
+}
+
 
