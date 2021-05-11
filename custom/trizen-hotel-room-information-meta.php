@@ -5,6 +5,7 @@ $number_of_room   = get_post_meta(get_the_ID(), 'number_room', true);
 $number_of_adults = get_post_meta(get_the_ID(), 'trizen_room_facility_num_of_adults', true);
 $number_of_beds   = get_post_meta(get_the_ID(), 'trizen_room_facility_num_of_beds', true);
 $room_footage     = get_post_meta(get_the_ID(), 'trizen_hotel_room_footage', true);
+$room_badge_title = get_post_meta(get_the_ID(), 'room_badge_title', true);
 
 // Hotel Room Extra Services
 $trizen_hotel_room_extra_services_data = get_post_meta(get_the_ID(), 'trizen_hotel_extra_services_data_group', true);
@@ -121,6 +122,22 @@ $hotel_rooms = new WP_Query($default);
                             type="text"
                             value="<?php echo esc_attr($number_of_room); ?>"
                             placeholder="<?php esc_attr_e('Number of rooms', 'trizen-helper'); ?>" />
+                    </div>
+                </div>
+
+                <div class="form-settings" id="hotel_room_number">
+                    <label for="room_badge_title" class="title">
+						<?php esc_html_e('Badge Title', 'trizen-helper'); ?>
+                    </label>
+                    <span class="description">
+                        <?php esc_html_e('Enter room badge title here.', 'trizen-helper'); ?>
+                    </span>
+                    <div class="form-input">
+                        <input
+                            id="room_badge_title"
+                            name="room_badge_title"
+                            type="text"
+                            value="<?php echo esc_attr($room_badge_title); ?>" />
                     </div>
                 </div>
 			</div>
