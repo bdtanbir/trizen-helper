@@ -14,6 +14,21 @@ function request($index = NULL, $default = false) {
 	return $default;
 }
 
+
+function ip_address() {
+
+    if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
+        //check ip from share internet
+        $ip = $_SERVER['HTTP_CLIENT_IP'];
+    } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+        //to check ip is pass from proxy
+        $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+    } else {
+        $ip = $_SERVER['REMOTE_ADDR'];
+    }
+    return apply_filters('tsinput_ip_address', $ip);
+}
+
 function post($index = NULL, $default = false) {
 	// Check if a field has been provided
 	if ($index === NULL AND ! empty($_POST)) {
