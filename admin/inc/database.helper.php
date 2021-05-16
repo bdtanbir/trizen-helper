@@ -271,7 +271,7 @@ if ( !class_exists( 'DatabaseHelper' ) ) {
             if(!empty($unique_key))
             {
                 $checkIndex=$wpdb->get_results("SHOW INDEX FROM ".$table_name);
-//                    if($table_name=='wp_st_availability')
+//                    if($table_name=='wp_ts_availability')
 //                    {
 //                        var_dump($checkIndex);
 //                        die;

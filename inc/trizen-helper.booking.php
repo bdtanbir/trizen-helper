@@ -15,6 +15,16 @@ function request($index = NULL, $default = false) {
 }
 
 
+function ts_compare_encrypt( $string = '', $encrypt = '' ) {
+    if ( empty( $string ) || empty( $encrypt ) ) {
+        return false;
+    }
+    if ( md5( md5( 'ts-' . md5( $string ) ) ) == $encrypt ) {
+        return true;
+    }
+    return false;
+}
+
 function ip_address() {
 
     if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
@@ -928,7 +938,7 @@ function do_add_to_cart()
 	if ( $adult == 0 ) {
 		$adult = 1;
 	}
-	 	$children = intval( get_post_meta( $room_origin, 'children_number', true ) );
+	 	$children = intval( get_post_meta( $room_origin, 'child_number', true ) );
 
 	if ( $room_num_search > $num_room ) {
 		set_message( __( 'Max of rooms are incorrect.', 'trizen-helper' ), 'danger' );
@@ -942,12 +952,12 @@ function do_add_to_cart()
 
 		return false;
 	}
-	if ( $child_number > $children ) {
+	/*if ( $child_number > $children ) {
 		set_message( __( 'Number of children in the room are incorrect.', 'trizen-helper' ), 'danger' );
 		$pass_validate = false;
 
 		return false;
-	}
+	}*/
 	$today = date( 'm/d/Y' );
 
 	$period = dateDiff( $today, $check_in );
@@ -1555,6 +1565,34 @@ function get_avg_price_hotel( $hotel_id ) {
         $avg_price /= $i;
     }
     return $avg_price;*/
+}
+
+
+function ts_apply_discount($price, $type = 'percent', $amount = '', $booking_date = '', $is_sale_schedule = 'off', $from_date = '', $to_date = '') {
+    if (!$amount)
+        return $price;
+    $is_discount = false;
+    if ($is_sale_schedule != 'on') {
+        $is_discount = true;
+    } else {
+        if ($booking_date and $from_date and $to_date and ( $booking_date ) >= ( $from_date ) and ( $booking_date ) <= ( $to_date ))
+            $is_discount = true;
+    }
+    if ($is_discount) {
+        switch ($type) {
+            case "amount":
+            case "fixed":
+                $price -= $amount;
+                break;
+            case "percent":
+            default:
+                $price -= ( $price * $amount / 100 );
+                break;
+        }
+    }
+    if ($price <= 0)
+        $price = 0;
+    return (float) $price;
 }
 
 /**

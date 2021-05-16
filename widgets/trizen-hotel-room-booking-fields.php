@@ -134,7 +134,7 @@ class trizen_hrbf_widget extends WP_Widget {
                         <div class="qtyDec">
                             <i class="la la-minus"></i>
                         </div>
-                        <input id="hotel-room-children-input" type="text" name="children_number" value="<?php esc_attr_e('0', 'trizen'); ?>">
+                        <input id="hotel-room-children-input" type="text" name="child_number" value="<?php esc_attr_e('0', 'trizen'); ?>">
                         <div class="qtyInc">
                             <i class="la la-plus"></i>
                         </div>
@@ -148,7 +148,7 @@ class trizen_hrbf_widget extends WP_Widget {
                         <div class="qtyDec">
                             <i class="la la-minus"></i>
                         </div>
-                        <input id="hotel-room-infants-input" type="text" name="infants_number" value="<?php esc_attr_e('0', 'trizen'); ?>">
+                        <input id="hotel-room-infants-input" type="text" name="infant_number" value="<?php esc_attr_e('0', 'trizen'); ?>">
                         <div class="qtyInc">
                             <i class="la la-plus"></i>
                         </div>
