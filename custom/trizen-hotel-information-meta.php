@@ -1,5 +1,5 @@
 <?php
-$hotel_address_title = get_post_meta( get_the_ID(), 'trizen_hotel_address_title', true );
+$hotel_address_title = get_post_meta( get_the_ID(), 'address', true );
 $hotel_video         = get_post_meta( get_the_ID(), 'trizen_hotel_video_url', true );
 $hotel_regular_price = get_post_meta( get_the_ID(), 'trizen_hotel_regular_price', true );
 $hotel_sale_price    = get_post_meta( get_the_ID(), 'trizen_hotel_sale_price', true );
@@ -46,7 +46,7 @@ $trizen_hotel_faqs_content =   get_post_meta(get_the_ID(), 'trizen_hotel_faqs_co
         <div class="trizen-hotel-infos-content">
             <div class="tab-content current" id="tab-location">
                 <div class="form-settings" id="address_setting">
-                    <label for="trizen_hotel_address_title" class="title">
+                    <label for="address" class="title">
                         <?php esc_html_e('Hotel address', 'trizen-helper'); ?>
                     </label>
                     <span class="description">
@@ -54,8 +54,8 @@ $trizen_hotel_faqs_content =   get_post_meta(get_the_ID(), 'trizen_hotel_faqs_co
                     </span>
                     <div class="form-input">
                         <input
-                            id="trizen_hotel_address_title"
-                            name="trizen_hotel_address_title"
+                            id="address"
+                            name="address"
                             type="text"
                             value="<?php echo esc_attr($hotel_address_title); ?>"
                             placeholder="<?php esc_attr_e('Address', 'trizen-helper'); ?>" />

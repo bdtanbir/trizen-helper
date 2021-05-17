@@ -3,7 +3,7 @@ class TS_Availability extends TS_Model {
     protected $table_version = '1.0';
     protected $ignore_create_table=true;
     protected $table_name    = 'ts_availability';
-//    protected $table_key='id';
+    protected $table_key='id';
 
     protected static $_inst;
 

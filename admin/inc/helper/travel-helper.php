@@ -28,5 +28,11 @@ if ( !class_exists( 'TravelHelper' ) ) {
             }
         }
 
+        static function deleteDuplicateData( $post_id, $table ) {
+            global $wpdb;
+            $sql = "DELETE FROM {$table} WHERE post_id = '{$post_id}'";
+            $rs = $wpdb->query( $sql );
+            return $rs;
+        }
     }
 }
