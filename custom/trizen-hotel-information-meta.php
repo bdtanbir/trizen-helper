@@ -63,25 +63,32 @@ $query = new WP_Query($args)
                                class="widefat form-control" name="search" value="">
                         <div class="location-list-wrapper">
                             <?php
-                            $multi_location2 = maybe_unserialize(get_post_meta(get_the_ID(), 'multi_lcto', true));
-                            while ($query->have_posts()) { $query->the_post();
-                                if ( is_array( $multi_location2 ) && in_array( get_the_ID(), $multi_location2 ) ) {
-                                    $checked = 'checked="checked"';
-                                } else {
-                                    $checked = null;
-                                }
-                                ?>
-                                <div class="location-list" data-name="<?php the_title(); ?>">
-                                    <label for="<?php echo get_the_ID(); ?>">
-                                        <input
+                            $html_location = TravelHelper::treeLocationHtml();
+                            $multi_location = maybe_unserialize(get_post_meta(get_the_ID(), 'multi_location', true));
+                            if (!empty($multi_location) && !is_array($multi_location)) {
+                                $multi_location = explode(',', $multi_location);
+                            }
+                            if (empty($multi_location)) {
+                                $multi_location = array('');
+                            }
+
+                            if (is_array($html_location) && count($html_location)):
+                                foreach ($html_location as $key => $location):
+                            ?>
+                                <div class="location-list" data-name="<?php echo esc_attr($location['parent_name']); ?>" style="margin-left: <?php echo esc_attr( $location['level']) . 'px;'; ?>">
+                                    <label for="<?php echo 'location-' . esc_attr($location['ID']); ?>">
+                                        <input <?php if (in_array('_' . $location['ID'] . '_', $multi_location)) echo 'checked'; ?>
                                                 type="checkbox"
-                                                id="<?php echo get_the_ID(); ?>"
-                                                value="<?php echo get_the_ID();?>"
-                                                name="multi_location[]" <?php echo $checked; ?>>
-                                        <span><?php the_title(); ?></span>
+                                                id="<?php echo 'location-' . esc_attr($location['ID']); ?>"
+                                                value="<?php echo '_' . esc_attr($location['ID']) . '_'; ?>"
+                                                name="multi_location[]"
+                                                data-post-id="<?php echo esc_attr($location['post_id']); ?>"
+                                                data-parent="<?php echo esc_attr($location['parent_id']); ?>">
+                                        <span><?php echo esc_attr($location['post_title']); ?></span>
                                     </label>
                                 </div>
-                            <?php } ?>
+                            <?php endforeach; endif;
+                            ?>
                         </div>
                     </div>
                 </div>

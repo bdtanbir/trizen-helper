@@ -384,5 +384,76 @@ if ( !class_exists( 'TravelHelper' ) ) {
                 return $countries;
             }
         }
+
+        /**
+        * @since 1.0
+        */
+        static function transferDestination() {
+            $return = [];
+            /*$car_by_location = st()->get_option( 'car_transfer_by_location', 'off' );
+            if ( $car_by_location == 'off' ) {
+                $args = [
+                    'post_type'      => 'st_hotel',
+                    'posts_per_page' => -1,
+                    'orderby'        => 'title',
+                    'order'          => 'ASC',
+                    'post_status'    => [ 'publish', 'private' ]
+                ];
+
+                $query = new WP_Query( $args );
+                while ( $query->have_posts() ): $query->the_post();
+                    $return[] = [
+                        'id'      => get_the_ID(),
+                        'name'    => get_the_title(),
+                        'address' => get_post_meta( get_the_ID(), 'address', true ),
+                        'type'    => 'hotel'
+                    ];
+                endwhile;
+                wp_reset_postdata();
+
+                $terms = get_terms( [
+                    'taxonomy'   => 'st_airport',
+                    'hide_empty' => false,
+                ] );
+
+                if ( !is_wp_error( $terms ) ) {
+                    $airport_ids = [];
+                    foreach ( $terms as $term ) {
+                        array_push( $airport_ids, $term->term_id );
+                    }
+
+                    if ( !empty( $airport_ids ) ) {
+                        $term_data = ST_Flight_Location_Models::inst()->get_data( $airport_ids );
+                        if ( $term_data ) {
+                            foreach ( $terms as $term ) {
+                                if ( array_key_exists( $term->term_id, $term_data ) ) {
+                                    $return[] = [
+                                        'id'      => $term->term_id,
+                                        'name'    => $term->name,
+                                        'address' => $term_data[ $term->term_id ][ 'map_address' ],
+                                        'type'    => 'airport'
+                                    ];
+                                }
+                            }
+                        }
+                    }
+                }
+            } else {*/
+                $locations = TravelHelper::treeLocationHtml();
+                if ( !empty( $locations ) ) {
+                    foreach ( $locations as $k => $v ) {
+                        $return[] = [
+                            'id'      => $v[ 'ID' ],
+                            'name'    => $v[ 'post_title' ],
+                            'address' => '',
+                            'type'    => 'location',
+                            'level'   => $v[ 'level' ] / 20
+                        ];
+                    }
+                }
+//            }
+
+            return $return;
+        }
     }
 }

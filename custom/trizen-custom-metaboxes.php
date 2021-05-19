@@ -65,11 +65,11 @@ if(!function_exists('trizen_register_meta_boxes')) {
 
         // If the checkbox was not empty, save it as array in post meta
         if ( ! empty( $_POST['multi_location'] ) ) {
-            update_post_meta( $post_id, 'multi_lcto', $_POST['multi_location'] );
+            update_post_meta( $post_id, 'multi_location', $_POST['multi_location'] );
 
             // Otherwise just delete it if its blank value.
         } else {
-            delete_post_meta( $post_id, 'multi_lcto' );
+            delete_post_meta( $post_id, 'multi_location' );
         }
 
 
@@ -307,7 +307,7 @@ if(!function_exists('trizen_register_meta_boxes')) {
             <?php
                 $locations = TravelHelper::_get_location_country();
             ?>
-            <select name="location_country" id="location_country">
+            <select name="location_country" id="location_country" class="select-to-select2">
                 <?php foreach ($locations as $location) { ?>
                     <option value="<?php echo esc_attr($location['value']); ?>" <?php echo selected( $location['value'], $location_country ); ?>>
                         <?php echo esc_html($location['label']); ?>

@@ -42,19 +42,21 @@ function trizen_helper_load()
     require_once TRIZEN_HELPER_PATH.'admin/inc/class.user.php';
 }
 require_once TRIZEN_HELPER_PATH.'custom/trizen-availability-model.php';
+require_once TRIZEN_HELPER_PATH.'inc/trizen-hook-function.php';
 
 if(is_admin()) {
     require_once TRIZEN_HELPER_PATH.'admin/inc/class.admin.availability.php';
     require_once TRIZEN_HELPER_PATH.'core/database/tables/ts_price.php';
 }
+require_once TRIZEN_HELPER_PATH.'admin/inc/helper/nested_sets_model.helper.php';
 require_once TRIZEN_HELPER_PATH.'admin/inc/class.admin.room.php';
 require_once TRIZEN_HELPER_PATH.'admin/inc/helper/availability.helper.php';
 require_once TRIZEN_HELPER_PATH.'admin/inc/class.admin.neworder.data.php';
 require_once TRIZEN_HELPER_PATH.'admin/inc/class.woocommerce.php';
 require_once TRIZEN_HELPER_PATH.'core/database/tables/posts.php';
 require_once TRIZEN_HELPER_PATH.'admin/inc/class.admin.hotel.php';
+require_once TRIZEN_HELPER_PATH.'admin/inc/class.admin.upgrade.data.php';
 require_once TRIZEN_HELPER_PATH.'admin/inc/helper/travel-helper.php';
-require_once TRIZEN_HELPER_PATH.'admin/inc/helper/nested_sets_model.helper.php';
 
 
 add_action( 'wp_ajax_ts_get_availability_hotel', '_get_availability_hotel' );

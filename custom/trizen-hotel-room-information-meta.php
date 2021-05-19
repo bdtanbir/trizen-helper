@@ -26,7 +26,7 @@ $hotel_rooms = new WP_Query($default);
 	<div class="nav-pill-main-div">
 		<ul class="tabs nav-justified">
 			<li class="tab-link current nav-pill" href="tab-room-location">
-				<?php esc_html_e('General', 'trizen-helper'); ?>
+				<?php esc_html_e('Location', 'trizen-helper'); ?>
 			</li>
 			<li class="tab-link nav-pill" href="tab-room-general">
 				<?php esc_html_e('General', 'trizen-helper'); ?>
@@ -48,6 +48,67 @@ $hotel_rooms = new WP_Query($default);
 			</li>
 		</ul>
 		<div class="trizen-hotel-infos-content">
+            <div class="tab-content current" id="tab-room-location">
+                <div class="form-settings" id="hotel_location_setting">
+                    <label for="price" class="title">
+                        <?php esc_html_e('Location', 'trizen-helper'); ?>
+                    </label>
+                    <span class="description">
+                        <?php esc_html_e('Enter location of room', 'trizen-helper'); ?>
+                    </span>
+
+                    <div class="ts-select-location">
+                        <input placeholder="<?php esc_html_e('Type to search', 'trizen-helper'); ?>" type="text"
+                               class="widefat form-control" name="search" value="">
+                        <div class="location-list-wrapper">
+                            <?php
+                            $html_location  = TravelHelper::treeLocationHtml();
+                            $multi_location = maybe_unserialize(get_post_meta(get_the_ID(), 'multi_location', true));
+                            if (!empty($multi_location) && !is_array($multi_location)) {
+                                $multi_location = explode(',', $multi_location);
+                            }
+                            if (empty($multi_location)) {
+                                $multi_location = array('');
+                            }
+
+                            if (is_array($html_location) && count($html_location)):
+                                foreach ($html_location as $key => $location):
+                                    ?>
+                                    <div class="location-list" data-name="<?php echo esc_attr($location['parent_name']); ?>" style="margin-left: <?php echo esc_attr( $location['level']) . 'px;'; ?>">
+                                        <label for="<?php echo 'location-' . esc_attr($location['ID']); ?>">
+                                            <input <?php if (in_array('_' . $location['ID'] . '_', $multi_location)) echo 'checked'; ?>
+                                                    type="checkbox"
+                                                    id="<?php echo 'location-' . esc_attr($location['ID']); ?>"
+                                                    value="<?php echo '_' . esc_attr($location['ID']) . '_'; ?>"
+                                                    name="multi_location[]"
+                                                    data-post-id="<?php echo esc_attr($location['post_id']); ?>"
+                                                    data-parent="<?php echo esc_attr($location['parent_id']); ?>">
+                                            <span><?php echo esc_attr($location['post_title']); ?></span>
+                                        </label>
+                                    </div>
+                                <?php endforeach; endif;
+                            ?>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-settings" id="room_address_setting">
+                    <label for="price" class="title">
+                        <?php esc_html_e('Room Address', 'trizen-helper'); ?>
+                    </label>
+                    <span class="description">
+                        <?php esc_html_e('Enter Full address of room', 'trizen-helper'); ?>
+                    </span>
+                    <div class="form-input">
+                        <input
+                            id="address"
+                            name="address"
+                            type="text"
+                            value="<?php echo esc_attr($room_address); ?>"
+                            placeholder="<?php esc_attr_e('Address', 'trizen-helper'); ?>" />
+                    </div>
+                </div>
+            </div>
 			<div class="tab-content" id="tab-room-general">
                 <div class="form-settings" id="room_gallery_img">
                     <label for="trizen_hotel_room_gallery_image" class="title">
@@ -434,39 +495,6 @@ $hotel_rooms = new WP_Query($default);
             </div>
             <div class="tab-content" id="tab-room-availability">
                 <?php include_once TRIZEN_HELPER_PATH . 'custom/trizen-room-availability.php'; ?>
-            </div>
-            <div class="tab-content current" id="tab-room-location">
-                <div class="form-settings" id="room_address_setting">
-                    <label for="price" class="title">
-                        <?php esc_html_e('Room Address', 'trizen-helper'); ?>
-                    </label>
-                    <span class="description">
-                        <?php esc_html_e('Enter Full address of room', 'trizen-helper'); ?>
-                    </span>
-                    <div class="form-input">
-                        <input
-                            id="address"
-                            name="address"
-                            type="text"
-                            value="<?php echo esc_attr($room_address); ?>"
-                            placeholder="<?php esc_attr_e('Address', 'trizen-helper'); ?>" />
-                    </div>
-                </div>
-
-                <div class="form-settings" id="room_location_setting">
-                    <label for="price" class="title">
-                        <?php esc_html_e('Locations', 'trizen-helper'); ?>
-                    </label>
-                    <span class="description">
-                        <?php esc_html_e('Enter location of room', 'trizen-helper'); ?>
-                    </span>
-                    <div class="form-input">
-                        <select class="select-to-select2" id="locations" multiple>
-                            <option value="0">Option 1</option>
-                            <option value="1">Option 2</option>
-                        </select>
-                    </div>
-                </div>
             </div>
 		</div>
 	</div>
