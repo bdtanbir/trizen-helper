@@ -56,6 +56,7 @@ require_once TRIZEN_HELPER_PATH.'admin/inc/class.woocommerce.php';
 require_once TRIZEN_HELPER_PATH.'core/database/tables/posts.php';
 require_once TRIZEN_HELPER_PATH.'admin/inc/class.admin.hotel.php';
 require_once TRIZEN_HELPER_PATH.'admin/inc/class.admin.upgrade.data.php';
+require_once TRIZEN_HELPER_PATH.'admin/inc/class.admin.location.relationships.php';
 require_once TRIZEN_HELPER_PATH.'admin/inc/helper/travel-helper.php';
 
 
