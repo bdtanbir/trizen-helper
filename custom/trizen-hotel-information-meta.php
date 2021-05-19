@@ -20,6 +20,11 @@ $trizen_hotel_features_icon   =    get_post_meta(get_the_ID(), 'trizen_hotel_fea
 $trizen_hotel_faqs_data    = get_post_meta(get_the_ID(), 'trizen_hotel_faqs_data_group', true);
 $trizen_hotel_faqs_title   =  get_post_meta(get_the_ID(), 'trizen_hotel_faqs_title', true);
 $trizen_hotel_faqs_content =   get_post_meta(get_the_ID(), 'trizen_hotel_faqs_content', true);
+
+$args = [
+    'post_type' => 'post'
+];
+$query = new WP_Query($args)
 ?>
 <div class="trizen-hotel-information-wrap">
     <div class="nav-pill-main-div">
@@ -45,6 +50,42 @@ $trizen_hotel_faqs_content =   get_post_meta(get_the_ID(), 'trizen_hotel_faqs_co
         </ul>
         <div class="trizen-hotel-infos-content">
             <div class="tab-content current" id="tab-location">
+                <div class="form-settings" id="hotel_location_setting">
+                    <label for="price" class="title">
+                        <?php esc_html_e('Hotel Location', 'trizen-helper'); ?>
+                    </label>
+                    <span class="description">
+                        <?php esc_html_e('Select one or more locations for your hotel (Enter the name you need to search in search box to filter address faster)', 'trizen-helper'); ?>
+                    </span>
+
+                    <div class="ts-select-location">
+                        <input placeholder="<?php esc_html_e('Type to search', 'trizen-helper'); ?>" type="text"
+                               class="widefat form-control" name="search" value="">
+                        <div class="location-list-wrapper">
+                            <?php
+                            $multi_location2 = maybe_unserialize(get_post_meta(get_the_ID(), 'multi_lcto', true));
+                            while ($query->have_posts()) { $query->the_post();
+                                if ( is_array( $multi_location2 ) && in_array( get_the_ID(), $multi_location2 ) ) {
+                                    $checked = 'checked="checked"';
+                                } else {
+                                    $checked = null;
+                                }
+                                ?>
+                                <div class="location-list" data-name="<?php the_title(); ?>">
+                                    <label for="<?php echo get_the_ID(); ?>">
+                                        <input
+                                                type="checkbox"
+                                                id="<?php echo get_the_ID(); ?>"
+                                                value="<?php echo get_the_ID();?>"
+                                                name="multi_location[]" <?php echo $checked; ?>>
+                                        <span><?php the_title(); ?></span>
+                                    </label>
+                                </div>
+                            <?php } ?>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="form-settings" id="address_setting">
                     <label for="address" class="title">
                         <?php esc_html_e('Hotel address', 'trizen-helper'); ?>
@@ -59,6 +100,64 @@ $trizen_hotel_faqs_content =   get_post_meta(get_the_ID(), 'trizen_hotel_faqs_co
                             type="text"
                             value="<?php echo esc_attr($hotel_address_title); ?>"
                             placeholder="<?php esc_attr_e('Address', 'trizen-helper'); ?>" />
+                    </div>
+                </div>
+
+                <div class="form-settings" id="location_map_setting">
+                    <label for="address" class="title">
+                        <?php esc_html_e('Location on map', 'trizen-helper'); ?>
+                    </label>
+                    <span class="description">
+                        <?php esc_html_e('Select one location on map to see latiture and longiture', 'trizen-helper'); ?>
+                    </span>
+                    <div class="location_map_and_latlng">
+                        <div class="ts_gmap_box">
+                            <input
+                                id="pac-input"
+                                class="controls"
+                                type="text"
+                                placeholder="Search Box" />
+                            <div id="ts_gmap"></div>
+                        </div>
+                        <div class="right">
+
+                            <label for="ts_gmap_lat" class="title">
+                                <?php esc_html_e('Latitude:', 'trizen-helper'); ?>
+                            </label>
+                            <div class="form-input">
+                                <input
+                                    id="latitude"
+                                    name="latitude"
+                                    type="text"
+                                    value="<?php  ?>"
+                                    placeholder="<?php esc_attr_e('Latitude', 'trizen-helper'); ?>" />
+                            </div>
+
+                            <label for="ts_gmap_lat" class="title">
+                                <?php esc_html_e('Longitude:', 'trizen-helper'); ?>
+                            </label>
+                            <div class="form-input">
+                                <input
+                                    id="longitude"
+                                    name="longitude"
+                                    type="text"
+                                    value="<?php  ?>"
+                                    placeholder="<?php esc_attr_e('Longitude', 'trizen-helper'); ?>" />
+                            </div>
+
+                            <label for="ts_gmap_lat" class="title">
+                                <?php esc_html_e('Zoom Level:', 'trizen-helper'); ?>
+                            </label>
+                            <div class="form-input">
+                                <input
+                                    id="zoom_level"
+                                    name="zoom_level"
+                                    type="text"
+                                    value="<?php  ?>"
+                                    placeholder="<?php esc_attr_e('Zoom Level', 'trizen-helper'); ?>" />
+                            </div>
+
+                        </div>
                     </div>
                 </div>
             </div>

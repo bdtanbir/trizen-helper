@@ -31,6 +31,14 @@ if(!function_exists('trizen_register_meta_boxes')) {
 			'advanced',
 			'high'
 		);
+		add_meta_box(
+			'trizen-select-country-meta',
+			__( 'Select Country', 'trizen-helper' ),
+			'trizen_select_country_callback',
+			'location',
+			'side',
+			'low'
+		);
 	}
 	add_action( 'add_meta_boxes', 'trizen_register_meta_boxes' );
 
@@ -45,6 +53,24 @@ if(!function_exists('trizen_register_meta_boxes')) {
 
 		$meta_key = 'trizen_hotel_image_gallery';
 		update_post_meta( $post_id, $meta_key, $_POST[$meta_key] );
+
+        // If the checkbox was not empty, save it as array in post meta
+        if ( ! empty( $_POST['multi_location'] ) ) {
+            update_post_meta( $post_id, 'elements', $_POST['multi_location'] );
+
+            // Otherwise just delete it if its blank value.
+        } else {
+            delete_post_meta( $post_id, 'elements' );
+        }
+
+        // If the checkbox was not empty, save it as array in post meta
+        if ( ! empty( $_POST['multi_location'] ) ) {
+            update_post_meta( $post_id, 'multi_lcto', $_POST['multi_location'] );
+
+            // Otherwise just delete it if its blank value.
+        } else {
+            delete_post_meta( $post_id, 'multi_lcto' );
+        }
 
 
 		$fields = [
@@ -118,6 +144,25 @@ if(!function_exists('trizen_register_meta_boxes')) {
 	 *
 	 * @param $post_id
 	 */
+	function trizen_save_location_meta_box( $post_id ) {
+		if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) return;
+		$fields = [
+			'location_country',
+		];
+		foreach ( $fields as $field ) {
+			if ( array_key_exists( $field, $_POST ) ) {
+				update_post_meta( $post_id, $field, wp_kses_post( $_POST[$field] ) );
+			}
+		}
+	}
+	add_action( 'save_post_location', 'trizen_save_location_meta_box', 10, 2 );
+
+
+	/**
+	 * Save meta box content.
+	 *
+	 * @param $post_id
+	 */
 	function trizen_hotel_room_save_meta_box( $post_id ) {
 		if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) return;
 
@@ -148,6 +193,7 @@ if(!function_exists('trizen_register_meta_boxes')) {
 			'trizen_room_other_facility_title',
 			'trizen_room_rules_title',
 			'discount_rate',
+			'address',
 		];
 		foreach ( $fields as $field ) {
 			if ( array_key_exists( $field, $_POST ) ) {
@@ -250,6 +296,27 @@ if(!function_exists('trizen_register_meta_boxes')) {
 				value="<?php echo esc_attr($badge_title); ?>">
 		</div>
 	<?php }
+
+    /**
+     * Meta box display callback.
+     */
+    function trizen_select_country_callback() {
+        $location_country = get_post_meta(get_the_ID(), 'location_country', true);
+    ?>
+        <div class="form-group">
+            <?php
+                $locations = TravelHelper::_get_location_country();
+            ?>
+            <select name="location_country" id="location_country">
+                <?php foreach ($locations as $location) { ?>
+                    <option value="<?php echo esc_attr($location['value']); ?>" <?php echo selected( $location['value'], $location_country ); ?>>
+                        <?php echo esc_html($location['label']); ?>
+                    </option>
+                <?php } ?>
+            </select>
+        </div>
+    <?php
+    }
 }
 
 

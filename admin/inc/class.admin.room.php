@@ -6,7 +6,7 @@ if ( !class_exists( 'TSAdminRoom' ) ) {
     {
 
         protected static $_inst;
-        static $_table_version = "1.3.6";
+        static $_table_version = "1.0";
         static $booking_page;
         protected $post_type = 'hotel_room';
         protected static $_cachedAlCurrency = [];
@@ -33,6 +33,21 @@ if ( !class_exists( 'TSAdminRoom' ) ) {
             add_action( 'wp_ajax_ts_get_cancel_booking_step_2', [ $this, 'ts_get_cancel_booking_step_2' ] );
             add_action( 'wp_ajax_ts_get_cancel_booking_step_3', [ $this, 'ts_get_cancel_booking_step_3' ] );
             add_action( 'wp_ajax_ts_add_custom_price', [ $this, '_add_custom_price' ] );
+            add_action('admin_init', [$this, '_upgradeRoomTable135']);
+            add_action( 'parse_query', [ $this, 'parse_query_hotel_room' ] );
+            add_action( 'save_post', [ $this, '_update_list_location' ], 999999, 2 );
+            add_action( 'added_post_meta', [ $this, 'hotel_update_min_price' ], 10, 4 );
+        }
+
+        public function _upgradeRoomTable135() {
+            $updated = get_option('_upgradeRoomTable135', false);
+            if (!$updated) {
+                global $wpdb;
+                $table = $wpdb->prefix . $this->post_type;
+                $sql = "Update {$table} as t inner join {$wpdb->posts} as m on (t.post_id = m.ID and m.post_type='hotel_room') set t.`status` = m.post_status";
+                $wpdb->query($sql);
+                update_option('_upgradeRoomTable135', 'updated');
+            }
         }
 
         function ts_change_column_ts_hotel_room_fnc($column) {
@@ -56,67 +71,203 @@ if ( !class_exists( 'TSAdminRoom' ) ) {
             return $dbhelper->check_ver_working('ts_hotel_room_table_version');
         }
 
-        static function _check_table_hotel_room()
-        {
+        static function _check_table_hotel_room(){
             $dbhelper = new DatabaseHelper(self::$_table_version);
             $dbhelper->setTableName('hotel_room');
             $column = [
-                'post_id' => [
-                    'type' => 'INT',
+                'post_id'    => [
+                    'type'   => 'INT',
                     'length' => 11,
                 ],
                 'room_parent' => [
-                    'type' => 'INT',
-                    'length' => 11,
+                    'type'    => 'INT',
+                    'length'  => 11,
                 ],
                 'multi_location' => [
                     'type' => 'text',
                 ],
                 'id_location' => [
-                    'type' => 'varchar',
+                    'type'   => 'varchar',
                     'length' => 255
                 ],
                 'address' => [
                     'type' => 'text',
                 ],
                 'allow_full_day' => [
-                    'type' => 'varchar',
+                    'type'   => 'varchar',
                     'length' => 255
                 ],
                 'price' => [
-                    'type' => 'varchar',
+                    'type'   => 'varchar',
                     'length' => 255
                 ],
                 'number_room' => [
-                    'type' => 'varchar',
+                    'type'   => 'varchar',
                     'length' => 255
                 ],
                 'discount_rate' => [
-                    'type' => 'varchar',
+                    'type'   => 'varchar',
                     'length' => 255
                 ],
                 'adult_number' => [
-                    'type' => 'varchar',
+                    'type'   => 'varchar',
                     'length' => 255
                 ],
                 'child_number' => [
-                    'type' => 'varchar',
+                    'type'   => 'varchar',
                     'length' => 255
                 ],
                 'status' => [
-                    'type' => 'varchar',
+                    'type'   => 'varchar',
                     'length' => 20
                 ],
             ];
-
             $column = apply_filters('ts_change_column_ts_hotel_room', $column);
-
             $dbhelper->setDefaultColums($column);
             $dbhelper->check_meta_table_is_working('ts_hotel_room_table_version');
 
             return array_keys($column);
         }
 
+        /**
+         * @since 1.0
+         **/
+        static function is_booking_page() {
+            if ( is_admin()
+                and isset( $_GET[ 'post_type' ] )
+                and $_GET[ 'post_type' ] == 'hotel_room'
+                and isset( $_GET[ 'page' ] )
+                and $_GET[ 'page' ] = 'ts_hotel_room_booking'
+            ) return TRUE;
+
+            return FALSE;
+        }
+
+        /**
+         * @since 1.0
+         **/
+        function _delete_items() {
+            if ( empty( $_POST ) or !check_admin_referer( 'shb_action', 'shb_field' ) ) {
+                //// process form data, e.g. update fields
+                return;
+            }
+            $ids = isset( $_POST[ 'post' ] ) ? $_POST[ 'post' ] : [];
+            if ( !empty( $ids ) ) {
+                foreach ( $ids as $id )
+                    wp_delete_post( $id, TRUE );
+
+            }
+            set_message( __( "Delete item(s) success", 'trizen-helper' ), 'updated' );
+        }
+
+        /**
+         * @since 1.0
+         **/
+        function _save_booking( $order_id ){
+            if ( !check_admin_referer( 'shb_action', 'shb_field' ) ) die;
+            if ( $this->_check_validate() ) {
+
+                $item_data = [
+                    'status' => $_POST[ 'status' ],
+                ];
+
+                foreach ( $item_data as $val => $value ) {
+                    update_post_meta( $order_id, $val, $value );
+                }
+
+                /*$check_out_field = get_checkout_fields();
+                if ( !empty( $check_out_field ) ) {
+                    foreach ( $check_out_field as $field_name => $field_desc ) {
+                        if($field_name != 'st_note'){
+                            update_post_meta( $order_id, $field_name, STInput::post( $field_name ) );
+                        }
+                    }
+                }*/
+
+                /*if ( TSAdminRoom::checkTableDuplicate( 'hotel_room' ) ) {
+                    global $wpdb;
+                    $table = $wpdb->prefix . 'ts_order_item_meta';
+                    $where = [
+                        'order_item_id' => $order_id
+                    ];
+                    $data  = [
+                        'status' => $_POST[ 'status' ]
+                    ];
+                    $wpdb->update( $table, $data, $where );
+                }
+
+                do_action( 'update_booking_hotel_room', $order_id );
+
+                send_mail_after_booking( $order_id, true );
+                wp_safe_redirect( self::$booking_page );*/
+            }
+        }
+
+        /**
+         * @since 1.0
+         **/
+        public function _check_validate() {
+
+            $ts_first_name = request( 'ts_first_name', '' );
+            if ( empty( $ts_first_name ) ) {
+                set_message( __( 'The firstname field is not empty.', 'trizen-helper' ), 'danger' );
+
+                return false;
+            }
+
+            $ts_last_name = request( 'ts_last_name', '' );
+            if ( empty( $ts_last_name ) ) {
+                set_message( __( 'The lastname field is not empty.', 'trizen-helper' ), 'danger' );
+
+                return false;
+            }
+
+            $ts_email = request( 'ts_email', '' );
+            if ( empty( $ts_email ) ) {
+                set_message( __( 'The email field is not empty.', 'trizen-helper' ), 'danger' );
+
+                return false;
+            }
+
+            if ( !filter_var( $ts_email, FILTER_VALIDATE_EMAIL ) ) {
+                set_message( __( 'Invalid email format.', 'trizen-helper' ), 'danger' );
+
+                return false;
+            }
+
+            $ts_phone = request( 'ts_phone', '' );
+            if ( empty( $ts_phone ) ) {
+                set_message( __( 'The phone field is not empty.', 'trizen-helper' ), 'danger' );
+
+                return false;
+            }
+
+            return true;
+        }
+
+        /**
+         * @since 1.0
+         **/
+        function _update_list_location( $id, $data ) {
+            $location = request( 'multi_location', '' );
+            if ( isset( $_REQUEST[ 'multi_location' ] ) ) {
+                if ( is_array( $location ) && count( $location ) ) {
+                    $location_str = '';
+                    foreach ( $location as $item ) {
+                        if ( empty( $location_str ) ) {
+                            $location_str .= $item;
+                        } else {
+                            $location_str .= ',' . $item;
+                        }
+                    }
+                } else {
+                    $location_str = '';
+                }
+                update_post_meta( $id, 'multi_location', $location_str );
+                update_post_meta( $id, 'id_location', '' );
+            }
+
+        }
 
         public function getMeta($key)
         {
@@ -125,7 +276,6 @@ if ( !class_exists( 'TSAdminRoom' ) ) {
 
         /**
          * @todo Get Type of Order: normal_booking or woocommerce
-         *
          * @return string
          */
         public function getType()
@@ -136,19 +286,16 @@ if ( !class_exists( 'TSAdminRoom' ) ) {
 
         /**
          * @todo Check if current order is using Woocommerce Checkout
-         *
          * @return bool
          */
-        public function isWoocommerceCheckout()
-        {
+        public function isWoocommerceCheckout(){
             return $this->getType()=='woocommerce'?true:false;
         }
 
         /**
          * @return WC_Order
          */
-        public function getWoocommerceOrder()
-        {
+        public function getWoocommerceOrder(){
             global $wpdb;
 
             return new WC_Order($this->order_id);
@@ -156,11 +303,9 @@ if ( !class_exists( 'TSAdminRoom' ) ) {
 
         /**
          * @todo Get total amount
-         *
          * @return float
          */
-        public function getTotal()
-        {
+        public function getTotal(){
             if ($this->isWoocommerceCheckout()) {
                 global $wpdb;
                 $querystr = "SELECT meta_value FROM  " . $wpdb->prefix . "woocommerce_order_itemmeta
@@ -186,8 +331,7 @@ if ( !class_exists( 'TSAdminRoom' ) ) {
             }
         }
 
-        public function getItems()
-        {
+        public function getItems(){
             global $wpdb;
             if($this->isWoocommerceCheckout())
             {
@@ -1337,8 +1481,7 @@ if ( !class_exists( 'TSAdminRoom' ) ) {
             die;
         }
 
-        public function __cronjob_fill_availability($offset=0, $limit=-1, $day=null)
-        {
+        public function __cronjob_fill_availability($offset=0, $limit=-1, $day=null) {
             global $wpdb;
             if(!$day){
                 $today=new DateTime(date('Y-m-d'));
@@ -1356,16 +1499,15 @@ if ( !class_exists( 'TSAdminRoom' ) ) {
             $insertBatch=[];
             $ids=[];
 
-            while ($rooms->have_posts())
-            {
+            while ($rooms->have_posts()) {
                 $rooms->the_post();
-                $price=get_post_meta(get_the_ID(),'price',true);
-                $parent=get_post_meta(get_the_ID(),'trizen_hotel_room_select',true);
-                $status=get_post_meta(get_the_ID(),'default_state',true);
-                $number=get_post_meta(get_the_ID(),'number_room',true);
-                $allow_full_day=get_post_meta(get_the_ID(),'allow_full_day',true);
-                $adult_number = intval( get_post_meta( get_the_ID(), 'adult_number', true ) );
-                $child_number = intval( get_post_meta( get_the_ID(), 'children_number', true ) );
+                $price          = get_post_meta(get_the_ID(),'price',true);
+                $parent         = get_post_meta(get_the_ID(),'trizen_hotel_room_select',true);
+                $status         = get_post_meta(get_the_ID(),'default_state',true);
+                $number         = get_post_meta(get_the_ID(),'number_room',true);
+                $allow_full_day = get_post_meta(get_the_ID(),'allow_full_day',true);
+                $adult_number   = intval( get_post_meta( get_the_ID(), 'adult_number', true ) );
+                $child_number   = intval( get_post_meta( get_the_ID(), 'children_number', true ) );
                 $booking_period = intval(get_post_meta($parent, 'hotel_booking_period', true));
                 if(empty($booking_period)) $booking_period = 0;
                 if(!$allow_full_day) $allow_full_day='on';
@@ -1377,8 +1519,7 @@ if ( !class_exists( 'TSAdminRoom' ) ) {
                 $ids[]=get_the_ID();
             }
 
-            if(!empty($insertBatch))
-            {
+            if(!empty($insertBatch)) {
                 $wpdb->query("INSERT IGNORE INTO {$wpdb->prefix}{$table} (check_in,check_out,post_id,parent_id,post_type,`number`,`status`,price,	allow_full_day,adult_number,child_number,is_base,booking_period, adult_price, child_price) VALUES ".implode(",\r\n",$insertBatch));
 
                 // add log
@@ -1386,6 +1527,88 @@ if ( !class_exists( 'TSAdminRoom' ) ) {
             }
 
             wp_reset_postdata();
+        }
+
+        public static function fill_post_availability($post_id,$timestamp=null) {
+            $data  = [];
+            global $wpdb;
+            $table = 'ts_room_availability';
+
+            $price          = get_post_meta($post_id,'price',true);
+            $parent         = get_post_meta($post_id,'trizen_hotel_room_select',true);
+            $status         = get_post_meta($post_id,'default_state',true);
+            $number         = get_post_meta($post_id,'number_room',true);
+            $allow_full_day = get_post_meta($post_id,'allow_full_day',true);
+            if(!$allow_full_day) $allow_full_day='on';
+            $rs = TS_Order_Item_Model::inst()
+                ->select('count(room_num_search) as number_booked')
+                ->where('room_origin',$post_id)
+                ->where('check_in_timestamp <=',$timestamp)
+                ->where('check_out_timestamp >=',$timestamp)
+                ->where("STATUS NOT IN ('trash', 'canceled')",false,true)
+                ->get(1)->row();
+            $number_end = TS_Order_Item_Model::inst()
+                ->select('count(room_num_search) as number_booked')
+                ->where('room_origin',$post_id)
+                ->where('check_out_timestamp',$timestamp)
+                ->where("STATUS NOT IN ('trash', 'canceled')",false,true)
+                ->get(1)->row();
+            $adult_number = intval( get_post_meta( get_the_ID(), 'adult_number', true ) );
+            $child_number = intval( get_post_meta( get_the_ID(), 'child_number', true ) );
+            $adult_price = get_post_meta( $post_id, 'adult_price', true );
+            $child_price = get_post_meta( $post_id, 'child_price', true );
+
+            $data['check_in']       = $timestamp;
+            $data['check_out']      = $timestamp;
+            $data['parent_id']      = $parent;
+            $data['post_type']      = 'hotel_room';
+            $data['number']         = $number;
+            $data['status']         = $status;
+            $data['price']          = $price;
+            $data['allow_full_day'] = $allow_full_day;
+            $data['number_booked']  = $rs['number_booked'];
+            $data['number_end']     = $number_end['number_booked'];
+            $data['adult_number']   = $adult_number;
+            $data['child_number']   = $child_number;
+            $data['adult_price']    = $adult_price;
+            $data['child_price']    = $child_price;
+
+//                $model=TS_Availability_Model::inst();
+//
+//                $data['id']=$model->insert($data);
+
+            $insert = $wpdb->prepare("(%d,%d,%d,%d,%s,%d,%d,%d,%s,%d,%s,%d,%d,%d,%d)",$timestamp,$timestamp,$post_id,$parent,'hotel_room',$number,$rs['number_booked'],$number_end['number_booked'],$status,$price,$allow_full_day,$adult_number,$child_number, $adult_price, $child_price);
+
+            $wpdb->query("INSERT IGNORE INTO {$wpdb->prefix}{$table} (check_in,check_out,post_id,parent_id,post_type,`number`,number_booked,number_end,`status`,price,allow_full_day,adult_number, child_number, adult_price, child_price) VALUES ".$insert);
+
+            return $data;
+        }
+
+        public function parse_query_hotel_room( $query ) {
+            global $pagenow;
+            if ( isset( $_GET[ 'post_type' ] ) ) {
+                $type = $_GET[ 'post_type' ];
+                if ( 'hotel_room' == $type && is_admin() && $pagenow == 'edit.php' && isset( $_GET[ 'filter_st_hotel' ] ) && $_GET[ 'filter_st_hotel' ] != '' ) {
+                    add_filter( 'posts_where', [ $this, 'posts_where_hotel_room' ] );
+                    add_filter( 'posts_join', [ $this, 'posts_join_hotel_room' ] );
+                }
+            }
+
+        }
+
+        public function posts_where_hotel_room( $where ){
+            global $wpdb;
+            $hotel_name = $_GET[ 'filter_st_hotel' ];
+            $where .= " AND mt2.meta_value in (select ID from {$wpdb->prefix}posts where post_title like '%{$hotel_name}%' and post_type = 'st_hotel' and post_status in ('publish', 'private') ) ";
+
+            return $where;
+        }
+
+        public function posts_join_hotel_room( $join ) {
+            global $wpdb;
+            $join .= " inner join {$wpdb->prefix}postmeta as mt2 on mt2.post_id = {$wpdb->prefix}posts.ID and mt2.meta_key='trizen_hotel_room_select' ";
+
+            return $join;
         }
 
         public function __run_fill_old_order($key = '') {
@@ -1491,6 +1714,44 @@ if ( !class_exists( 'TSAdminRoom' ) ) {
                     update_post_meta($hotel_id, 'trizen_hotel_regular_price', $avg_price);
                 }
             }
+            if ( $post_type == 'hotel_room' ) {
+                $hotel_id = get_post_meta( $post_id, 'trizen_hotel_room_select', true );
+                if ( !empty( $hotel_id ) ) {
+                    $is_auto_caculate = get_post_meta( $hotel_id, 'is_auto_caculate', true );
+                    if ( $is_auto_caculate != 'off' ) {
+                        $query  = [
+                            'post_type'      => 'hotel_room',
+                            'posts_per_page' => 999,
+                            'meta_key'       => 'trizen_hotel_room_select',
+                            'meta_value'     => $hotel_id
+                        ];
+                        $traver = new WP_Query( $query );
+                        $price  = 0;
+                        while ( $traver->have_posts() ) {
+                            $traver->the_post();
+                            $discount   = get_post_meta( get_the_ID(), 'discount_rate', TRUE );
+                            if ( get_post_meta( get_the_ID(), 'price_by_per_person', true ) == 'on' ) {
+                                $adult_price = floatval( get_post_meta( get_the_ID(), 'adult_price', true ) );
+                                $child_price = floatval( get_post_meta( get_the_ID(), 'child_price', true ) );
+                                $item_price  = max( $adult_price, $child_price );
+                            } else {
+                                $item_price = get_post_meta( get_the_ID(), 'price', TRUE );
+                            }
+                            if ( $discount ) {
+                                if ( $discount > 100 ) $discount = 100;
+                                $item_price = $item_price - ( $item_price / 100 ) * $discount;
+                            }
+                            $price += $item_price;
+                        }
+                        wp_reset_query();
+                        $avg_price = 0;
+                        if ( $traver->post_count ) {
+                            $avg_price = $price / $traver->post_count;
+                        }
+                        update_post_meta( $hotel_id, 'trizen_hotel_regular_price', $avg_price );
+                    }
+                }
+            }
         }
 
         static function _update_min_price($post_id = false) {
@@ -1585,38 +1846,73 @@ if ( !class_exists( 'TSAdminRoom' ) ) {
                     update_post_meta($hotel_id, 'min_price', '0');
                 }
             }
+            if ( $post_type == 'hotel_room' ) {
+                $hotel_id = get_post_meta( $post_id, 'trizen_hotel_room_select', true );
+                if ( !empty( $hotel_id ) ) {
+                    $query  = [
+                        'post_type'      => 'hotel_room',
+                        'posts_per_page' => 999,
+                        'meta_key'       => 'trizen_hotel_room_select',
+                        'meta_value'     => $hotel_id
+                    ];
+                    $traver = new WP_Query( $query );
+
+                    $prices = [];
+                    while ( $traver->have_posts() ) {
+                        $traver->the_post();
+                        $discount   = get_post_meta( get_the_ID(), 'discount_rate', TRUE );
+                        if ( get_post_meta( get_the_ID(), 'price_by_per_person', true ) == 'on' ) {
+                            $adult_price = floatval( get_post_meta( get_the_ID(), 'adult_price', true ) );
+                            $child_price = floatval( get_post_meta( get_the_ID(), 'child_price', true ) );
+                            $item_price = min( $adult_price, $child_price );
+                        } else {
+                            $item_price = get_post_meta( get_the_ID(), 'price', TRUE );
+                        }
+                        if ( $discount ) {
+                            if ( $discount > 100 ) $discount = 100;
+                            $item_price = $item_price - ( $item_price / 100 ) * $discount;
+                        }
+                        $prices[] = $item_price;
+                    }
+                    wp_reset_query();
+                    if ( !empty( $prices ) ) {
+                        $min_price = min( $prices );
+                        update_post_meta( $hotel_id, 'min_price', $min_price );
+                    }
+                }
+            }
         }
 
         static function _update_duplicate_data($id, $data) {
             if (!TSAdminRoom::checkTableDuplicate('ts_hotel')) return;
             if (get_post_type($id) == 'ts_hotel') {
-                $num_rows = TSAdminRoom::checkIssetPost($id, 'ts_hotel');
-                $location_str = get_post_meta($id, 'multi_location', true);
-                $location_id = ''; // location_id
-                $address = get_post_meta($id, 'address', true); // address
+                $num_rows       = TSAdminRoom::checkIssetPost($id, 'ts_hotel');
+                $location_str   = get_post_meta($id, 'multi_location', true);
+                $location_id    = ''; // location_id
+                $address        = get_post_meta($id, 'address', true); // address
                 $allow_full_day = get_post_meta($id, 'allow_full_day', true); // address
 
-                $rate_review = TSReview::get_avg_rate($id); // rate review
-                $hotel_star = get_post_meta($id, 'hotel_star', true); // hotel star
-                $price_avg = get_post_meta($id, 'trizen_hotel_regular_price', true); // price avg
-                $min_price = get_post_meta($id, 'min_price', true); // price avg
+                $rate_review          = TSReview::get_avg_rate($id); // rate review
+                $hotel_star           = get_post_meta($id, 'hotel_star', true); // hotel star
+                $price_avg            = get_post_meta($id, 'trizen_hotel_regular_price', true); // price avg
+                $min_price            = get_post_meta($id, 'min_price', true); // price avg
                 $hotel_booking_period = get_post_meta($id, 'hotel_booking_period', true); // price avg
-                $map_lat = get_post_meta($id, 'map_lat', true); // map_lat
-                $map_lng = get_post_meta($id, 'map_lng', true); // map_lng
+                $map_lat              = get_post_meta($id, 'map_lat', true); // map_lat
+                $map_lng              = get_post_meta($id, 'map_lng', true); // map_lng
 
                 if ($num_rows == 1) {
                     $data = [
-                        'multi_location' => $location_str,
-                        'id_location' => $location_id,
-                        'address' => $address,
-                        'allow_full_day' => $allow_full_day,
-                        'rate_review' => $rate_review,
-                        'hotel_star' => $hotel_star,
-                        'price_avg' => $price_avg,
-                        'min_price' => $min_price,
+                        'multi_location'       => $location_str,
+                        'id_location'          => $location_id,
+                        'address'              => $address,
+                        'allow_full_day'       => $allow_full_day,
+                        'rate_review'          => $rate_review,
+                        'hotel_star'           => $hotel_star,
+                        'price_avg'            => $price_avg,
+                        'min_price'            => $min_price,
                         'hotel_booking_period' => $hotel_booking_period,
-                        'map_lat' => $map_lat,
-                        'map_lng' => $map_lng,
+                        'map_lat'              => $map_lat,
+                        'map_lng'              => $map_lng,
                     ];
                     $where = [
                         'post_id' => $id
@@ -1624,24 +1920,75 @@ if ( !class_exists( 'TSAdminRoom' ) ) {
                     TSAdminRoom::updateDuplicate('ts_hotel', $data, $where);
                 } elseif ($num_rows == 0) {
                     $data = [
-                        'post_id' => $id,
-                        'multi_location' => $location_str,
-                        'id_location' => $location_id,
-                        'address' => $address,
-                        'allow_full_day' => $allow_full_day,
-                        'rate_review' => $rate_review,
-                        'hotel_star' => $hotel_star,
-                        'price_avg' => $price_avg,
-                        'min_price' => $min_price,
+                        'post_id'              => $id,
+                        'multi_location'       => $location_str,
+                        'id_location'          => $location_id,
+                        'address'              => $address,
+                        'allow_full_day'       => $allow_full_day,
+                        'rate_review'          => $rate_review,
+                        'hotel_star'           => $hotel_star,
+                        'price_avg'            => $price_avg,
+                        'min_price'            => $min_price,
                         'hotel_booking_period' => $hotel_booking_period,
-                        'map_lat' => $map_lat,
-                        'map_lng' => $map_lng,
+                        'map_lat'              => $map_lat,
+                        'map_lng'              => $map_lng,
                     ];
                     TSAdminRoom::insertDuplicate('ts_hotel', $data);
                 }
             }
-        }
 
+            // for room
+            if ( get_post_type( $id ) == 'hotel_room' ) {
+                $num_rows       = TSAdminRoom::checkIssetPost( $id, 'hotel_room' );
+                $allow_full_day = get_post_meta( $id, 'allow_full_day', true ); // address
+                $data           = [
+                    'room_parent'    => get_post_meta( $id, 'trizen_hotel_room_select', true ),
+                    'multi_location' => get_post_meta( $id, 'multi_location', true ),
+                    'id_location'    => get_post_meta( $id, 'id_location', true ),
+                    'address'        => get_post_meta( $id, 'address', true ),
+                    'allow_full_day' => $allow_full_day,
+                    'price'          => get_post_meta( $id, 'price', true ),
+                    'number_room'    => get_post_meta( $id, 'number_room', true ),
+                    'discount_rate'  => get_post_meta( $id, 'discount_rate', true ),
+                    'adult_number'   => get_post_meta( $id, 'adult_number', true),
+                    'child_number'   => get_post_meta( $id, 'children_number', true),
+                    'adult_price'    => get_post_meta( $id, 'adult_price', true ),
+                    'child_price'    => get_post_meta( $id, 'child_price', true ),
+                    'status'         => get_post_field('post_status', $id)
+                ];
+                if ( $num_rows == 1 ) {
+                    $where = [
+                        'post_id' => $id
+                    ];
+                    TSAdminRoom::updateDuplicate( 'hotel_room', $data, $where );
+                } elseif ( $num_rows == 0 ) {
+                    $data[ 'post_id' ] = $id;
+                    TSAdminRoom::insertDuplicate( 'hotel_room', $data );
+                }
+
+                // Update Availability
+                $model = Ts_Hotel_Room_Availability::inst();
+                $model->where('post_id',$id)
+                    ->where("check_in >= UNIX_TIMESTAMP(CURRENT_DATE)", true, false)
+                    ->update(array(
+                        'parent_id'      => $data['trizen_hotel_room_select'],
+                        'allow_full_day' => $data['allow_full_day'],
+                        'number'         => $data['number_room'],
+                        'adult_number'   => $data['adult_number'],
+                        'child_number'   => $data['child_number']
+                    ));
+
+                $model->where('post_id',$id)
+                    ->where("check_in >= UNIX_TIMESTAMP(CURRENT_DATE)", true, false)
+                    ->where('is_base', '1')
+                    ->update(array(
+                        'price'       => $data['price'],
+                        'adult_price' => $data['adult_price'],
+                        'child_price' => $data['child_price'],
+                    ));
+                $model->where('post_id', $id)->update(['parent_id' => get_post_meta( $id, 'trizen_hotel_room_select', true )]);
+            }
+        }
 
         public static function __cronjob_update_min_avg_price($offset, $limit = 2) {
             global $wpdb;
@@ -1663,6 +2010,74 @@ if ( !class_exists( 'TSAdminRoom' ) ) {
             }
 
             wp_reset_postdata();
+        }
+
+        function _do_update_hotel_min_price( $hotel_id, $current_meta_price = false, $room_id = false ) {
+            if ( !$hotel_id ) return;
+            $query = [
+                'post_type'      => 'hotel_room',
+                'posts_per_page' => 100,
+                'meta_key'       => 'trizen_hotel_room_select',
+                'meta_value'     => $hotel_id
+            ];
+            if ( $room_id ) {
+                $query[ 'posts_not_in' ] = [ $room_id ];
+            }
+            $q = new WP_Query( $query );
+            $min_price = 0;
+            $i         = 1;
+            while ( $q->have_posts() ) {
+                $q->the_post();
+                if ( get_post_meta( get_the_ID(), 'price_by_per_person', true ) == 'on' ) {
+                    $adult_price = floatval( get_post_meta( get_the_ID(), 'adult_price', true ) );
+                    $child_price = floatval( get_post_meta( get_the_ID(), 'child_price', true ) );
+                    $price = min($adult_price, $child_price);
+                } else {
+                    $price = get_post_meta( get_the_ID(), 'price', true );
+                }
+                if ( $i == 1 ) {
+                    $min_price = $price;
+                } else {
+                    if ( $price < $min_price ) {
+                        $min_price = $price;
+                    }
+                }
+                $i++;
+            }
+
+            wp_reset_query();
+
+            if ( $current_meta_price !== FALSE ) {
+                if ( $current_meta_price < $min_price ) {
+                    $min_price = $current_meta_price;
+                }
+            }
+            update_post_meta( $hotel_id, 'min_price', $min_price );
+        }
+
+        function hotel_update_min_price( $meta_id, $object_id, $meta_key, $meta_value ) {
+            $post_type = get_post_type( $object_id );
+            if ( wp_is_post_revision( $object_id ) )
+                return;
+            if ( $post_type == 'hotel_room' ) {
+                //Update old room and new room
+                if ( $meta_key == 'trizen_hotel_room_select' ) {
+                    $old = get_post_meta( $object_id, $meta_key, true );
+                    if ( $old != $meta_value ) {
+                        $this->_do_update_hotel_min_price( $old, false, $object_id );
+                        $this->_do_update_hotel_min_price( $meta_value );
+                    } else {
+                        $this->_do_update_hotel_min_price( $meta_value );
+                    }
+                }
+            }
+        }
+
+        function meta_updated_update_min_price( $meta_id, $object_id, $meta_key, $meta_value ){
+            if ( $meta_key == 'price' ) {
+                $hotel_id = get_post_meta( $object_id, 'trizen_hotel_room_select', true );
+                $this->_do_update_hotel_min_price( $hotel_id );
+            }
         }
 
         static function inst() {

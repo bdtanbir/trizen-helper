@@ -6,6 +6,7 @@ $number_of_adults = get_post_meta(get_the_ID(), 'trizen_room_facility_num_of_adu
 $number_of_beds   = get_post_meta(get_the_ID(), 'trizen_room_facility_num_of_beds', true);
 $room_footage     = get_post_meta(get_the_ID(), 'trizen_hotel_room_footage', true);
 $room_badge_title = get_post_meta(get_the_ID(), 'room_badge_title', true);
+$room_address     = get_post_meta(get_the_ID(), 'address', true);
 
 // Hotel Room Extra Services
 $trizen_hotel_room_extra_services_data = get_post_meta(get_the_ID(), 'trizen_hotel_extra_services_data_group', true);
@@ -24,7 +25,10 @@ $hotel_rooms = new WP_Query($default);
 <div class="trizen-hotel-information-wrap trizen-hotel-room-information-wrap">
 	<div class="nav-pill-main-div">
 		<ul class="tabs nav-justified">
-			<li class="tab-link current nav-pill" href="tab-room-general">
+			<li class="tab-link current nav-pill" href="tab-room-location">
+				<?php esc_html_e('General', 'trizen-helper'); ?>
+			</li>
+			<li class="tab-link nav-pill" href="tab-room-general">
 				<?php esc_html_e('General', 'trizen-helper'); ?>
 			</li>
 			<li class="tab-link nav-pill" href="tab-room-price">
@@ -44,7 +48,7 @@ $hotel_rooms = new WP_Query($default);
 			</li>
 		</ul>
 		<div class="trizen-hotel-infos-content">
-			<div class="tab-content current" id="tab-room-general">
+			<div class="tab-content" id="tab-room-general">
                 <div class="form-settings" id="room_gallery_img">
                     <label for="trizen_hotel_room_gallery_image" class="title">
 						<?php esc_html_e('Gallery', 'trizen-helper'); ?>
@@ -430,6 +434,39 @@ $hotel_rooms = new WP_Query($default);
             </div>
             <div class="tab-content" id="tab-room-availability">
                 <?php include_once TRIZEN_HELPER_PATH . 'custom/trizen-room-availability.php'; ?>
+            </div>
+            <div class="tab-content current" id="tab-room-location">
+                <div class="form-settings" id="room_address_setting">
+                    <label for="price" class="title">
+                        <?php esc_html_e('Room Address', 'trizen-helper'); ?>
+                    </label>
+                    <span class="description">
+                        <?php esc_html_e('Enter Full address of room', 'trizen-helper'); ?>
+                    </span>
+                    <div class="form-input">
+                        <input
+                            id="address"
+                            name="address"
+                            type="text"
+                            value="<?php echo esc_attr($room_address); ?>"
+                            placeholder="<?php esc_attr_e('Address', 'trizen-helper'); ?>" />
+                    </div>
+                </div>
+
+                <div class="form-settings" id="room_location_setting">
+                    <label for="price" class="title">
+                        <?php esc_html_e('Locations', 'trizen-helper'); ?>
+                    </label>
+                    <span class="description">
+                        <?php esc_html_e('Enter location of room', 'trizen-helper'); ?>
+                    </span>
+                    <div class="form-input">
+                        <select class="select-to-select2" id="locations" multiple>
+                            <option value="0">Option 1</option>
+                            <option value="1">Option 2</option>
+                        </select>
+                    </div>
+                </div>
             </div>
 		</div>
 	</div>

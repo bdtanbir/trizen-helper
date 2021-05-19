@@ -1455,6 +1455,72 @@ button {
     cursor: pointer;
     font-size: 16px;
 }
+.select2-container--default .select2-selection--multiple {
+    border: 1px solid #d4d4d4;
+    padding: 6px 10px;
+}
+.select2-container--default.select2-container--focus .select2-selection--multiple {
+    border-color: #287dfa;
+}
+.select2-container--default .select2-selection--multiple .select2-selection__choice {
+    margin: 0 5px 0 0;
+    color: #fff;
+    background-color: #287dfa;
+    border: none;
+}
+.select2-container--default .select2-search--inline {
+    display: inline-block;
+}
+.select2-container--default .select2-search--inline .select2-search__field {
+    margin: 0 0 0 5px;
+}
+.select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
+    border-right: 1px solid #fff;
+    color: #fff;
+    height: 100%;
+    line-height: 16px;
+    display: inline-block;
+}
+.select2-container--default .select2-selection--multiple .select2-selection__choice__display {
+    padding: 4px 7px 4px 5px;
+    display: inline-block;
+}
+.location_map_and_latlng {
+    display: flex;
+    align-items: flex-start;
+}
+.location_map_and_latlng .ts_gmap_box {
+    width: 70%;
+}
+.location_map_and_latlng .ts_gmap_box #ts_gmap {
+    height: 370px;
+    width: 100%;
+}
+.location_map_and_latlng .right {
+    width: 30%;
+    padding-left: 15px;
+}
+.trizen-hotel-infos-content .form-settings .location_map_and_latlng .right .title,
+.trizen-hotel-infos-content .form-settings .location_map_and_latlng .right label
+.location_map_and_latlng .right label {
+    line-height: 20px;
+    font-size: 16px;
+    margin-bottom: 5px;
+}
+.location_map_and_latlng .right .form-input {
+    margin-bottom: 15px;
+}
+.location_map_and_latlng #pac-input {
+    max-width: 400px;
+    top: 12px !important;
+}
+.trizen-hotel-infos-content .form-settings .location-list label {
+    font-size: 14px;
+    font-weight: 400;
+}
+.location-list-wrapper {
+    margin-top: 20px;
+}
 
 
 

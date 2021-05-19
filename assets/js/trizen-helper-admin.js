@@ -310,6 +310,35 @@ jQuery(function ($) {
         $('.select-to-select2').select2();
     });
 
+    /* Location Search */
+    if ($('.ts-select-location').length) {
+        $('.ts-select-location').each(function (index, el) {
+            var parent = $(this);
+            var input  = $('input[name="search"]', parent);
+            var list   = $('.location-list-wrapper', parent);
+            var timeout;
+            input.keyup(function (event) {
+                clearTimeout(timeout);
+                var t   = $(this);
+                timeout = setTimeout(function () {
+                    var text = t.val().toLowerCase();
+                    if (text == '') {
+                        $('.location-list', list).show()
+                    } else {
+                        $('.location-list', list).hide();
+                        $(".location-list", list).each(function () {
+                            var name = $(this).data("name").toLowerCase();
+                            var reg  = new RegExp(text, "g");
+                            if (reg.test(name)) {
+                                $(this).show()
+                            }
+                        })
+                    }
+                }, 100)
+            })
+        })
+    }
+
 });
 
 

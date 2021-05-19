@@ -10273,33 +10273,6 @@ jQuery(document).ready(function ($) {
         }
     }
 
-    if ($('.st-select-loction').length) {
-        $('.st-select-loction').each(function (index, el) {
-            var parent = $(this);
-            var input  = $('input[name="search"]', parent);
-            var list   = $('.list-location-wrapper', parent);
-            var timeout;
-            input.keyup(function (event) {
-                clearTimeout(timeout);
-                var t   = $(this);
-                timeout = setTimeout(function () {
-                    var text = t.val().toLowerCase();
-                    if (text == '') {
-                        $('.item', list).show()
-                    } else {
-                        $('.item', list).hide();
-                        $(".item", list).each(function () {
-                            var name = $(this).data("name").toLowerCase();
-                            var reg  = new RegExp(text, "g");
-                            if (reg.test(name)) {
-                                $(this).show()
-                            }
-                        })
-                    }
-                }, 100)
-            })
-        })
-    }
     $('#st_partner_payout').change(function () {
         var is_pay = $(this).val();
         console.log(is_pay);

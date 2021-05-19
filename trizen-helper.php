@@ -34,7 +34,6 @@ function trizen_helper_load()
 	require_once TRIZEN_HELPER_PATH.'custom/trizen-helper.class-admin-room.php';
 	require_once TRIZEN_HELPER_PATH.'custom/trizen-helper.class-admin-hotel.php';
 	require_once TRIZEN_HELPER_PATH.'admin/hotel-inventory/inventory.php';
-	require_once TRIZEN_HELPER_PATH.'admin/inc/class.admin.room.php';
     require_once TRIZEN_HELPER_PATH.'admin/inc/database.helper.php';
     require_once TRIZEN_HELPER_PATH.'admin/inc/class.review.php';
     require_once TRIZEN_HELPER_PATH.'core/database/tables/availability.php';
@@ -48,21 +47,17 @@ if(is_admin()) {
     require_once TRIZEN_HELPER_PATH.'admin/inc/class.admin.availability.php';
     require_once TRIZEN_HELPER_PATH.'core/database/tables/ts_price.php';
 }
+require_once TRIZEN_HELPER_PATH.'admin/inc/class.admin.room.php';
 require_once TRIZEN_HELPER_PATH.'admin/inc/helper/availability.helper.php';
 require_once TRIZEN_HELPER_PATH.'admin/inc/class.admin.neworder.data.php';
 require_once TRIZEN_HELPER_PATH.'admin/inc/class.woocommerce.php';
 require_once TRIZEN_HELPER_PATH.'core/database/tables/posts.php';
 require_once TRIZEN_HELPER_PATH.'admin/inc/class.admin.hotel.php';
 require_once TRIZEN_HELPER_PATH.'admin/inc/helper/travel-helper.php';
+require_once TRIZEN_HELPER_PATH.'admin/inc/helper/nested_sets_model.helper.php';
 
 
-
-
-
-//if (is_admin()) {
 add_action( 'wp_ajax_ts_get_availability_hotel', '_get_availability_hotel' );
-
-
 function _get_availability_hotel()
 {
     $results       = [];
@@ -130,91 +125,6 @@ function _get_availability_hotel()
     echo json_encode($results);
     die();
 }
-
-/*function _add_custom_price() {
-    $check_in  = request( 'calendar_check_in', '' );
-    $check_out = request( 'calendar_check_out', '' );
-    $format    = trizen_get_option( 'datetime_format', '{mm}/{dd}/{yyyy}' );
-    if($format === '{dd}/{mm}/{yyyy}'
-       || $format === '{dd}/{m}/{yyyy}'
-       || $format === '{d}/{m}/{yyyy}'
-       || $format === '{dd}/{m}/{yyyy}'
-       || $format === '{d}/{mm}/{yyyy}'
-       || $format === '{dd}/{mm}/{yy}'
-       || $format === '{dd}/{m}/{yy}'
-       || $format === '{d}/{m}/{yy}'
-       || $format === '{dd}/{m}/{yy}'
-       || $format === '{d}/{mm}/{yy}'
-    ){
-        $check_in  = str_replace('/', '-', $check_in);
-        $check_out = str_replace('/', '-', $check_out);
-        $check_in  = date('m/d/Y', strtotime($check_in));
-        $check_out = date('m/d/Y', strtotime($check_out));
-    }
-    if ( empty( $check_in ) || empty( $check_out ) ) {
-        echo json_encode( [
-            'type'    => 'error',
-            'status'  => 0,
-            'message' => esc_html__( 'The check in or check out field is not empty.', 'trizen-helper' )
-        ] );
-        die();
-    }
-    $check_in  = strtotime( $check_in );
-    $check_out = strtotime( $check_out );
-    if ( $check_in > $check_out ) {
-        echo json_encode( [
-            'type'    => 'error',
-            'status'  => 0,
-            'message' => esc_html__( 'The check out is later than the check in field.', 'trizen-helper' )
-        ] );
-        die();
-    }
-
-    $status = request( 'calendar_status', 'available' );
-    if ( $status == 'available' ) {
-        if ( filter_var( $_POST[ 'calendar_price' ], FILTER_VALIDATE_FLOAT ) === false ) {
-            echo json_encode( [
-                'type'    => 'error',
-                'status'  => 0,
-                'message' => esc_html__( 'The price field is not a number.', 'trizen-helper' )
-            ] );
-            die();
-        }
-    }
-    $price   = floatval( request( 'calendar_price', '' ) );
-//		$price   = request( 'calendar_price', '' );
-    $post_id = request( 'calendar_post_id', '' );
-    $post_id = post_origin($post_id);
-//		$adult_price = floatval( request( 'calendar_adult_price', '' ) );
-//		$child_price = floatval( request( 'calendar_child_price', '' ) );
-
-    $parent_id = get_post_meta($post_id, 'trizen_hotel_room_select', true);
-
-    for ( $i = $check_in; $i <= $check_out; $i = strtotime( '+1 day', $i ) ) {
-        $data = [
-            'post_id'     => $post_id,
-            'post_type'   => 'hotel_room',
-            'check_in'    => $i,
-            'check_out'   => $i,
-            'price'       => $price,
-            'status'      => $status,
-            'parent_id'   => $parent_id,
-            'is_base'     => 0,
-//				'adult_price' => $adult_price,
-//				'child_price' => $child_price,
-        ];
-        TS_Availability_Model::inst()->insertOrUpdate($data);
-    }
-
-    echo json_encode( [
-        'type'    => 'success',
-        'status'  => 1,
-        'message' => esc_html__( 'Successfully', 'trizen-helper' )
-    ] );
-    die();
-}*/
-
-//}
 
 
 function trizen_helper_admin_script()
@@ -300,6 +210,27 @@ function trizen_helper_admin_script()
         TRIZEN_HELPER_VERSION,
         true
     );*/
+    /*wp_enqueue_script(
+        'lib-gmap3-js',
+        TRIZEN_HELPER_URI . ('admin/js/gmap3.min.js'),
+        ['jquery'],
+        false,
+        true
+    );*/
+    wp_enqueue_script(
+        'trizen-hotel-gmap-js',
+        TRIZEN_HELPER_URI . ('admin/js/ts_hotel_gmap.js'),
+        null,
+        TRIZEN_HELPER_VERSION,
+        true
+    );
+    wp_enqueue_script(
+        'lib-gmap-js',
+        '//maps.googleapis.com/maps/api/js?key=AIzaSyAbiWD8crgFpYN8GEeaL6Qjg0lTpFJgmuk&libraries=places&v=weekly',
+        null,
+        '1.0',
+        true
+    );
 	wp_register_script(
 		'trizen-hotel-inventory',
 		TRIZEN_HELPER_URI . ('admin/js/trizen-hotel-inventory.js'),
