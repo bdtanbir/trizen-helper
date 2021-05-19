@@ -381,7 +381,7 @@ if ( !class_exists( 'TSAdminRoom' ) ) {
         static function get_currency( $theme_option = false ){
             $all = self::$_cachedAlCurrency;
             //return array for theme options choise
-            if ( $theme_option ) {
+            /*if ( $theme_option ) {
                 $choice = [];
                 if ( !empty( $all ) and is_array( $all ) ) {
                     foreach ( $all as $key => $value ) {
@@ -392,7 +392,7 @@ if ( !class_exists( 'TSAdminRoom' ) ) {
                     }
                 }
                 return $choice;
-            }
+            }*/
             return $all;
         }
 

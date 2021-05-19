@@ -7,7 +7,7 @@ if ( !class_exists( 'TSLocationRelationships' ) ) {
     class TSLocationRelationships {
         public $table                             = 'ts_location_relationships';
         public $column                            = [];
-        public $st_upgrade_location_relationships = 0;
+        public $ts_upgrade_location_relationships = 0;
         public $allow_version                     = false;
 
         public function __construct() {

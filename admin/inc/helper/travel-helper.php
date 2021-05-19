@@ -117,6 +117,11 @@ if ( !class_exists( 'TravelHelper' ) ) {
             return $tree;
         }
 
+        static function woocommerce_default_currency_smbl() {
+            $currency = get_woocommerce_currency_symbol();
+            return $currency;
+        }
+
 
         /**
          * @since 1.0

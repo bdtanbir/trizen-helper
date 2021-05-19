@@ -283,25 +283,26 @@ function trizen_helper_admin_script()
 		'text_process_cancel' => esc_html__('You cancelled the process', 'trizen-helper'),
 		'dateformat'          => getDateFormatJs(null, 'calendar'),
 		'dateformat_convert'  => getDateFormatJs(null, 'admin-calendar'),
-		'please_waite' => __('Please wait...', 'trizen-helper'),
-		'prev_month' => __('prev month', 'trizen-helper'),
-		'next_month' => __('next month', 'trizen-helper'),
+		'please_waite'        => __('Please wait...', 'trizen-helper'),
+		'prev_month'          => __('prev month', 'trizen-helper'),
+		'next_month'          => __('next month', 'trizen-helper'),
+		'currency_smbl'       => '$'
 	]);
 
 
 	wp_localize_script('jquery', 'locale_daterangepicker', [
-		'direction' => (is_rtl() || trizen_get_option('right_to_left') == 'on')? 'rtl': 'ltr',
-		'applyLabel' => __('Apply', 'trizen-helper'),
-		'cancelLabel' => __('Cancel', 'trizen-helper'),
-		'fromLabel' => __('From', 'trizen-helper'),
-		'toLabel' => __('To', 'trizen-helper'),
-		'customRangeLabel' => __('Custom', 'trizen-helper'),
-		'daysOfWeek' =>  [__('Su', 'trizen-helper'), __('Mo', 'trizen-helper'), __('Tu', 'trizen-helper'), __('We', 'trizen-helper'), __('Th', 'trizen-helper'), __('Fr', 'trizen-helper'), __('Sa', 'trizen-helper')],
-		'monthNames' => [__('January', 'trizen-helper'), __('February', 'trizen-helper'), __('March', 'trizen-helper'), __('April', 'trizen-helper'), __('May', 'trizen-helper'), __('June', 'trizen-helper'), __('July', 'trizen-helper'), __('August', 'trizen-helper'), __('September', 'trizen-helper'), __('October', 'trizen-helper'), __('November', 'trizen-helper'), __('December', 'trizen-helper')],
-		'firstDay' => (int)trizen_get_option('start_week', 0),
-		'today' => __('Today', 'trizen-helper'),
-		'please_waite' => __('Please wait...', 'trizen-helper'),
-		'buttons' => __('buttons', 'trizen-helper'),
+		'direction'        => (is_rtl() || trizen_get_option('right_to_left') == 'on')? 'rtl': 'ltr',
+		'applyLabel'       => esc_html__('Apply', 'trizen-helper'),
+		'cancelLabel'      => esc_html__('Cancel', 'trizen-helper'),
+		'fromLabel'        => esc_html__('From', 'trizen-helper'),
+		'toLabel'          => esc_html__('To', 'trizen-helper'),
+		'customRangeLabel' => esc_html__('Custom', 'trizen-helper'),
+		'daysOfWeek'       =>  [esc_html__('Su', 'trizen-helper'), esc_html__('Mo', 'trizen-helper'), esc_html__('Tu', 'trizen-helper'), esc_html__('We', 'trizen-helper'), esc_html__('Th', 'trizen-helper'), esc_html__('Fr', 'trizen-helper'), esc_html__('Sa', 'trizen-helper')],
+		'monthNames'       => [esc_html__('January', 'trizen-helper'), esc_html__('February', 'trizen-helper'), esc_html__('March', 'trizen-helper'), esc_html__('April', 'trizen-helper'), esc_html__('May', 'trizen-helper'), esc_html__('June', 'trizen-helper'), esc_html__('July', 'trizen-helper'), esc_html__('August', 'trizen-helper'), esc_html__('September', 'trizen-helper'), esc_html__('October', 'trizen-helper'), esc_html__('November', 'trizen-helper'), esc_html__('December', 'trizen-helper')],
+		'firstDay'         => (int)trizen_get_option('start_week', 0),
+		'today'            => esc_html__('Today', 'trizen-helper'),
+		'please_waite'     => esc_html__('Please wait...', 'trizen-helper'),
+		'buttons'          => esc_html__('buttons', 'trizen-helper'),
 	]);
 }
 add_action('admin_enqueue_scripts', 'trizen_helper_admin_script');
