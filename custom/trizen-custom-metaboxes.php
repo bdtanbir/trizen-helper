@@ -84,6 +84,9 @@ if(!function_exists('trizen_register_meta_boxes')) {
 			'trizen_hotel_faqs_title',
 			'trizen_hotel_faqs_content',
 			'trizen_hotel_badge_title',
+			'lat',
+			'lng',
+			'zoom',
 		];
 		foreach ( $fields as $field ) {
 			if ( array_key_exists( $field, $_POST ) ) {

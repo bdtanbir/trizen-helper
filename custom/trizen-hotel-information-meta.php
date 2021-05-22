@@ -128,15 +128,20 @@ $query = new WP_Query($args)
                         </div>
                         <div class="right">
 
+                            <?php
+                                $lat = get_post_meta(get_the_ID(), 'lat', true);
+                                $lng = get_post_meta(get_the_ID(), 'lng', true);
+                                $zoom = get_post_meta(get_the_ID(), 'zoom', true);
+                            ?>
                             <label for="ts_gmap_lat" class="title">
                                 <?php esc_html_e('Latitude:', 'trizen-helper'); ?>
                             </label>
                             <div class="form-input">
                                 <input
                                     id="latitude"
-                                    name="latitude"
+                                    name="lat"
                                     type="text"
-                                    value="<?php  ?>"
+                                    value="<?php echo esc_html($lat) ?>"
                                     placeholder="<?php esc_attr_e('Latitude', 'trizen-helper'); ?>" />
                             </div>
 
@@ -146,9 +151,9 @@ $query = new WP_Query($args)
                             <div class="form-input">
                                 <input
                                     id="longitude"
-                                    name="longitude"
+                                    name="lng"
                                     type="text"
-                                    value="<?php  ?>"
+                                    value="<?php echo esc_html($lng) ?>"
                                     placeholder="<?php esc_attr_e('Longitude', 'trizen-helper'); ?>" />
                             </div>
 
@@ -158,9 +163,9 @@ $query = new WP_Query($args)
                             <div class="form-input">
                                 <input
                                     id="zoom_level"
-                                    name="zoom_level"
+                                    name="zoom"
                                     type="text"
-                                    value="<?php  ?>"
+                                    value="<?php echo esc_html($zoom) ?>"
                                     placeholder="<?php esc_attr_e('Zoom Level', 'trizen-helper'); ?>" />
                             </div>
 

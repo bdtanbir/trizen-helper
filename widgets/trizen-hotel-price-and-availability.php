@@ -31,39 +31,148 @@ class trizen_hpa_widget extends WP_Widget {
 
 		$hotel_regular_price = get_post_meta( get_the_ID(), 'trizen_hotel_regular_price', true );
 		$hotel_sale_price    =  get_post_meta( get_the_ID(), 'trizen_hotel_sale_price', true );
-		?>
+        $adult_number    = get( 'adult_number', 1 );
+        $child_number    = get( 'child_number', 0 );
+        $infant_number   = get( 'infant_number', 1 );
+        ?>
 
-        <div class="sidebar-widget-item">
-            <div class="sidebar-book-title-wrap mb-3">
-                <?php if(!empty($trizen_hpa_title)) { ?>
-                    <h3><?php echo esc_html($trizen_hpa_title); ?></h3>
-                <?php
-                }
-                if(!empty($hotel_regular_price) && !empty($hotel_sale_price)) { ?>
-                    <p>
-                        <span class="text-form"><?php esc_html_e('From', 'trizen-helper'); ?></span>
-                        <span class="text-value ml-2 mr-1"><?php esc_html_e('$', 'trizen-helper'); echo esc_html($hotel_sale_price); ?></span>
-                        <span class="before-price"><?php esc_html_e('$', 'trizen-helper'); echo esc_html($hotel_regular_price); ?></span>
-                    </p>
-                <?php } else {
-                    if(!empty($hotel_regular_price)) {
+            <form class="form form-check-availability-hotel">
+                <input type="hidden" name="action" value="ajax_search_room">
+                <input type="hidden" name="room_search" value="1">
+                <input type="hidden" name="is_search_room" value="1">
+                <input type="hidden" name="room_parent"
+                       value="<?php echo esc_attr(get_the_ID()); ?>">
+
+
+                <div class="sidebar-widget-item">
+                    <div class="sidebar-book-title-wrap mb-3">
+                        <h3><?php echo $trizen_hpa_title; ?></h3>
+                        <?php
+                        if(!empty($hotel_regular_price) && !empty($hotel_sale_price)) { ?>
+                            <p>
+                                <span class="text-form"><?php esc_html_e('From', 'trizen-helper'); ?></span>
+                                <span class="text-value ml-2 mr-1"><?php esc_html_e('$', 'trizen-helper'); echo esc_html($hotel_sale_price); ?></span>
+                                <span class="before-price"><?php esc_html_e('$', 'trizen-helper'); echo esc_html($hotel_regular_price); ?></span>
+                            </p>
+                        <?php } else {
+                            if(!empty($hotel_regular_price)) {
+                                ?>
+                                <p>
+                                    <span class="text-form"><?php esc_html_e('From', 'trizen-helper'); ?></span>
+                                    <span class="text-value ml-2"><?php esc_html_e('$', 'trizen-helper'); echo esc_html($hotel_regular_price); ?></span>
+                                </p>
+                                <?php
+                            } else {
+                                if(!empty($hotel_sale_price) && empty($hotel_regular_price)) { ?>
+                                    <p>
+                                    <span class="text-form">
+                                        <?php esc_html_e('We are sorry! First add', 'trizen-helper'); ?><strong><?php esc_html_e(' Regular Price', 'trizen-helper'); ?></strong><?php esc_html_e(' and then sale price!', 'trizen-helper'); ?>
+                                    </span>
+                                    </p>
+                                    <?php
+                                }
+                            }
+                        } ?>
+                    </div>
+                </div>
+
+                <div class="sidebar-widget-item">
+                    <div class="contact-form-action">
+
+                        <?php
+                        $start = get('start', date(getDateFormat()));
+                        $end   = get('end', date(getDateFormat(), strtotime("+ 1 day")));
+                        $date  = get('date', date('d/m/Y h:i a'). '-'. date('d/m/Y h:i a', strtotime('+1 day')));
                         ?>
+                        <div class="form-group form-date-field date-enquire form-date-search clearfix" data-format="<?php echo getDateFormatMoment() ?>">
+                            <div class="date-wrapper clearfix">
+                                <div class="check-in-wrapper">
+                                    <h3>Check In - Check Out</h3>
+                                    <div class="check-in-check-out d-flex">
+                                        <div class="render check-in-render"><?php echo esc_html($start); ?></div> -
+                                        <div class="render check-out-render"><?php echo esc_html($end); ?></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <input type="hidden" class="check-in-input" value="<?php echo esc_attr($start) ?>" name="start">
+                            <input type="hidden" class="check-out-input" value="<?php echo esc_attr($end) ?>" name="end">
+                            <input type="text" class="check-in-out" value="<?php echo esc_attr($date); ?>" name="date">
+                        </div>
+
+                        <!--<div class="input-box">
+                            <label class="label-text">Check in - Check out</label>
+                            <div class="form-group">
+                                <span class="la la-calendar form-icon"></span>
+                                <input class="date-range form-control" type="text" name="daterange">
+                            </div>
+                        </div>-->
+                    </div>
+                </div>
+                <div class="sidebar-widget-item">
+                    <div class="qty-box mb-2 d-flex align-items-center justify-content-between">
+                        <label class="font-size-16">Adults <span>Age 18+</span></label>
+                        <div class="qtyBtn d-flex align-items-center">
+                            <div class="qtyDec"><i class="la la-minus"></i></div>
+                            <input type="text" name="adult_number" value="<?php echo esc_attr($adult_number); ?>" autocomplete="off">
+                            <div class="qtyInc"><i class="la la-plus"></i></div>
+                        </div>
+                    </div>
+                    <div class="qty-box mb-2 d-flex align-items-center justify-content-between">
+                        <label class="font-size-16">Children <span>2-12 years old</span></label>
+                        <div class="qtyBtn d-flex align-items-center">
+                            <div class="qtyDec"><i class="la la-minus"></i></div>
+                            <input type="text" name="child_number" value="<?php echo esc_attr($child_number); ?>" autocomplete="off">
+                            <div class="qtyInc"><i class="la la-plus"></i></div>
+                        </div>
+                    </div>
+                    <div class="qty-box mb-2 d-flex align-items-center justify-content-between">
+                        <label class="font-size-16">Infants <span>0-2 years old</span></label>
+                        <div class="qtyBtn d-flex align-items-center">
+                            <div class="qtyDec"><i class="la la-minus"></i></div>
+                            <input type="text" name="infant_number" value="<?php echo esc_attr($infant_number); ?>">
+                            <div class="qtyInc"><i class="la la-plus"></i></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="btn-box pt-2">
+                    <input class="theme-btn text-center w-100 mb-2 font-size-18"
+                           type="submit"
+                           name="submit"
+                           value="<?php echo esc_html__('Check Availability', 'trizen-helper') ?>">
+                </div>
+            </form>
+
+        <!--<div class="sidebar-widget-item">
+            <div class="sidebar-book-title-wrap mb-3">
+                <?php /*if(!empty($trizen_hpa_title)) { */?>
+                    <h3><?php /*echo esc_html($trizen_hpa_title); */?></h3>
+                <?php
+/*                }
+                if(!empty($hotel_regular_price) && !empty($hotel_sale_price)) { */?>
+                    <p>
+                        <span class="text-form"><?php /*esc_html_e('From', 'trizen-helper'); */?></span>
+                        <span class="text-value ml-2 mr-1"><?php /*esc_html_e('$', 'trizen-helper'); echo esc_html($hotel_sale_price); */?></span>
+                        <span class="before-price"><?php /*esc_html_e('$', 'trizen-helper'); echo esc_html($hotel_regular_price); */?></span>
+                    </p>
+                <?php /*} else {
+                    if(!empty($hotel_regular_price)) {
+                        */?>
                         <p>
-                            <span class="text-form"><?php esc_html_e('From', 'trizen-helper'); ?></span>
-                            <span class="text-value ml-2"><?php esc_html_e('$', 'trizen-helper'); echo esc_html($hotel_regular_price); ?></span>
+                            <span class="text-form"><?php /*esc_html_e('From', 'trizen-helper'); */?></span>
+                            <span class="text-value ml-2"><?php /*esc_html_e('$', 'trizen-helper'); echo esc_html($hotel_regular_price); */?></span>
                         </p>
                         <?php
-                    } else {
-                        if(!empty($hotel_sale_price) && empty($hotel_regular_price)) { ?>
+/*                    } else {
+                        if(!empty($hotel_sale_price) && empty($hotel_regular_price)) { */?>
                             <p>
                                 <span class="text-form">
-                                    <?php esc_html_e('We are sorry! First add', 'trizen-helper'); ?><strong><?php esc_html_e(' Regular Price', 'trizen-helper'); ?></strong><?php esc_html_e(' and then sale price!', 'trizen-helper'); ?>
+                                    <?php /*esc_html_e('We are sorry! First add', 'trizen-helper'); */?><strong><?php /*esc_html_e(' Regular Price', 'trizen-helper'); */?></strong><?php /*esc_html_e(' and then sale price!', 'trizen-helper'); */?>
                                 </span>
                             </p>
                             <?php
-                        }
+/*                        }
                     }
-                }?>
+                }*/?>
             </div>
         </div>
         <div class="sidebar-widget-item">
@@ -71,7 +180,7 @@ class trizen_hpa_widget extends WP_Widget {
                 <form action="#">
                     <div class="input-box">
                         <label class="label-text" for="check-in-check-out">
-                            <?php esc_html_e('Check in - Check out', 'trizen-helper'); ?>
+                            <?php /*esc_html_e('Check in - Check out', 'trizen-helper'); */?>
                         </label>
                         <div class="form-group">
                             <span class="la la-calendar form-icon"></span>
@@ -80,26 +189,26 @@ class trizen_hpa_widget extends WP_Widget {
                     </div>
                     <div class="input-box">
                         <label class="label-text" for="select-room">
-                            <?php esc_html_e('Rooms', 'trizen-helper'); ?>
+                            <?php /*esc_html_e('Rooms', 'trizen-helper'); */?>
                         </label>
                         <div class="form-group">
                             <div class="select-contain w-auto">
                                 <select id="select-room" class="select-contain-select">
-                                    <option value="0"><?php esc_html_e('Select Rooms','trizen-helper'); ?></option>
-                                    <option value="1"><?php esc_html_e('1 Room', 'trizen-helper'); ?></option>
-                                    <option value="2"><?php esc_html_e('2 Rooms', 'trizen-helper'); ?></option>
-                                    <option value="3"><?php esc_html_e('3 Rooms', 'trizen-helper'); ?></option>
-                                    <option value="4"><?php esc_html_e('4 Rooms', 'trizen-helper'); ?></option>
-                                    <option value="5"><?php esc_html_e('5 Rooms', 'trizen-helper'); ?></option>
-                                    <option value="6"><?php esc_html_e('6 Rooms', 'trizen-helper'); ?></option>
-                                    <option value="7"><?php esc_html_e('7 Rooms', 'trizen-helper'); ?></option>
-                                    <option value="8"><?php esc_html_e('8 Rooms', 'trizen-helper'); ?></option>
-                                    <option value="9"><?php esc_html_e('9 Rooms', 'trizen-helper'); ?></option>
-                                    <option value="10"><?php esc_html_e('10 Rooms', 'trizen-helper'); ?></option>
-                                    <option value="11"><?php esc_html_e('11 Rooms', 'trizen-helper'); ?></option>
-                                    <option value="12"><?php esc_html_e('12 Rooms', 'trizen-helper'); ?></option>
-                                    <option value="13"><?php esc_html_e('13 Rooms', 'trizen-helper'); ?></option>
-                                    <option value="14"><?php esc_html_e('14 Rooms', 'trizen-helper'); ?></option>
+                                    <option value="0"><?php /*esc_html_e('Select Rooms','trizen-helper'); */?></option>
+                                    <option value="1"><?php /*esc_html_e('1 Room', 'trizen-helper'); */?></option>
+                                    <option value="2"><?php /*esc_html_e('2 Rooms', 'trizen-helper'); */?></option>
+                                    <option value="3"><?php /*esc_html_e('3 Rooms', 'trizen-helper'); */?></option>
+                                    <option value="4"><?php /*esc_html_e('4 Rooms', 'trizen-helper'); */?></option>
+                                    <option value="5"><?php /*esc_html_e('5 Rooms', 'trizen-helper'); */?></option>
+                                    <option value="6"><?php /*esc_html_e('6 Rooms', 'trizen-helper'); */?></option>
+                                    <option value="7"><?php /*esc_html_e('7 Rooms', 'trizen-helper'); */?></option>
+                                    <option value="8"><?php /*esc_html_e('8 Rooms', 'trizen-helper'); */?></option>
+                                    <option value="9"><?php /*esc_html_e('9 Rooms', 'trizen-helper'); */?></option>
+                                    <option value="10"><?php /*esc_html_e('10 Rooms', 'trizen-helper'); */?></option>
+                                    <option value="11"><?php /*esc_html_e('11 Rooms', 'trizen-helper'); */?></option>
+                                    <option value="12"><?php /*esc_html_e('12 Rooms', 'trizen-helper'); */?></option>
+                                    <option value="13"><?php /*esc_html_e('13 Rooms', 'trizen-helper'); */?></option>
+                                    <option value="14"><?php /*esc_html_e('14 Rooms', 'trizen-helper'); */?></option>
                                 </select>
                             </div>
                         </div>
@@ -110,7 +219,7 @@ class trizen_hpa_widget extends WP_Widget {
         <div class="sidebar-widget-item">
             <div class="qty-box mb-2 d-flex align-items-center justify-content-between">
                 <label class="font-size-16" for="adults-num">
-                    <?php esc_html_e('Adults', 'trizen-helper'); ?> <span><?php esc_html_e('Age 18+', 'trizen-helper'); ?></span>
+                    <?php /*esc_html_e('Adults', 'trizen-helper'); */?> <span><?php /*esc_html_e('Age 18+', 'trizen-helper'); */?></span>
                 </label>
                 <div class="qtyBtn d-flex align-items-center">
                     <div class="qtyDec"><i class="la la-minus"></i></div>
@@ -120,7 +229,7 @@ class trizen_hpa_widget extends WP_Widget {
             </div>
             <div class="qty-box mb-2 d-flex align-items-center justify-content-between">
                 <label class="font-size-16" for="children-num">
-                    <?php esc_html_e('Children', 'trizen-helper'); ?> <span><?php esc_html_e('2-12 years old', 'trizen-helper'); ?></span>
+                    <?php /*esc_html_e('Children', 'trizen-helper'); */?> <span><?php /*esc_html_e('2-12 years old', 'trizen-helper'); */?></span>
                 </label>
                 <div class="qtyBtn d-flex align-items-center">
                     <div class="qtyDec"><i class="la la-minus"></i></div>
@@ -129,7 +238,7 @@ class trizen_hpa_widget extends WP_Widget {
                 </div>
             </div>
             <div class="qty-box mb-2 d-flex align-items-center justify-content-between">
-                <label class="font-size-16" for="infants_num"><?php esc_html_e('Infants', 'trizen-helper'); ?> <span><?php esc_html_e('0-2 years old', 'trizen-helper'); ?></span></label>
+                <label class="font-size-16" for="infants_num"><?php /*esc_html_e('Infants', 'trizen-helper'); */?> <span><?php /*esc_html_e('0-2 years old', 'trizen-helper'); */?></span></label>
                 <div class="qtyBtn d-flex align-items-center">
                     <div class="qtyDec"><i class="la la-minus"></i></div>
                     <input id="infants_num" type="text" name="qtyInput" value="0">
@@ -139,20 +248,20 @@ class trizen_hpa_widget extends WP_Widget {
         </div>
         <div class="btn-box pt-2">
             <a href="" class="theme-btn text-center w-100 mb-2">
-                <i class="la la-shopping-cart mr-2 font-size-18"></i><?php esc_html_e('Book Now', 'trizen-helper'); ?>
+                <i class="la la-shopping-cart mr-2 font-size-18"></i><?php /*esc_html_e('Book Now', 'trizen-helper'); */?>
             </a>
             <a href="#" class="theme-btn text-center w-100 theme-btn-transparent">
-                <i class="la la-heart-o mr-2"></i><?php esc_html_e('Add to Wishlist', 'trizen-helper');  ?>
+                <i class="la la-heart-o mr-2"></i><?php /*esc_html_e('Add to Wishlist', 'trizen-helper');  */?>
             </a>
             <div class="d-flex align-items-center justify-content-between pt-2">
                 <a href="#" class="btn theme-btn-hover-gray font-size-15" data-toggle="modal" data-target="#sharePopupForm">
-                    <i class="la la-share mr-1"></i><?php esc_html_e('Share', 'trizen-helper'); ?>
+                    <i class="la la-share mr-1"></i><?php /*esc_html_e('Share', 'trizen-helper'); */?>
                 </a>
                 <p>
-                    <i class="la la-eye mr-1 font-size-15 color-text-2"></i><?php esc_html_e('3456', 'trizen-helper'); ?>
+                    <i class="la la-eye mr-1 font-size-15 color-text-2"></i><?php /*esc_html_e('3456', 'trizen-helper'); */?>
                 </p>
             </div>
-        </div>
+        </div>-->
 
 		<?php
 

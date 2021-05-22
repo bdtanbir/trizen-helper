@@ -58,6 +58,9 @@ require_once TRIZEN_HELPER_PATH.'admin/inc/class.admin.hotel.php';
 require_once TRIZEN_HELPER_PATH.'admin/inc/class.admin.upgrade.data.php';
 require_once TRIZEN_HELPER_PATH.'admin/inc/class.admin.location.relationships.php';
 require_once TRIZEN_HELPER_PATH.'admin/inc/helper/travel-helper.php';
+require_once TRIZEN_HELPER_PATH.'admin/inc/helper/hotel.helper.php';
+//require_once TRIZEN_HELPER_PATH.'inc/class.hotel.php';
+require_once TRIZEN_HELPER_PATH.'inc/class.travelobject.php';
 
 
 add_action( 'wp_ajax_ts_get_availability_hotel', '_get_availability_hotel' );
@@ -286,7 +289,9 @@ function trizen_helper_admin_script()
 		'please_waite'        => __('Please wait...', 'trizen-helper'),
 		'prev_month'          => __('prev month', 'trizen-helper'),
 		'next_month'          => __('next month', 'trizen-helper'),
-		'currency_smbl'       => '$'
+		'currency_smbl'       => '$',
+		'time_format'        => trizen_get_option('time_format', '12h'),
+        'ts_search_nonce'    => wp_create_nonce("ts_search_security"),
 	]);
 
 
@@ -308,7 +313,28 @@ function trizen_helper_admin_script()
 add_action('admin_enqueue_scripts', 'trizen_helper_admin_script');
 
 function trizen_helper_scripts() {
-	wp_enqueue_script('trizen-helper-js', TRIZEN_HELPER_URI .'assets/js/trizen-helper.js', ['jquery'], TRIZEN_HELPER_VERSION, true);
+    wp_enqueue_style(
+        'trizen-helper-css',
+        TRIZEN_HELPER_URI.('assets/css/trizen-helper.css'),
+        '',
+        TRIZEN_HELPER_VERSION
+    );
+
+    wp_enqueue_script(
+        'lib-moment-min',
+        TRIZEN_HELPER_URI . ('assets/js/moment.min.js'),
+        array('jquery'),
+        '1.0.0',
+        true
+    );
+    wp_enqueue_script(
+        'lib-daterangepicker-min',
+        TRIZEN_HELPER_URI . ('assets/js/daterangepicker.js'),
+        array('jquery'),
+        '1.0.0',
+        true
+    );
+	wp_enqueue_script('trizen-helper-js', TRIZEN_HELPER_URI .'assets/js/trizen-helper.js', array('jquery', 'trizen-js'), _S_VERSION, true);
 
 }
 add_action('wp_enqueue_scripts', 'trizen_helper_scripts');
@@ -326,4 +352,97 @@ function get_username($user_id) {
 	} else {
 		return $userdata->user_login;
 	}
+}
+
+if (!function_exists('ts_check_service_available')) {
+    function ts_check_service_available($post_type = false) {
+        if ($post_type) {
+            if (function_exists('ts_options_id')) {
+                $disable_list = ts_traveler_get_option('list_disabled_feature');
+                $disable_list = is_array($disable_list) ? $disable_list : [];
+                if (!empty($disable_list)) {
+                    foreach ($disable_list as $key) {
+                        if ($key == $post_type)
+                            return false;
+                    }
+                }
+            }
+            return true;
+        }
+        return false;
+    }
+}
+
+/** 1.1.4  */
+if (!function_exists('ts_get_page_search_result')) {
+    function ts_get_page_search_result($post_type) {
+        if (empty($post_type))
+            return;
+        switch ($post_type) {
+            case "ts_hotel":
+            case "hotel_room":
+                $page_search = trizen_get_option('hotel_search_result_page');
+                break;
+            case "ts_rental":
+                $page_search = trizen_get_option('rental_search_result_page');
+                break;
+            case "ts_cars":
+                $page_search = trizen_get_option('cars_search_result_page');
+                break;
+            case "ts_activity":
+                $page_search = trizen_get_option('activity_search_result_page');
+                break;
+            case "ts_tours":
+                $page_search = trizen_get_option('tours_search_result_page');
+                break;
+            default :
+                $page_search = false;
+        }
+        return $page_search;
+    }
+}
+
+function ts_get_data_location_from_to($post_id) {
+    global $wpdb;
+    $table = $wpdb->prefix . 'ts_location_relationships';
+    $sql = $wpdb->prepare("SELECT * FROM {$table} WHERE post_id = %d AND location_from <> '' AND location_to <> '' AND location_type = 'location_from_to'", $post_id);
+    return $wpdb->get_results($sql, ARRAY_A);
+}
+
+
+if (!function_exists('ts_get_discount_value')) {
+    function ts_get_discount_value($number, $percent = 0, $format_money = true) {
+        if ($percent > 100)
+            $percent = 100;
+        $rs = $number - ($number / 100) * $percent;
+        if ($format_money)
+            return format_money($rs);
+        return $rs;
+    }
+}
+
+
+if(!function_exists('ts_list_taxonomy')) {
+    function ts_list_taxonomy($post_type='post'){
+        $all = get_object_taxonomies($post_type,'objects');
+        $result=array();
+        $result[__('--Select--','trizen-helper')]=false;
+        if(!empty($all))  {
+            foreach($all as $key=>$value)
+            {
+                $result[$value->label]=$value->name;
+            }
+        }
+        return $result;
+    }
+}
+
+if (function_exists('ts_is_ajax') == false) {
+    function ts_is_ajax() {
+        if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
+            return true;
+        } {
+            return false;
+        }
+    }
 }

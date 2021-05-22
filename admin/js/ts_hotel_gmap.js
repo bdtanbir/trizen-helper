@@ -19,9 +19,9 @@ jQuery(function ($) {
             mapTypeId: "roadmap",
             scrollwheel: true,
         });
-        ts_gmap_input_lat.val(old_lat)
-        ts_gmap_input_lng.val(old_lng)
-        ts_gmap_input_zoom.val(old_zoom)
+        // ts_gmap_input_lat.val(old_lat)
+        // ts_gmap_input_lng.val(old_lng)
+        // ts_gmap_input_zoom.val(old_zoom)
 
         if(ts_gmap_input_lat.val()){
             old_lat = ts_gmap_input_lat.val();
@@ -106,6 +106,7 @@ jQuery(function ($) {
         current_marker=new google.maps.Marker({
             position:new google.maps.LatLng(old_lat,old_lng),
             zoom: old_zoom,
+            center: [old_lat,old_lng],
             map: map
         });
         map.addListener('click', (mapsMouseEnter) => {

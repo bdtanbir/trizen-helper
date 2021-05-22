@@ -61,6 +61,11 @@ function get($index = NULL, $default = false) {
 
 	return $default;
 }
+function timestamp_diff_day($date1,$date2){
+    $total_time= $date2-$date1;
+    $day   = floor($total_time /(3600*24));
+    return $day;
+}
 
 function set_message($message,$type='info')
 {
@@ -797,16 +802,34 @@ function convertDateFormat($date) {
 
 	return '';
 }
-/*if (!function_exists('ts_traveler_get_option')) {
-	function ts_traveler_get_option($option_id, $default = false) {
-		//global $ts_traveler_cached_options;
-		//if ( empty( $ts_traveler_cached_options ) ) $ts_traveler_cached_options = get_option( ts_options_id() );
-		$ts_traveler_cached_options = get_option(ts_options_id());
-		if (isset($ts_traveler_cached_options[$option_id]) && !empty($ts_traveler_cached_options[$option_id]))
-			return $ts_traveler_cached_options[$option_id];
-		return $default;
-	}
-}*/
+
+
+
+function getDateFormatMoment() {
+    $format = trizen_get_option( 'datetime_format', '{mm}/{dd}/{yyyy}' );
+    $ori_format = [
+        '{d}'    => 'D',
+        '{dd}'   => 'DD',
+        '{D}'    => 'D',
+        '{DD}'   => 'l',
+        '{m}'    => 'M',
+        '{mm}'   => 'MM',
+        '{M}'    => 'MMM',
+        '{MM}'   => 'MMMM',
+        '{yy}'   => 'YY',
+        '{yyyy}' => 'YYYY'
+    ];
+    preg_match_all( "/({)[a-zA-Z]+(})/", $format, $out );
+    $out = $out[ 0 ];
+    foreach ( $out as $key => $val ) {
+        foreach ( $ori_format as $ori_key => $ori_val ) {
+            if ( $val == $ori_key ) {
+                $format = str_replace( $val, $ori_val, $format );
+            }
+        }
+    }
+    return $format;
+}
 
 function get_discount_rate($post_id = '', $check_in = ''){
     $post_type = get_post_type($post_id);
@@ -1309,6 +1332,9 @@ function  _change_wc_order_item_rate($items=[]) {
         }
     }
     return $items;
+}
+function get_items() {
+    return isset( $_COOKIE['ts_cart'] ) ? unserialize(stripslashes(gzuncompress(base64_decode($_COOKIE['ts_cart'])))) : [];
 }
 
 function format_money( $money = false, $need_convert = true, $precision = 0 )

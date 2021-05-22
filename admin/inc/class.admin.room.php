@@ -359,6 +359,18 @@ if ( !class_exists( 'TSAdminRoom' ) ) {
         }
 
 
+        static function convert_money_to_default( $money = false ) {
+            if ( !is_numeric( $money ) ) $money = 0;
+            if ( !$money ) $money = 0;
+            $current_rate = self::get_current_currency( 'rate' );
+            $current      = self::get_current_currency( 'name' );
+            $default = self::get_default_currency( 'name' );
+            if ( $current != $default )
+                return $money / $current_rate;
+            return $money;
+        }
+
+
         /**
          * return Default Currency
          * */

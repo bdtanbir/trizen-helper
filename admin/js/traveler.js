@@ -13560,53 +13560,6 @@ jQuery(document).ready(function ($) {
             $(".header-top").css(header_bgr_default)
         }
     }
-
-    var top_ajax_search = $('.st-top-ajax-search');
-    if (top_ajax_search.length) {
-        top_ajax_search.typeahead({hint: !0, highlight: !0, minLength: 3, limit: 8}, {
-            source: function (q, cb) {
-                $('.st-top-ajax-search').parent().addClass('loading');
-                return $.ajax({
-                    dataType: 'json',
-                    type: 'get',
-                    url: ts_params.ajax_url,
-                    data: {
-                        security: ts_params.st_search_nonce,
-                        action: 'st_top_ajax_search',
-                        s: q,
-                        lang: top_ajax_search.data('lang')
-                    },
-                    cache: !0,
-                    success: function (data) {
-                        $('.st-top-ajax-search').parent().removeClass('loading');
-                        var result = [];
-                        if (data.data) {
-                            $.each(data.data, function (index, val) {
-                                result.push({
-                                    value: val.title,
-                                    location_id: val.id,
-                                    type_color: 'success',
-                                    type: val.type,
-                                    url: val.url
-                                })
-                            });
-                            cb(result);
-                            console.log(result)
-                        }
-                    },
-                    error: function (e) {
-                        $('.st-top-ajax-search').parent().removeClass('loading')
-                    }
-                })
-            },
-            templates: {suggestion: Handlebars.compile('<p class="search-line-item"><label class="label label-{{type_color}}">{{type}}</label><strong> {{value}}</strong></p>')}
-        });
-        top_ajax_search.bind('typeahead:selected', function (obj, datum, name) {
-            if (datum.url) {
-                window.location.href = datum.url
-            }
-        })
-    }
     if ($.fn.chosen) {
         $(".chosen_select").chosen()
     }
