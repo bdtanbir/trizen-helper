@@ -11,7 +11,7 @@ $order_id = 0;
 if ( !class_exists( 'TSAdminHotel' ) ) {
 
     class TSAdminHotel {
-        static    $parent_key     = 'trizen_hotel_room_select';
+        static    $parent_key     = 'room_parent';
         static    $booking_page;
         static    $_table_version = "1.0";
         protected $post_type      = 'ts_hotel';
@@ -249,7 +249,7 @@ if ( !class_exists( 'TSAdminHotel' ) ) {
                     FROM {$wpdb->postmeta}
                     JOIN {$wpdb->postmeta} as mt1 ON mt1.post_id = {$wpdb->postmeta}.post_id and mt1.meta_key = 'multi_location'
                     WHERE
-                    {$wpdb->postmeta}.meta_key = 'trizen_hotel_room_select'
+                    {$wpdb->postmeta}.meta_key = 'room_parent'
 
                     AND
 
@@ -353,7 +353,7 @@ if ( !class_exists( 'TSAdminHotel' ) ) {
                     $query  = [
                         'post_type'      => 'hotel_room',
                         'posts_per_page' => 100,
-                        'meta_key'       => 'trizen_hotel_room_select',
+                        'meta_key'       => 'room_parent',
                         'meta_value'     => $hotel_id
                     ];
                     $traver = new WP_Query( $query );
@@ -395,7 +395,7 @@ if ( !class_exists( 'TSAdminHotel' ) ) {
                 $query    = [
                     'post_type'      => 'hotel_room',
                     'posts_per_page' => 999,
-                    'meta_key'       => 'trizen_hotel_room_select',
+                    'meta_key'       => 'room_parent',
                     'meta_value'     => $hotel_id
                 ];
                 $traver   = new WP_Query( $query );
@@ -489,7 +489,7 @@ if ( !class_exists( 'TSAdminHotel' ) ) {
                 'posts_per_page' => 10,
                 'meta_query'     => [
                     [
-                        'key'     => 'trizen_hotel_room_select',
+                        'key'     => 'room_parent',
                         'value'   => $room_parent,
                         'compare' => 'IN',
                     ],
@@ -711,7 +711,7 @@ if ( !class_exists( 'TSAdminHotel' ) ) {
         function add_col_content( $column_name, $post_ID ){
             if ( $column_name == 'hotel_parent' ) {
                 // show content of 'directors_name' column
-                $parent = get_post_meta( $post_ID, 'trizen_hotel_room_select', TRUE );
+                $parent = get_post_meta( $post_ID, 'room_parent', TRUE );
                 if ( $parent ) {
                     echo "<a href='" . get_edit_post_link( $parent ) . "'>" . get_the_title( $parent ) . "</a>";
                 }
@@ -848,7 +848,7 @@ if ( !class_exists( 'TSAdminHotel' ) ) {
                     'order'          => 'DESC',
                     'meta_query'     => [
                         [
-                            'key'     => 'trizen_hotel_room_select',
+                            'key'     => 'room_parent',
                             'value'   => $hotel_id,
                             'compare' => 'IN',
                         ],

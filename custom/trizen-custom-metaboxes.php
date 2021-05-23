@@ -173,12 +173,12 @@ if(!function_exists('trizen_register_meta_boxes')) {
 		update_post_meta( $post_id, $room_gallery_meta_key, $_POST[$room_gallery_meta_key] );
 
 
-		if (isset($_POST['trizen_hotel_room_select'])) {
-			update_post_meta( $post_id, 'trizen_hotel_room_select', $_POST['trizen_hotel_room_select']);
+		if (isset($_POST['room_parent'])) {
+			update_post_meta( $post_id, 'room_parent', $_POST['room_parent']);
 		}
-		if (isset($_POST['discount_type_no_day'])) {
+		/*if (isset($_POST['discount_type_no_day'])) {
 			update_post_meta( $post_id, 'discount_type_no_day', $_POST['discount_type_no_day']);
-		}
+		}*/
 		if (isset($_POST['default_state'])) {
 			update_post_meta( $post_id, 'default_state', $_POST['default_state']);
 		}
@@ -197,6 +197,7 @@ if(!function_exists('trizen_register_meta_boxes')) {
 			'trizen_room_rules_title',
 			'discount_rate',
 			'address',
+			'discount_type_no_day',
 		];
 		foreach ( $fields as $field ) {
 			if ( array_key_exists( $field, $_POST ) ) {

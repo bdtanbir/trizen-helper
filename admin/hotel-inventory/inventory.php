@@ -18,7 +18,7 @@ function ts_fetch_inventory() {
 				'posts_per_page' => -1,
 				'meta_query'     => [
 					[
-						'key'     => 'trizen_hotel_room_select',
+						'key'     => 'room_parent',
 						'value'   => $post_id,
 						'compare' => '='
 					]
@@ -401,7 +401,7 @@ function trizen_insert_availability( $post_id = '', $check_in = '', $check_out =
 			unset($data_insert['infant_price']);
 		}
 		if( $table == 'ts_room_availability' ){
-			$parent_id = get_post_meta($post_id, 'trizen_hotel_room_select', true);
+			$parent_id = get_post_meta($post_id, 'room_parent', true);
 			unset($data_insert['groupday']);
 			$data_insert['post_type']      = 'hotel_room';
 			$data_insert['number']         = get_post_meta($post_id, 'number_room', true);
@@ -443,7 +443,7 @@ function trizen_insert_availability( $post_id = '', $check_in = '', $check_out =
 				unset($data_insert['infant_price']);
 			}
 			if($table == 'ts_room_availability'){
-				$parent_id = get_post_meta($post_id, 'trizen_hotel_room_select', true);
+				$parent_id = get_post_meta($post_id, 'room_parent', true);
 				unset($data_insert['groupday']);
 				$data_insert['post_type']      = 'hotel_room';
 				$data_insert['number']         = get_post_meta($post_id, 'number_room', true);

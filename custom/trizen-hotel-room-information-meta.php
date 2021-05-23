@@ -14,6 +14,7 @@ $trizen_hotel_room_extra_services_data = get_post_meta(get_the_ID(), 'trizen_hot
 $trizen_room_other_facility_data = get_post_meta(get_the_ID(), 'trizen_room_other_facility_data_group', true);
 $trizen_room_rules_data          = get_post_meta(get_the_ID(), 'trizen_room_rules_data_group', true);
 $discount_rate                   = get_post_meta(get_the_ID(), 'discount_rate', true);
+$discount_type            = get_post_meta(get_the_ID(), 'discount_type_no_day', true );
 
 $default = array(
 	'post_type'      => 'ts_hotel',
@@ -150,16 +151,16 @@ $hotel_rooms = new WP_Query($default);
                 </div>
 
 				<div class="form-settings" id="hotel_room_select">
-					<label for="trizen_hotel_room_select" class="title">
+					<label for="room_parent" class="title">
 						<?php esc_html_e('Hotel Room', 'trizen-helper'); ?>
 					</label>
 					<span class="description">
                         <?php esc_html_e('Select a hotel for this type of room', 'trizen-helper'); ?>
                     </span>
                     <?php
-						$hotel_rooms_select = get_post_meta( get_the_ID(), 'trizen_hotel_room_select', true );
+						$hotel_rooms_select = get_post_meta( get_the_ID(), 'room_parent', true );
 					    ?>
-                    <select id="trizen_hotel_room_select" class="select-to-select2" name="trizen_hotel_room_select">
+                    <select id="room_parent" class="select-to-select2" name="room_parent">
                         <?php while ($hotel_rooms->have_posts()) { $hotel_rooms->the_post();
 	                        $title_one  = get_the_title();
 	                        $postid_one = get_the_ID();
@@ -311,20 +312,17 @@ $hotel_rooms = new WP_Query($default);
 				</div>
 
                 <div class="form-settings" id="room_discount_type_setting">
-                    <label for="price" class="title">
+                    <label for="discount_type_no_day" class="title">
                         <?php esc_html_e('Discount Type', 'trizen-helper'); ?>
                     </label>
                     <span class="description">
                         <?php esc_html_e('This only use for discount by number of days. Calculation by: % or fixed', 'trizen-helper'); ?>
                     </span>
-                    <?php
-                    $discount_type_no_day = get_post_meta( get_the_ID(), 'discount_type_no_day', true );
-                    ?>
                     <select name="discount_type_no_day" id="discount_type_no_day">
-                        <option value='percent' <?php echo selected( $discount_type_no_day, 'percent') ?>>
+                        <option value="percent" <?php if($discount_type === 'percent') echo 'selected'; ?>>
                             Percent
                         </option>
-                        <option value='amount' <?php echo selected( $discount_type_no_day, 'amount') ?>>
+                        <option value="amount" <?php if($discount_type === 'amount') echo 'selected'; ?>>
                             Amount
                         </option>
                     </select>

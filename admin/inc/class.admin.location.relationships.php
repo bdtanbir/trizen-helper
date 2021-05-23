@@ -49,9 +49,9 @@ if ( !class_exists( 'TSLocationRelationships' ) ) {
                 }
             }
             if ( $post_type == "hotel_room" ) {
-                $hotel_id = get_post_meta( $post_id, 'trizen_hotel_room_select', 'true' );
+                $hotel_id = get_post_meta( $post_id, 'room_parent', 'true' );
                 if ( empty( $hotel_id ) ) {
-                    $hotel_id = request( 'trizen_hotel_room_select' );
+                    $hotel_id = request( 'room_parent' );
                 }
                 $multi_location_hotel = get_post_meta( $hotel_id, 'multi_location', true );
                 if ( !empty( $multi_location_hotel ) ) {

@@ -1114,7 +1114,7 @@ if ( !class_exists( 'TSAdminRoom' ) ) {
             $post_id     = post_origin($post_id);
             $adult_price = floatval( request( 'calendar_adult_price', '' ) );
             $child_price = floatval( request( 'calendar_child_price', '' ) );
-            $parent_id   = get_post_meta($post_id, 'trizen_hotel_room_select', true);
+            $parent_id   = get_post_meta($post_id, 'room_parent', true);
             for ($i = $check_in; $i <= $check_out; $i = strtotime('+1 day', $i)) {
                 $data = [
                     'post_id'     => $post_id,
@@ -1171,7 +1171,7 @@ if ( !class_exists( 'TSAdminRoom' ) ) {
         static function _get_min_max_date_ordered_new($room_id, $start, $end){
             if ( !TSAdminRoom::checkTableDuplicate( 'ts_hotel' ) ) return '';
             global $wpdb;
-            $hotel_id = intval( get_post_meta( $room_id, 'trizen_hotel_room_select', true ) );
+            $hotel_id = intval( get_post_meta( $room_id, 'room_parent', true ) );
             if ( !empty( $hotel_id ) ) {
                 $key_post_type = "ts_hotel";
             } else {
@@ -1198,7 +1198,7 @@ if ( !class_exists( 'TSAdminRoom' ) ) {
         static function _get_full_ordered_new($room_id, $start, $end){
             if ( !TSAdminRoom::checkTableDuplicate( 'ts_hotel' ) ) return '';
 
-            $hotel_id = intval( get_post_meta( $room_id, 'trizen_hotel_room_select', true ) );
+            $hotel_id = intval( get_post_meta( $room_id, 'room_parent', true ) );
             if ( !empty( $hotel_id ) ) {
                 $key_post_type = "ts_hotel";
             } else {
@@ -1310,7 +1310,7 @@ if ( !class_exists( 'TSAdminRoom' ) ) {
             $check_in    = request( 'start', '' );
             $check_out   = request( 'end', '' );
             $room_origin = post_origin( $room_id );
-            $hotel_id    = intval( get_post_meta( $room_origin, 'trizen_hotel_room_select', true ) );
+            $hotel_id    = intval( get_post_meta( $room_origin, 'room_parent', true ) );
 
             $discount_type=get_post_meta($room_id,'discount_type_no_day',true);
             $discount=get_post_meta($room_id,'discount_rate',true);
@@ -1514,7 +1514,7 @@ if ( !class_exists( 'TSAdminRoom' ) ) {
             while ($rooms->have_posts()) {
                 $rooms->the_post();
                 $price          = get_post_meta(get_the_ID(),'price',true);
-                $parent         = get_post_meta(get_the_ID(),'trizen_hotel_room_select',true);
+                $parent         = get_post_meta(get_the_ID(),'room_parent',true);
                 $status         = get_post_meta(get_the_ID(),'default_state',true);
                 $number         = get_post_meta(get_the_ID(),'number_room',true);
                 $allow_full_day = get_post_meta(get_the_ID(),'allow_full_day',true);
@@ -1547,7 +1547,7 @@ if ( !class_exists( 'TSAdminRoom' ) ) {
             $table = 'ts_room_availability';
 
             $price          = get_post_meta($post_id,'price',true);
-            $parent         = get_post_meta($post_id,'trizen_hotel_room_select',true);
+            $parent         = get_post_meta($post_id,'room_parent',true);
             $status         = get_post_meta($post_id,'default_state',true);
             $number         = get_post_meta($post_id,'number_room',true);
             $allow_full_day = get_post_meta($post_id,'allow_full_day',true);
@@ -1618,7 +1618,7 @@ if ( !class_exists( 'TSAdminRoom' ) ) {
 
         public function posts_join_hotel_room( $join ) {
             global $wpdb;
-            $join .= " inner join {$wpdb->prefix}postmeta as mt2 on mt2.post_id = {$wpdb->prefix}posts.ID and mt2.meta_key='trizen_hotel_room_select' ";
+            $join .= " inner join {$wpdb->prefix}postmeta as mt2 on mt2.post_id = {$wpdb->prefix}posts.ID and mt2.meta_key='room_parent' ";
 
             return $join;
         }
@@ -1701,7 +1701,7 @@ if ( !class_exists( 'TSAdminRoom' ) ) {
                     $query = [
                         'post_type'      => 'hotel_room',
                         'posts_per_page' => -1,
-                        'meta_key'       => 'trizen_hotel_room_select',
+                        'meta_key'       => 'room_parent',
                         'meta_value'     => $hotel_id,
                         'post_status'    => array( 'publish' )
                     ];
@@ -1727,14 +1727,14 @@ if ( !class_exists( 'TSAdminRoom' ) ) {
                 }
             }
             if ( $post_type == 'hotel_room' ) {
-                $hotel_id = get_post_meta( $post_id, 'trizen_hotel_room_select', true );
+                $hotel_id = get_post_meta( $post_id, 'room_parent', true );
                 if ( !empty( $hotel_id ) ) {
                     $is_auto_caculate = get_post_meta( $hotel_id, 'is_auto_caculate', true );
                     if ( $is_auto_caculate != 'off' ) {
                         $query  = [
                             'post_type'      => 'hotel_room',
                             'posts_per_page' => 999,
-                            'meta_key'       => 'trizen_hotel_room_select',
+                            'meta_key'       => 'room_parent',
                             'meta_value'     => $hotel_id
                         ];
                         $traver = new WP_Query( $query );
@@ -1777,7 +1777,7 @@ if ( !class_exists( 'TSAdminRoom' ) ) {
                 $query = [
                     'post_type'      => 'hotel_room',
                     'posts_per_page' => -1,
-                    'meta_key'       => 'trizen_hotel_room_select',
+                    'meta_key'       => 'room_parent',
                     'meta_value'     => $hotel_id,
                     'post_status'    => array('publish')
                 ];
@@ -1859,12 +1859,12 @@ if ( !class_exists( 'TSAdminRoom' ) ) {
                 }
             }
             if ( $post_type == 'hotel_room' ) {
-                $hotel_id = get_post_meta( $post_id, 'trizen_hotel_room_select', true );
+                $hotel_id = get_post_meta( $post_id, 'room_parent', true );
                 if ( !empty( $hotel_id ) ) {
                     $query  = [
                         'post_type'      => 'hotel_room',
                         'posts_per_page' => 999,
-                        'meta_key'       => 'trizen_hotel_room_select',
+                        'meta_key'       => 'room_parent',
                         'meta_value'     => $hotel_id
                     ];
                     $traver = new WP_Query( $query );
@@ -1954,7 +1954,7 @@ if ( !class_exists( 'TSAdminRoom' ) ) {
                 $num_rows       = TSAdminRoom::checkIssetPost( $id, 'hotel_room' );
                 $allow_full_day = get_post_meta( $id, 'allow_full_day', true ); // address
                 $data           = [
-                    'room_parent'    => get_post_meta( $id, 'trizen_hotel_room_select', true ),
+                    'room_parent'    => get_post_meta( $id, 'room_parent', true ),
                     'multi_location' => get_post_meta( $id, 'multi_location', true ),
                     'id_location'    => get_post_meta( $id, 'id_location', true ),
                     'address'        => get_post_meta( $id, 'address', true ),
@@ -1983,7 +1983,7 @@ if ( !class_exists( 'TSAdminRoom' ) ) {
                 $model->where('post_id',$id)
                     ->where("check_in >= UNIX_TIMESTAMP(CURRENT_DATE)", true, false)
                     ->update(array(
-                        'parent_id'      => $data['trizen_hotel_room_select'],
+                        'parent_id'      => $data['room_parent'],
                         'allow_full_day' => $data['allow_full_day'],
                         'number'         => $data['number_room'],
                         'adult_number'   => $data['adult_number'],
@@ -1998,7 +1998,7 @@ if ( !class_exists( 'TSAdminRoom' ) ) {
                         'adult_price' => $data['adult_price'],
                         'child_price' => $data['child_price'],
                     ));
-                $model->where('post_id', $id)->update(['parent_id' => get_post_meta( $id, 'trizen_hotel_room_select', true )]);
+                $model->where('post_id', $id)->update(['parent_id' => get_post_meta( $id, 'room_parent', true )]);
             }
         }
 
@@ -2029,7 +2029,7 @@ if ( !class_exists( 'TSAdminRoom' ) ) {
             $query = [
                 'post_type'      => 'hotel_room',
                 'posts_per_page' => 100,
-                'meta_key'       => 'trizen_hotel_room_select',
+                'meta_key'       => 'room_parent',
                 'meta_value'     => $hotel_id
             ];
             if ( $room_id ) {
@@ -2073,7 +2073,7 @@ if ( !class_exists( 'TSAdminRoom' ) ) {
                 return;
             if ( $post_type == 'hotel_room' ) {
                 //Update old room and new room
-                if ( $meta_key == 'trizen_hotel_room_select' ) {
+                if ( $meta_key == 'room_parent' ) {
                     $old = get_post_meta( $object_id, $meta_key, true );
                     if ( $old != $meta_value ) {
                         $this->_do_update_hotel_min_price( $old, false, $object_id );
@@ -2087,7 +2087,7 @@ if ( !class_exists( 'TSAdminRoom' ) ) {
 
         function meta_updated_update_min_price( $meta_id, $object_id, $meta_key, $meta_value ){
             if ( $meta_key == 'price' ) {
-                $hotel_id = get_post_meta( $object_id, 'trizen_hotel_room_select', true );
+                $hotel_id = get_post_meta( $object_id, 'room_parent', true );
                 $this->_do_update_hotel_min_price( $hotel_id );
             }
         }

@@ -327,7 +327,7 @@ if ( !class_exists( 'TSHotel' ) ) {
                         'posts_per_page' => -1,
                         'meta_query'     => [
                             [
-                                'key'     => 'trizen_hotel_room_select',
+                                'key'     => 'room_parent',
                                 'value'   => $post_id,
                                 'compare' => '='
                             ]
@@ -447,7 +447,7 @@ if ( !class_exists( 'TSHotel' ) ) {
             $result = get_availability( $base_id, $check_in, $check_out );
 
             $number         = get_post_meta( $base_id, 'number_room', true );
-            $parent_id      = get_post_meta( $base_id, 'trizen_hotel_room_select', true );
+            $parent_id      = get_post_meta( $base_id, 'room_parent', true );
             $booking_period = get_post_meta( $parent_id, 'hotel_booking_period', true );
             $allow_full_day = get_post_meta( $base_id, 'allow_full_day', true );
             $adult_number   = get_post_meta( $base_id, 'adult_number', true );
@@ -903,7 +903,7 @@ if ( !class_exists( 'TSHotel' ) ) {
                 select DISTINCT ID from {$wpdb->posts}
                 join {$wpdb->postmeta}
                 on {$wpdb->postmeta} .post_id = {$wpdb->posts}.ID
-                and {$wpdb->postmeta} .meta_key = 'trizen_hotel_room_select' and {$wpdb->postmeta} .meta_value =  {$post_id}
+                and {$wpdb->postmeta} .meta_key = 'room_parent' and {$wpdb->postmeta} .meta_value =  {$post_id}
                 and {$wpdb->posts}.post_status = 'publish'
             " );
             return ( count( $query_count ) );
@@ -1349,14 +1349,15 @@ if ( !class_exists( 'TSHotel' ) ) {
 
 
         function ajax_search_room() {
-            if ( ts_is_ajax() and post( 'room_search' ) ) {
+//            if ( ts_is_ajax() and post( 'room_search' ) ) {
+            if ( post( 'room_search' ) ) {
                 $result = [
                     'status' => 1,
                     'data'   => "",
                 ];
                 $hotel_id              = get_the_ID();
                 $post                  = request();
-                $post[ 'trizen_hotel_room_select' ] = $hotel_id;
+                $post[ 'room_parent' ] = $hotel_id;
 
                 //Check Date
                 $today = date( 'm/d/Y' );
@@ -1452,7 +1453,7 @@ if ( !class_exists( 'TSHotel' ) ) {
             global $wpdb;
             if ( !$groupby or strpos( $wpdb->posts . '.ID', $groupby ) === false ) {
                 //$post_id        = get_the_ID();
-                $post_id = post( 'trizen_hotel_room_select', get_the_ID() );
+                $post_id = post( 'room_parent', get_the_ID() );
                 $check_in       = strtotime( convertDateFormat( request( 'start' ) ) );
                 $check_out      = strtotime( convertDateFormat( request( 'end' ) ) );
                 $allow_full_day = get_post_meta( $post_id, 'allow_full_day', true );
@@ -1556,7 +1557,7 @@ if ( !class_exists( 'TSHotel' ) ) {
 
                         $where .= " AND $wpdb->posts.ID in ((SELECT {$wpdb->postmeta}.meta_value
                         FROM {$wpdb->postmeta}
-                        WHERE {$wpdb->postmeta}.meta_key='trizen_hotel_room_select'
+                        WHERE {$wpdb->postmeta}.meta_key='room_parent'
                         AND  {$wpdb->postmeta}.post_id NOT IN(
                             SELECT room_id FROM (
                                 SELECT count(ts_meta6.meta_value) as total,
@@ -1611,7 +1612,7 @@ if ( !class_exists( 'TSHotel' ) ) {
                                     ) as min_price
 
                                     from {$wpdb->posts}
-                                    JOIN {$wpdb->postmeta} on {$wpdb->postmeta}.meta_value={$wpdb->posts}.ID and {$wpdb->postmeta}.meta_key='trizen_hotel_room_select'
+                                    JOIN {$wpdb->postmeta} on {$wpdb->postmeta}.meta_value={$wpdb->posts}.ID and {$wpdb->postmeta}.meta_key='room_parent'
                                     JOIN {$wpdb->postmeta} as ts_meta1 on ts_meta1.post_id={$wpdb->postmeta}.post_id AND ts_meta1.meta_key='price'
                                     LEFT JOIN {$wpdb->postmeta} as ts_meta2 on ts_meta2.post_id={$wpdb->postmeta}.post_id AND ts_meta2.meta_key='is_sale_schedule'
                                     LEFT JOIN {$wpdb->postmeta} as ts_meta3 on ts_meta3.post_id={$wpdb->postmeta}.post_id AND ts_meta3.meta_key='discount_rate'
@@ -2158,7 +2159,7 @@ if ( !class_exists( 'TSHotel' ) ) {
                 where meta_key='item_id'
                 and meta_value in (
                     SELECT ID from {$wpdb->posts}
-                    join " . $wpdb->postmeta . " on " . $wpdb->posts . ".ID=" . $wpdb->postmeta . ".post_id and " . $wpdb->postmeta . ".meta_key='trizen_hotel_room_select'
+                    join " . $wpdb->postmeta . " on " . $wpdb->posts . ".ID=" . $wpdb->postmeta . ".post_id and " . $wpdb->postmeta . ".meta_key='room_parent'
                     where post_type='hotel_room'
                     and " . $wpdb->postmeta . ".meta_value='" . $this->hotel_id . "'
                 )
@@ -2248,7 +2249,7 @@ if ( !class_exists( 'TSHotel' ) ) {
             $query = [
                 'post_type'      => 'hotel_room',
                 'posts_per_page' => 100,
-                'meta_key'       => 'trizen_hotel_room_select',
+                'meta_key'       => 'room_parent',
                 'meta_value'     => $post_id
             ];
             $q = new WP_Query( $query );
@@ -2323,7 +2324,7 @@ if ( !class_exists( 'TSHotel' ) ) {
                   LEFT JOIN {$wpdb->postmeta} as ts_meta3 on ts_meta3.post_id={$wpdb->postmeta}.post_id AND ts_meta3.meta_key='discount_rate'
                   LEFT JOIN {$wpdb->postmeta} as ts_meta4 on ts_meta4.post_id={$wpdb->postmeta}.post_id AND ts_meta4.meta_key='sale_price_to'
                   LEFT JOIN {$wpdb->postmeta} as ts_meta5 on ts_meta5.post_id={$wpdb->postmeta}.post_id AND ts_meta5.meta_key='sale_price_from'
-                  WHERE ts_meta1.meta_key='trizen_hotel_room_select' AND {$wpdb->postmeta}.meta_key='price')
+                  WHERE ts_meta1.meta_key='room_parent' AND {$wpdb->postmeta}.meta_key='price')
         as orgin_price_table";
 
             $data = $wpdb->get_row( $query );
@@ -2471,9 +2472,9 @@ if ( !class_exists( 'TSHotel' ) ) {
             $rs = [];
             if(!empty($count_room_by_hotel)){
                 foreach ($count_room_by_hotel as $kc => $vc){
-                    if(isset($freqs[$vc['trizen_hotel_room_select']])) {
-                        if ($freqs[$vc['trizen_hotel_room_select']] >= $vc['number_room'])
-                            $rs[] = $vc['trizen_hotel_room_select'];
+                    if(isset($freqs[$vc['room_parent']])) {
+                        if ($freqs[$vc['room_parent']] >= $vc['number_room'])
+                            $rs[] = $vc['room_parent'];
                     }
                 }
             }

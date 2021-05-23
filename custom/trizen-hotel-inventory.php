@@ -10,7 +10,7 @@ $args = [
 	'posts_per_page' => -1,
 	'meta_query'     => [
 		[
-			'key'     => 'trizen_hotel_room_select',
+			'key'     => 'room_parent',
 			'value'   => $post_id,
 			'compare' => '='
 		]

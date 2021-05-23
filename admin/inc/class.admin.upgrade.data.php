@@ -58,7 +58,7 @@ if ( !class_exists( 'STUpgradeData' ) ) {
             $properties = get_post_meta( $post_id, 'properties_near_by', true );
 
             global $wpdb;
-            $sql = "DELETE FROM {$wpdb->prefix}st_properties WHERE post_id = {$post_id}";
+            $sql = "DELETE FROM {$wpdb->prefix}ts_properties WHERE post_id = {$post_id}";
             $wpdb->query( $sql );
             if ( !empty( $properties ) ) {
                 foreach ( $properties as $key => $val ) {
@@ -72,7 +72,7 @@ if ( !class_exists( 'STUpgradeData' ) ) {
                         'lat'         => esc_sql( $val[ 'map_lat' ] ),
                         'lng'         => esc_sql( $val[ 'map_lng' ] ),
                     ];
-                    $wpdb->insert( $wpdb->prefix . 'st_properties', $data );
+                    $wpdb->insert( $wpdb->prefix . 'ts_properties', $data );
                 }
             }
         }
@@ -190,7 +190,7 @@ if ( !class_exists( 'STUpgradeData' ) ) {
         {
             global $wpdb;
             $dbhelper = new DatabaseHelper( '1.0.0' );
-            $dbhelper->setTableName( 'st_properties' );
+            $dbhelper->setTableName( 'ts_properties' );
             $column = [
                 'id'          => [
                     'type'           => 'bigint',
@@ -231,8 +231,7 @@ if ( !class_exists( 'STUpgradeData' ) ) {
 
         }
 
-        public function _check_table_location_relationships()
-        {
+        public function _check_table_location_relationships() {
             global $wpdb;
             $dbhelper = new DatabaseHelper( '1.0.0' );
             $dbhelper->setTableName( $this->table_relationships );

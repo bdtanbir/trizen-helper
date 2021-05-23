@@ -19,8 +19,7 @@ define( 'TRIZEN_HELPER_VERSION', '1.0' );
 
 add_action('plugins_loaded', 'trizen_helper_load');
 
-function trizen_helper_load()
-{
+function trizen_helper_load() {
 	require_once TRIZEN_HELPER_PATH.'widgets/trizen-social-profile.php';
 	require_once TRIZEN_HELPER_PATH.'widgets/trizen-recent-post-with-thumbnail.php';
 	require_once TRIZEN_HELPER_PATH.'custom/trizen-custom-post-types.php';
@@ -114,7 +113,7 @@ function _get_availability_hotel()
                 unset($item_ori);
             }
             if (!$in_date) {
-                $parent_id = get_post_meta($post_id, 'trizen_hotel_room_select', true);
+                $parent_id = get_post_meta($post_id, 'room_parent', true);
                 TS_Hotel_Room_Availability::inst()->insertOrUpdate([
                     'post_id'   => $post_id,
                     'check_in'  => $i,

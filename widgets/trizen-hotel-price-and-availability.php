@@ -140,6 +140,7 @@ class trizen_hpa_widget extends WP_Widget {
                            name="submit"
                            value="<?php echo esc_html__('Check Availability', 'trizen-helper') ?>">
                 </div>
+                <div class="message-wrapper mt-5"></div>
             </form>
 
         <!--<div class="sidebar-widget-item">

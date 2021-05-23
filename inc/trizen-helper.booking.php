@@ -108,7 +108,7 @@ function __cronjob_fill_availability($offset=0, $limit=-1, $day=null) {
     {
         $rooms->the_post();
         $price=get_post_meta(get_the_ID(),'price',true);
-        $parent=get_post_meta(get_the_ID(),'trizen_hotel_room_select',true);
+        $parent=get_post_meta(get_the_ID(),'room_parent',true);
         $status=get_post_meta(get_the_ID(),'default_state',true);
         $number=get_post_meta(get_the_ID(),'number_room',true);
 //        $allow_full_day=get_post_meta(get_the_ID(),'allow_full_day',true);
@@ -211,7 +211,7 @@ function getRoomPriceOnlyCustomPrice($room_id = '', $check_in = '', $check_out =
     $default_state = get_post_meta($room_id, 'default_state', true);
     if(!$default_state) $default_state = 'available';
 
-	$hotel_id = get_post_meta($room_id, 'trizen_hotel_room_select', true);
+	$hotel_id = get_post_meta($room_id, 'room_parent', true);
 
 	if(get_post_type($room_id) == 'hotel_room'){
 		$price_ori = floatval(get_post_meta($room_id, 'trizen_hotel_regular_price', true));
@@ -448,7 +448,7 @@ function getCouponPrice(){
 ////	$result = get_availability( $base_id, $check_in, $check_out );
 //
 //	$number         = get_post_meta( $base_id, 'number_room', true );
-//	$parent_id      = get_post_meta( $base_id, 'trizen_hotel_room_select', true );
+//	$parent_id      = get_post_meta( $base_id, 'room_parent', true );
 ////	$booking_period = get_post_meta( $parent_id, 'hotel_booking_period', true );
 ////	$allow_full_day = get_post_meta( $base_id, 'allow_full_day', true );
 //	$adult_number   = get_post_meta( $base_id, 'trizen_room_facility_num_of_adults', true );
@@ -533,7 +533,7 @@ function get_current_availability($post_id, $max_people)
 		$booking_period = intval(get_post_meta($post_id, 'tours_booking_period', true));
 	}elseif($post_type == 'hotel_room'){
 		$table = $wpdb->prefix . 'ts_room_availability';
-		$hotel_id = get_post_meta($post_id, 'trizen_hotel_room_select', true);
+		$hotel_id = get_post_meta($post_id, 'room_parent', true);
 		if(!empty($hotel_id)){
 			$booking_period = intval(get_post_meta($hotel_id, 'hotel_booking_period', true));
 		}else{

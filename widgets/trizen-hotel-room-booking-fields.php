@@ -38,7 +38,7 @@ class trizen_hrbf_widget extends WP_Widget {
 
 		while ( have_posts() ): the_post();
 		$room_id   = get_the_ID();
-		$hotel_id  = get_post_meta( get_the_ID(), 'trizen_hotel_room_select', true );
+		$hotel_id  = get_post_meta( get_the_ID(), 'room_parent', true );
 
         $adult_number = request( 'adult_number', 1 );
         $child_number = request( 'child_number', '' );

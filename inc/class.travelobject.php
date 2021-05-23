@@ -589,7 +589,7 @@ sin( radians( mt1.meta_value ) ) ) ) AS distance
 
     static function get_orgin_booking_id($item_id) {
         if (get_post_type($item_id) == 'hotel_room') {
-            if ($hotel_id = get_post_meta($item_id, 'trizen_hotel_room_select', true)) {
+            if ($hotel_id = get_post_meta($item_id, 'room_parent', true)) {
                 $item_id = $hotel_id;
             }
         }
