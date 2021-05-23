@@ -14,7 +14,8 @@ $trizen_hotel_room_extra_services_data = get_post_meta(get_the_ID(), 'trizen_hot
 $trizen_room_other_facility_data = get_post_meta(get_the_ID(), 'trizen_room_other_facility_data_group', true);
 $trizen_room_rules_data          = get_post_meta(get_the_ID(), 'trizen_room_rules_data_group', true);
 $discount_rate                   = get_post_meta(get_the_ID(), 'discount_rate', true);
-$discount_type            = get_post_meta(get_the_ID(), 'discount_type_no_day', true );
+$discount_type                   = get_post_meta(get_the_ID(), 'discount_type_no_day', true );
+$hotel_rooms_select              = get_post_meta( get_the_ID(), 'room_parent', true );
 
 $default = array(
 	'post_type'      => 'ts_hotel',
@@ -157,9 +158,6 @@ $hotel_rooms = new WP_Query($default);
 					<span class="description">
                         <?php esc_html_e('Select a hotel for this type of room', 'trizen-helper'); ?>
                     </span>
-                    <?php
-						$hotel_rooms_select = get_post_meta( get_the_ID(), 'room_parent', true );
-					    ?>
                     <select id="room_parent" class="select-to-select2" name="room_parent">
                         <?php while ($hotel_rooms->have_posts()) { $hotel_rooms->the_post();
 	                        $title_one  = get_the_title();
@@ -319,17 +317,16 @@ $hotel_rooms = new WP_Query($default);
                         <?php esc_html_e('This only use for discount by number of days. Calculation by: % or fixed', 'trizen-helper'); ?>
                     </span>
                     <select name="discount_type_no_day" id="discount_type_no_day">
-                        <option value="percent" <?php if($discount_type === 'percent') echo 'selected'; ?>>
-                            Percent
+                        <option value="percent" <?php if($discount_type === 'percent') esc_attr_e('selected', 'trizen-helper'); ?>>
+                            <?php esc_html_e('Percent', 'trizen-helper'); ?>
                         </option>
-                        <option value="amount" <?php if($discount_type === 'amount') echo 'selected'; ?>>
-                            Amount
+                        <option value="amount" <?php if($discount_type === 'amount') esc_attr_e('selected', 'trizen-helper'); ?>>
+                            <?php esc_html_e('Amount', 'trizen-helper'); ?>
                         </option>
                     </select>
                 </div>
 
                 <div class="form-settings" id="room_discount_rate_field">
-
                     <div class="form-group">
                         <label for="discount_rate" class="title">
                             <?php esc_html_e('Discount Rate (%)', 'trizen-helper'); ?>
