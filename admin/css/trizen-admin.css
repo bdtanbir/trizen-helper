@@ -1565,6 +1565,7 @@ button {
     border-radius: 50%;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     transition: .3s;
+    z-index: 1;
 }
 .nice-checkbox input:checked~span {
     background: #287dfa;
