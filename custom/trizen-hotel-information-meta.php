@@ -21,7 +21,13 @@ $trizen_hotel_faqs_data    = get_post_meta(get_the_ID(), 'trizen_hotel_faqs_data
 $trizen_hotel_faqs_title   =  get_post_meta(get_the_ID(), 'trizen_hotel_faqs_title', true);
 $trizen_hotel_faqs_content =   get_post_meta(get_the_ID(), 'trizen_hotel_faqs_content', true);
 $google_api_key            =   get_post_meta(get_the_ID(), 'gmap_apikey', true);
+$enable_gmap               =   get_post_meta(get_the_ID(), 'enable_google_map', true);
 
+if($enable_gmap == 1) {
+    $gmap_show = '';
+} else {
+    $gmap_show = 'hidden';
+}
 $args = [
     'post_type' => 'post'
 ];
@@ -111,7 +117,30 @@ $query = new WP_Query($args)
                     </div>
                 </div>
 
-                <div class="form-settings" id="gmap_apikey_setting">
+                <div class="form-settings" id="enable_google_map_setting">
+                    <label for="enable_google_map" class="title">
+                        <?php esc_html_e('Enable Google Map', 'trizen-helper'); ?>
+                    </label>
+                    <span class="description">
+                        <?php esc_html_e('Enable this option if you want to show google map', 'trizen-helper'); ?>
+                    </span>
+                    <?php
+                        $is_checked = ($enable_gmap == 1) ? 'checked' : '';
+                    ?>
+                    <div class="form-input">
+                        <div class="nice-checkbox">
+                            <input
+                                type="checkbox"
+                                name="enable_google_map"
+                                id="enable_google_map"
+                                value="<?php esc_html_e('1', 'trizen-helper'); ?>"
+                                <?php echo esc_attr($is_checked); ?>/>
+                            <span></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-settings <?php echo esc_attr($gmap_show); ?>" id="gmap_apikey_setting">
                     <label for="gmap_apikey" class="title">
                         <?php esc_html_e('Google Api key', 'trizen-helper'); ?>
                     </label>
@@ -128,7 +157,7 @@ $query = new WP_Query($args)
                     </div>
                 </div>
 
-                <div class="form-settings" id="location_map_setting">
+                <div class="form-settings <?php echo esc_attr($gmap_show); ?>" id="location_map_setting">
                     <label for="address" class="title">
                         <?php esc_html_e('Location on map', 'trizen-helper'); ?>
                     </label>

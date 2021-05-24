@@ -339,6 +339,13 @@ jQuery(function ($) {
         })
     }
 
+    if($("#enable_google_map_setting .nice-checkbox input").length) {
+        $("#enable_google_map_setting .nice-checkbox input").on('click', function () {
+            $("#gmap_apikey_setting").toggleClass('hidden');
+            $("#location_map_setting").toggleClass('hidden');
+        });
+    }
+
 });
 
 

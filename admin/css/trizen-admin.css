@@ -1527,6 +1527,69 @@ button {
     padding-top: 7px;
 }
 
+.nice-checkbox {
+    display: inline-block;
+    width: 55px;
+    height: 24px;
+    position: relative;
+}
+.nice-checkbox span {
+    display: inline-block;
+    width: 55px;
+    background: #eee;
+    border-radius: 30px;
+    height: 24px;
+    cursor: pointer;
+    position: relative;
+    transition: .3s;
+}
+.nice-checkbox input {
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+    border-radius: 30px;
+    position: absolute;
+    left: 0;
+    top: 4px;
+    z-index: 9;
+}
+.nice-checkbox span:before {
+    content: '';
+    position: absolute;
+    left: 4px;
+    top: 3px;
+    width: 18px;
+    height: 18px;
+    background: white;
+    border-radius: 50%;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    transition: .3s;
+}
+.nice-checkbox input:checked~span {
+    background: #287dfa;
+}
+.nice-checkbox input:checked~span:before {
+    left: 33px;
+}
+.nice-checkbox span:after {
+    content: 'OFF';
+    position: absolute;
+    color: #000;
+    left: 28px;
+    top: 4px;
+    font-size: 11px;
+    font-weight: 500;
+    transition: .3s;
+}
+.nice-checkbox input:checked~span:after {
+    content: 'ON';
+    color: #fff;
+    left: 6px;
+    top: 4px;
+    font-size: 11px;
+    font-weight: 500;
+}
 
 
 

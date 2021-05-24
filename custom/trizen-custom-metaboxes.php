@@ -72,6 +72,9 @@ if(!function_exists('trizen_register_meta_boxes')) {
             delete_post_meta( $post_id, 'multi_location' );
         }
 
+        $visible = isset( $_POST['enable_google_map'] ) && $_POST['enable_google_map'] == 1;
+        $visible = (int)$visible;
+        update_post_meta( $post_id,  'enable_google_map', $visible );
 
 		$fields = [
 			'address',
