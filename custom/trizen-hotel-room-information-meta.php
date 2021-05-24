@@ -77,10 +77,10 @@ $hotel_rooms = new WP_Query($default);
                                 foreach ($html_location as $key => $location):
                                     ?>
                                     <div class="location-list" data-name="<?php echo esc_attr($location['parent_name']); ?>" style="margin-left: <?php echo esc_attr( $location['level']) . 'px;'; ?>">
-                                        <label for="<?php echo 'location-' . esc_attr($location['ID']); ?>">
-                                            <input <?php if (in_array('_' . $location['ID'] . '_', $multi_location)) echo 'checked'; ?>
+                                        <label for="<?php echo esc_attr__('location-', 'trizen-helper') . esc_attr($location['ID']); ?>">
+                                            <input <?php if (in_array('_' . $location['ID'] . '_', $multi_location)) echo esc_attr__('checked', 'trizen-helper'); ?>
                                                     type="checkbox"
-                                                    id="<?php echo 'location-' . esc_attr($location['ID']); ?>"
+                                                    id="<?php echo esc_attr__('location-', 'trizen-helper') . esc_attr($location['ID']); ?>"
                                                     value="<?php echo '_' . esc_attr($location['ID']) . '_'; ?>"
                                                     name="multi_location[]"
                                                     data-post-id="<?php echo esc_attr($location['post_id']); ?>"
@@ -419,11 +419,11 @@ $hotel_rooms = new WP_Query($default);
 		                if( !empty( $trizen_room_other_facility_data ) ) {
 			                foreach( $trizen_room_other_facility_data as $index => $field ) { ?>
                                 <div class="field-group">
-                                    <label for="trizen_room_other_facility_title-<?php echo esc_attr__($index, 'trizen-helper'); ?>">
+                                    <label for="trizen_room_other_facility_title-<?php echo esc_attr($index); ?>">
                                         <span>
                                             <?php esc_html_e('Title', 'trizen-helper'); ?>
                                         </span>
-                                        <input id="trizen_room_other_facility_title-<?php echo esc_attr__($index, 'trizen-helper'); ?>" type="text" name="trizen_room_other_facility_title[]" value="<?php if($field['trizen_room_other_facility_title'] != '') echo esc_attr( $field['trizen_room_other_facility_title'] ); ?>" />
+                                        <input id="trizen_room_other_facility_title-<?php echo esc_attr($index); ?>" type="text" name="trizen_room_other_facility_title[]" value="<?php if($field['trizen_room_other_facility_title'] != '') echo esc_attr( $field['trizen_room_other_facility_title'] ); ?>" />
                                     </label>
 
                                     <button type="button" class="button button-secondary trizen_room_other_facility_remove dashicons dashicons-trash">

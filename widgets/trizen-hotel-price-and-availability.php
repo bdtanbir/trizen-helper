@@ -87,7 +87,7 @@ class trizen_hpa_widget extends WP_Widget {
                         <div class="form-group form-date-field date-enquire form-date-search clearfix" data-format="<?php echo getDateFormatMoment() ?>">
                             <div class="date-wrapper clearfix">
                                 <div class="check-in-wrapper">
-                                    <h3>Check In - Check Out</h3>
+                                    <h3><?php esc_html_e('Check In - Check Out', 'trizen-helper'); ?></h3>
                                     <div class="check-in-check-out d-flex">
                                         <div class="render check-in-render"><?php echo esc_html($start); ?></div> -
                                         <div class="render check-out-render"><?php echo esc_html($end); ?></div>
@@ -110,7 +110,7 @@ class trizen_hpa_widget extends WP_Widget {
                 </div>
                 <div class="sidebar-widget-item">
                     <div class="qty-box mb-2 d-flex align-items-center justify-content-between">
-                        <label class="font-size-16">Adults <span>Age 18+</span></label>
+                        <label class="font-size-16"><?php esc_html_e('Adults', 'trizen-helper'); ?> <span><?php esc_html_e('Age 18+', 'trizen-helper'); ?></span></label>
                         <div class="qtyBtn d-flex align-items-center">
                             <div class="qtyDec"><i class="la la-minus"></i></div>
                             <input type="text" name="adult_number" value="<?php echo esc_attr($adult_number); ?>" autocomplete="off">
@@ -118,7 +118,7 @@ class trizen_hpa_widget extends WP_Widget {
                         </div>
                     </div>
                     <div class="qty-box mb-2 d-flex align-items-center justify-content-between">
-                        <label class="font-size-16">Children <span>2-12 years old</span></label>
+                        <label class="font-size-16"><?php esc_html_e('Children', 'trizen-helper'); ?> <span><?php esc_html_e('2-12 years old', 'trizen-helper'); ?></span></label>
                         <div class="qtyBtn d-flex align-items-center">
                             <div class="qtyDec"><i class="la la-minus"></i></div>
                             <input type="text" name="child_number" value="<?php echo esc_attr($child_number); ?>" autocomplete="off">
@@ -126,7 +126,7 @@ class trizen_hpa_widget extends WP_Widget {
                         </div>
                     </div>
                     <div class="qty-box mb-2 d-flex align-items-center justify-content-between">
-                        <label class="font-size-16">Infants <span>0-2 years old</span></label>
+                        <label class="font-size-16"><?php esc_html_e('Infants', 'trizen-helper'); ?> <span><?php esc_html_e('0-2 years old', 'trizen-helper'); ?></span></label>
                         <div class="qtyBtn d-flex align-items-center">
                             <div class="qtyDec"><i class="la la-minus"></i></div>
                             <input type="text" name="infant_number" value="<?php echo esc_attr($infant_number); ?>">
@@ -265,7 +265,6 @@ class trizen_hpa_widget extends WP_Widget {
         </div>-->
 
 		<?php
-
 
 		// After widget code, if any
 		echo $args['after_widget'];

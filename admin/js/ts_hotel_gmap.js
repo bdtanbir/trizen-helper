@@ -12,16 +12,7 @@ jQuery(function ($) {
         var ts_gmap_input_lng  = $(this).find('#longitude');
         // var ts_gmap_searchbox  = $(this).find('#pac-input');
 
-        var current_marker,old_lat = -33.8688, old_lng = 151.2195, old_zoom = 13;
-        var map = new google.maps.Map(document.getElementById("ts_gmap"), {
-            center: { lat: old_lat, lng: old_lng },
-            zoom: old_zoom,
-            mapTypeId: "roadmap",
-            scrollwheel: true,
-        });
-        // ts_gmap_input_lat.val(old_lat)
-        // ts_gmap_input_lng.val(old_lng)
-        // ts_gmap_input_zoom.val(old_zoom)
+        var current_marker,old_lat=37,old_lng=2,old_zoom=17;
 
         if(ts_gmap_input_lat.val()){
             old_lat = ts_gmap_input_lat.val();
@@ -35,6 +26,13 @@ jQuery(function ($) {
             old_zoom = ts_gmap_input_zoom.val();
             old_zoom = parseFloat(old_zoom);
         }
+
+        var map = new google.maps.Map(document.getElementById("ts_gmap"), {
+            center: { lat: old_lat, lng: old_lng },
+            zoom: old_zoom,
+            mapTypeId: "roadmap",
+            scrollwheel: true,
+        });
 
         /*new google.maps.Marker({
             position: { lat: -33.8688, lng: 151.2195 },
