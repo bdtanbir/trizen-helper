@@ -87,6 +87,7 @@ if(!function_exists('trizen_register_meta_boxes')) {
 			'lat',
 			'lng',
 			'zoom',
+			'gmap_apikey',
 		];
 		foreach ( $fields as $field ) {
 			if ( array_key_exists( $field, $_POST ) ) {

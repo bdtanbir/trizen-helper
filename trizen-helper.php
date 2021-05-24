@@ -134,6 +134,7 @@ function _get_availability_hotel()
 
 function trizen_helper_admin_script()
 {
+    $google_api_key = get_post_meta(get_the_ID(), 'gmap_apikey', true);
 	wp_enqueue_style(
 		'lib-admin-select2-css',
 		'//cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css'
@@ -229,13 +230,15 @@ function trizen_helper_admin_script()
         TRIZEN_HELPER_VERSION,
         true
     );
-    wp_enqueue_script(
-        'lib-gmap-js',
-        '//maps.googleapis.com/maps/api/js?key=AIzaSyAbiWD8crgFpYN8GEeaL6Qjg0lTpFJgmuk&libraries=places&v=weekly',
-        null,
-        '1.0',
-        true
-    );
+    if(!empty($google_api_key)) {
+        wp_enqueue_script(
+            'lib-gmap-js',
+            '//maps.googleapis.com/maps/api/js?key='.$google_api_key,
+            null,
+            '1.0',
+            true
+        );
+    }
 	wp_register_script(
 		'trizen-hotel-inventory',
 		TRIZEN_HELPER_URI . ('admin/js/trizen-hotel-inventory.js'),

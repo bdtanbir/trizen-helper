@@ -20,6 +20,7 @@ $trizen_hotel_features_icon   =    get_post_meta(get_the_ID(), 'trizen_hotel_fea
 $trizen_hotel_faqs_data    = get_post_meta(get_the_ID(), 'trizen_hotel_faqs_data_group', true);
 $trizen_hotel_faqs_title   =  get_post_meta(get_the_ID(), 'trizen_hotel_faqs_title', true);
 $trizen_hotel_faqs_content =   get_post_meta(get_the_ID(), 'trizen_hotel_faqs_content', true);
+$google_api_key            =   get_post_meta(get_the_ID(), 'gmap_apikey', true);
 
 $args = [
     'post_type' => 'post'
@@ -107,6 +108,23 @@ $query = new WP_Query($args)
                             type="text"
                             value="<?php echo esc_attr($hotel_address_title); ?>"
                             placeholder="<?php esc_attr_e('Address', 'trizen-helper'); ?>" />
+                    </div>
+                </div>
+
+                <div class="form-settings" id="gmap_apikey_setting">
+                    <label for="gmap_apikey" class="title">
+                        <?php esc_html_e('Google Api key', 'trizen-helper'); ?>
+                    </label>
+                    <span class="description">
+                        <?php esc_html_e('Enter your google map api key', 'trizen-helper'); ?>
+                    </span>
+                    <div class="form-input">
+                        <input
+                            type="text"
+                            id="gmap_apikey"
+                            name="gmap_apikey"
+                            value="<?php echo esc_attr($google_api_key); ?>"
+                            placeholder="<?php esc_attr_e('Google Map Api Key', 'trizen-helper'); ?>">
                     </div>
                 </div>
 
