@@ -190,7 +190,7 @@ class trizen_hrbf_widget extends WP_Widget {
                             <p class="d-flex align-items-center">
                                 <?php
                                 /*echo __('from ', 'trizen-helper');
-                                echo sprintf( '<span class="price">%s</span>', format_money($sale_price) );
+                                echo sprintf( '<span class="price">%s</span>', TravelHelper::format_money($sale_price) );
                                 echo '<span class="unit">';
 
                                 echo '</span>';*/
@@ -199,7 +199,7 @@ class trizen_hrbf_widget extends WP_Widget {
                                 <!--<span class="font-size-17 text-black">
                                     <?php /*esc_html_e('$', 'trizen-helper'); */?>
                                 </span>-->
-                                <input id="room-price" type="text" name="total" class="num" value="<?php echo format_money($sale_price) ?>" readonly="readonly"/>
+                                <input id="room-price" type="text" name="total" class="num" value="<?php echo TravelHelper::format_money($sale_price) ?>" readonly="readonly"/>
                                 <span>
                                     <?php echo sprintf( _n( '/ per room', '/%d per rooms', $numberday, 'trizen-helper' ), $numberday ); ?>
                                 </span>

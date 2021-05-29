@@ -952,7 +952,6 @@ function do_add_to_cart()
 	if ( strtotime( $check_out ) - strtotime( $check_in ) <= 0 ) {
 		set_message( __( 'The check-out is later than the check-in.', 'trizen-helper' ), 'danger' );
 		$pass_validate = false;
-
 		return false;
 	}
 
@@ -981,14 +980,11 @@ function do_add_to_cart()
 
 		return false;
 	}*/
-	$today = date( 'm/d/Y' );
-
-	$period = dateDiff( $today, $check_in );
-
+	$today           = date( 'm/d/Y' );
+	$period          = dateDiff( $today, $check_in );
 	$booking_min_day = intval( get_post_meta( $item_id, 'min_book_room', true ) );
 	$compare         = dateCompare( $today, $check_in );
-
-	$booking_period = get_post_meta( $item_id, 'hotel_booking_period', true );
+	$booking_period  = get_post_meta( $item_id, 'hotel_booking_period', true );
 //	if ( empty( $booking_period ) || $booking_period <= 0 ) $booking_period = 0;
 
 	/*if ( $compare < 0 ) {
@@ -1013,9 +1009,7 @@ function do_add_to_cart()
 
 	/**
 	 * Validate Guest Name
-	 *
-	 * @since  2.1.2
-	 * @author dannie
+	 * @since  1.0
 	 */
 	/*$partner_create_booking = request('add_booking_partner_field');
 	if ( !st_validate_guest_name( $room_id, $adult_number, 0 ) && empty($partner_create_booking)) {
@@ -1066,7 +1060,6 @@ function do_add_to_cart()
 	    add_cart($item_id, $room_num_search, $extra_price, $data);
  	}
  	return $pass_validate;
-
  }
 
 
@@ -1086,9 +1079,7 @@ function get_cart_link() {
 
 /**
  * Create new Woocommerce Product by cart item information
- *
- *
- * @since 1.1.1
+ * @since 1.0
  * */
 function _create_new_product( $item_id, $cart_item ) {
 
@@ -1221,8 +1212,7 @@ function _create_new_product( $item_id, $cart_item ) {
 
 /**
  * Add product to cart by product id
- *
- * @since 1.1.1
+ * @since   1.0
  * */
 function _add_product_to_cart( $product_id, $cart_data = [] ) {
 	global $woocommerce;
@@ -1257,10 +1247,7 @@ function getDepositData($post_id = '', $cart_data = array()){
 }
 
 /**
- *
- *
- *
- * @update 1.1.3
+ * @since   1.0
  * */
 function add_cart( $item_id, $number = 1, $price = false, $data = [] ) {
      $data['ts_booking_post_type'] = ( $item_id == 'car_transfer' ) ? 'car_transfer' : get_post_type( $item_id );
@@ -1310,10 +1297,8 @@ function add_cart( $item_id, $number = 1, $price = false, $data = [] ) {
 }
 
 
-
 /**
- * @since   1.3.1
- * @updated 1.3.1
+ * @since   1.0
  * */
 function get_cart() {
     if (isset($_COOKIE['ts_cart_package']) && !empty($_COOKIE['ts_cart_package'])) {
@@ -1336,67 +1321,6 @@ function  _change_wc_order_item_rate($items=[]) {
 function get_items() {
     return isset( $_COOKIE['ts_cart'] ) ? unserialize(stripslashes(gzuncompress(base64_decode($_COOKIE['ts_cart'])))) : [];
 }
-
-function format_money( $money = false, $need_convert = true, $precision = 0 )
-{
-    $money              = (float)$money;
-    /*$symbol             = TSAdminRoom::get_current_currency( 'symbol' );
-    $precision          = TSAdminRoom::get_current_currency( 'booking_currency_precision', 2 );
-    $thousand_separator = TSAdminRoom::get_current_currency( 'thousand_separator', ',' );
-    $decimal_separator  = TSAdminRoom::get_current_currency( 'decimal_separator', '.' );*/
-    $symbol             = get_woocommerce_currency_symbol();
-    $precision          = TSAdminRoom::get_current_currency( 'booking_currency_precision', 2 );
-    $thousand_separator = TSAdminRoom::get_current_currency( 'thousand_separator', ',' );
-    $decimal_separator  = TSAdminRoom::get_current_currency( 'decimal_separator', '.' );
-    if ( $money == 0 ) {
-        return __( "Free", 'trizen-helper' );
-    }
-
-    if ( $need_convert ) {
-        $money = convert_money( $money );
-    }
-
-    /*if ( is_array( $precision ) ) {
-        $precision = st()->get_option( 'booking_currency_precision', 2 );
-    }*/
-
-    if ( $precision ) {
-        $money = round( $money, 2 );
-    }
-
-    $template = 'left';
-
-    if ( !$template ) {
-        $template = 'left';
-    }
-
-    if ( is_array( $decimal_separator ) ) {
-        $decimal_separator =  '.';
-    }
-    if ( is_array( $thousand_separator ) ) {
-        $thousand_separator = ',';
-    }
-    $money = number_format( (float)$money, (int)$precision, $decimal_separator, $thousand_separator );
-
-    switch ( $template ) {
-        case "right":
-            $money_string = $money . $symbol;
-            break;
-        case "left_space":
-            $money_string = $symbol . " " . $money;
-            break;
-        case "right_space":
-            $money_string = $money . " " . $symbol;
-            break;
-        case "left":
-        default:
-            $money_string = $symbol . $money;
-            break;
-    }
-    return $money_string;
-}
-
-
 
 function _get_order_total_price( $post_id, $st_is_woocommerce_checkout = null ) {
     /*if ( $st_is_woocommerce_checkout === null )

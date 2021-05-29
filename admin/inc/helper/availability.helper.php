@@ -8,6 +8,30 @@ if ( !class_exists( 'AvailabilityHelper' ) ) {
         }
 
 
+        static function _getdataHotel( $post_id, $check_in, $check_out ) {
+            global $wpdb;
+            $sql     = "
+			SELECT
+				`id`,
+				`post_id`,
+				`post_type`,
+				`check_in`,
+				`check_out`,
+				`number`,
+				`price`,
+                `status`,
+                `adult_price`,
+                `child_price`
+			FROM
+				{$wpdb->prefix}ts_room_availability
+			WHERE
+			post_id = %d
+			AND post_type='hotel_room'
+			AND check_in >=%d and check_in <=%d";
+            $results = $wpdb->get_results( $wpdb->prepare($sql,[$post_id,$check_in,$check_out]) );
+            return $results;
+        }
+
 
         public static function syncAvailabilityOrder($data){
             if($data['ts_booking_id']) {

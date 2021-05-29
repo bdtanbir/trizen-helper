@@ -799,7 +799,7 @@ if ( !class_exists( 'TSAdminHotel' ) ) {
                         $html .= '
                     <tr>
                         <td width="80%">
-                            <label for="' . $val[ 'trizen_hotel_room_extra_service_title' ] . '" class="ml20">' . $val[ 'trizen_hotel_room_extra_service_price_designation' ] . ' (' . format_money( $val[ 'extra_price' ] ) . ')' . '</label>
+                            <label for="' . $val[ 'trizen_hotel_room_extra_service_title' ] . '" class="ml20">' . $val[ 'trizen_hotel_room_extra_service_price_designation' ] . ' (' . TravelHelper::format_money( $val[ 'extra_price' ] ) . ')' . '</label>
                             <input type="hidden" name="extra_price[trizen_hotel_room_extra_service_price][' . $val[ 'trizen_hotel_room_extra_service_title' ] . ']" value="' . $val[ 'trizen_hotel_room_extra_service_price' ] . '">
                             <input type="hidden" name="extra_price[trizen_hotel_room_extra_service_price_designation][' . $val[ 'extra_name' ] . ']" value="' . $val[ 'trizen_hotel_room_extra_service_price_designation' ] . '">
                         </td>

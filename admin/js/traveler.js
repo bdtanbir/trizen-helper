@@ -11587,7 +11587,7 @@ jQuery(document).ready(function ($) {
                     }
                 };
 
-                parentItem.children('.st_review_stats').val(itemIndex + 1);
+                parentItem.children('.ts_review_stats').val(itemIndex + 1);
 
             });
         }, function () {

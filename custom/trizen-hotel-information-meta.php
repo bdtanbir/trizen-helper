@@ -12,16 +12,16 @@ if(empty($hotel_video)) {
 
 // Hotel Features
 $trizen_hotel_features_data   = get_post_meta(get_the_ID(), 'trizen_hotel_features_data_group', true);
-$trizen_hotel_features_title  =  get_post_meta(get_the_ID(), 'trizen_hotel_features_title', true);
-$trizen_hotel_features_stitle =   get_post_meta(get_the_ID(), 'trizen_hotel_features_stitle', true);
-$trizen_hotel_features_icon   =    get_post_meta(get_the_ID(), 'trizen_hotel_features_icon', true);
+$trizen_hotel_features_title  = get_post_meta(get_the_ID(), 'trizen_hotel_features_title', true);
+$trizen_hotel_features_stitle = get_post_meta(get_the_ID(), 'trizen_hotel_features_stitle', true);
+$trizen_hotel_features_icon   = get_post_meta(get_the_ID(), 'trizen_hotel_features_icon', true);
 
 // Hotel Faqs
 $trizen_hotel_faqs_data    = get_post_meta(get_the_ID(), 'trizen_hotel_faqs_data_group', true);
-$trizen_hotel_faqs_title   =  get_post_meta(get_the_ID(), 'trizen_hotel_faqs_title', true);
-$trizen_hotel_faqs_content =   get_post_meta(get_the_ID(), 'trizen_hotel_faqs_content', true);
-$google_api_key            =   get_post_meta(get_the_ID(), 'gmap_apikey', true);
-$enable_gmap               =   get_post_meta(get_the_ID(), 'enable_google_map', true);
+$trizen_hotel_faqs_title   = get_post_meta(get_the_ID(), 'trizen_hotel_faqs_title', true);
+$trizen_hotel_faqs_content = get_post_meta(get_the_ID(), 'trizen_hotel_faqs_content', true);
+$google_api_key            = get_post_meta(get_the_ID(), 'gmap_apikey', true);
+$enable_gmap               = get_post_meta(get_the_ID(), 'enable_google_map', true);
 
 if($enable_gmap == 1) {
     $gmap_show = '';

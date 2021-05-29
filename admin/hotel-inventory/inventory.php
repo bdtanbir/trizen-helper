@@ -810,7 +810,7 @@ function get_availability( $base_id = '', $check_in = '', $check_out = '' ) {
                 'start'      => date( 'Y-m-d', $item[ 'check_in' ] ),
                 'end'        => date( 'Y-m-d', strtotime( '+1 day', $item[ 'check_out' ] ) ),
                 'price'      => (float)$item[ 'price' ],
-                'price_text' => format_money( $item[ 'price' ] ),
+                'price_text' => TravelHelper::format_money( $item[ 'price' ] ),
                 'status'     => $item[ 'status' ],
                 'adult_price' => floatval( $item['adult_price'] ),
                 'child_price' => floatval( $item['child_price'] ),

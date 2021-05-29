@@ -3,12 +3,12 @@
  * @package    WordPress
  * @subpackage Trizen
  * @since      1.0
- * Class TravelObject
+ * Class TravelerObject
  * Created by TechyDevs
  * @update     1.0
  */
 
-class TravelObject {
+class TravelerObject {
     public $min_price;
     protected $post_type = '';
     /**
@@ -664,7 +664,7 @@ sin( radians( mt1.meta_value ) ) ) ) AS distance
 
                         $results = $wpdb->get_results($sql, OBJECT);
                         /*}else{
-                            $query_price = ST_Hotel_Room_Availability::inst()
+                            $query_price = TS_Hotel_Room_Availability::inst()
                                 ->select("min(CAST(price as DECIMAL)) AS min, max(CAST(price as DECIMAL)) AS max")
                                 ->where('status', 'available')
                                 ->where("check_in >= UNIX_TIMESTAMP(CURRENT_DATE)", null, true)
@@ -678,8 +678,8 @@ sin( radians( mt1.meta_value ) ) ) ) AS distance
                         $show_only_room_by = '';
                         if (!empty($show_only_room_by) and is_array($show_only_room_by) and !in_array('all', $show_only_room_by)) {
                             foreach ($show_only_room_by as $k => $v) {
-                                $join .= "JOIN {$wpdb->postmeta} as st_mt{$k} ON {$wpdb->prefix}{$post_type}.post_id = st_mt{$k}.post_id";
-                                $where .= " AND st_mt{$k}.meta_key = 'st_custom_item_api_type' and st_mt{$k}.meta_value='{$v}' ";
+                                $join .= "JOIN {$wpdb->postmeta} as ts_mt{$k} ON {$wpdb->prefix}{$post_type}.post_id = ts_mt{$k}.post_id";
+                                $where .= " AND ts_mt{$k}.meta_key = 'ts_custom_item_api_type' and ts_mt{$k}.meta_value='{$v}' ";
                             }
                         }
                         $sql = "SELECT
@@ -759,8 +759,8 @@ sin( radians( mt1.meta_value ) ) ) ) AS distance
                     case "ts_tours":
                         $sql = "
                         select
-                            min(CAST(st_{$post_type}_price AS DECIMAL)) AS min ,
-                            max(CAST(st_{$post_type}_price AS DECIMAL)) AS max
+                            min(CAST(ts_{$post_type}_price AS DECIMAL)) AS min ,
+                            max(CAST(ts_{$post_type}_price AS DECIMAL)) AS max
                         from
                             (select
                                 CASE
@@ -843,7 +843,7 @@ sin( radians( mt1.meta_value ) ) ) ) AS distance
                                         END
 
                                         ELSE 0
-                                    END AS st_{$post_type}_price
+                                    END AS ts_{$post_type}_price
 
                                 from {$wpdb->prefix}{$post_type}
                                 {$join}
@@ -860,8 +860,8 @@ sin( radians( mt1.meta_value ) ) ) ) AS distance
                     case "ts_activity":
                         $sql = "
                         select
-                            min(CAST(st_{$post_type}_price AS DECIMAL)) AS min ,
-                            max(CAST(st_{$post_type}_price AS DECIMAL)) AS max
+                            min(CAST(ts_{$post_type}_price AS DECIMAL)) AS min ,
+                            max(CAST(ts_{$post_type}_price AS DECIMAL)) AS max
                         from
                             (select
                                 CASE
@@ -943,7 +943,7 @@ sin( radians( mt1.meta_value ) ) ) ) AS distance
                                             ELSE {$wpdb->prefix}{$post_type}.infant_price
                                         END
                                         ELSE 0
-                                    END AS st_{$post_type}_price
+                                    END AS ts_{$post_type}_price
 
                                 from {$wpdb->prefix}{$post_type}
                                 {$join}
@@ -1007,7 +1007,7 @@ sin( radians( mt1.meta_value ) ) ) ) AS distance
             $post_id = get_the_ID();
         if (empty($start_date))
             $start_date = date("Y-m-d");
-        $rs = $wpdb->get_results("SELECT * FROM " . $wpdb->base_prefix . "st_price WHERE post_id=" . $post_id . " AND price_type='" . $price_type . "'  AND start_date <='" . $start_date . "' AND end_date >='" . $start_date . "' AND status=1 ORDER BY priority DESC LIMIT 1");
+        $rs = $wpdb->get_results("SELECT * FROM " . $wpdb->base_prefix . "ts_price WHERE post_id=" . $post_id . " AND price_type='" . $price_type . "'  AND start_date <='" . $start_date . "' AND end_date >='" . $start_date . "' AND status=1 ORDER BY priority DESC LIMIT 1");
         if (!empty($rs)) {
             return $rs[0]->price;
         } else {
@@ -1015,7 +1015,7 @@ sin( radians( mt1.meta_value ) ) ) ) AS distance
         }
     }
 
-    static function st_conver_info_price($info_price) {
+    static function ts_conver_info_price($info_price) {
         $list_info_price = '';
         if (!empty($info_price)) {
             $start = '';
@@ -1232,8 +1232,7 @@ sin( radians( mt1.meta_value ) ) ) ) AS distance
     }
 
 
-    function ts_custom_menu_mobile_item($items, $args)
-    {
+    function ts_custom_menu_mobile_item($items, $args) {
         /*if ($args->theme_location == 'primary') {
             $html = st()->load_template('menu/mobile/login_select');
             $html .= st()->load_template('menu/mobile/language_select');
@@ -1265,5 +1264,5 @@ sin( radians( mt1.meta_value ) ) ) ) AS distance
 
 }
 
-$a = new TravelObject();
+$a = new TravelerObject();
 $a->_class_init();

@@ -5,10 +5,11 @@ if ( !class_exists( 'TravelHelper' ) ) {
 
     class TravelHelper
     {
-        public $template_dir = "template-parts";
         public $plugin_name = "";
         public static $ts_location = [];
         protected static $listFullNameLocations = [];
+        protected static $_cachedAlCurrency = [];
+        private static $_booking_primary_currency;
 
 
         static function init()
@@ -172,7 +173,7 @@ if ( !class_exists( 'TravelHelper' ) ) {
         }
 
 
-        // from 1.2.0
+        // from 1.0
         static function get_all_post_type(){
             $post_type = [];
             if ( ts_check_service_available( 'ts_hotel' ) ) {
@@ -467,7 +468,7 @@ if ( !class_exists( 'TravelHelper' ) ) {
 
 
         /**
-         * @since 1.2.0
+         * @since 1.0
          **/
         static function _ts_get_where_location( $location_id, $post_type, $where ) {
             global $wpdb;
@@ -555,6 +556,64 @@ if ( !class_exists( 'TravelHelper' ) ) {
             return $where;
         }
 
+        private static function _get_location_weather( $post_id = false ) {
+            if ( !$post_id ) $post_id = get_the_ID();
+            $lat = get_post_meta( $post_id, 'map_lat', true );
+            $lng = get_post_meta( $post_id, 'map_lng', true );
+            if ( $lat and $lng ) {
+                $url = "http://api.openweathermap.org/data/2.5/weather?APPID=" . st()->get_option( 'weather_api_key', 'a82498aa9918914fa4ac5ba584a7e623' ) . "&lat=" . $lat . '&lon=' . $lng;
+            } else {
+                $url = "http://api.openweathermap.org/data/2.5/weather?APPID=" . st()->get_option( 'weather_api_key', 'a82498aa9918914fa4ac5ba584a7e623' ) . "&q=" . get_the_title( $post_id );
+            }
+
+            // fix multilanguage whene translate new location
+            $post_data = get_post( $post_id, ARRAY_A );
+            $slug      = $post_data[ 'post_name' ];
+            $cache = get_transient( 'ts_weather_location_' . $slug );
+            $dataWeather = null;
+
+            if ( $cache === false ) {
+                $raw_geocode = wp_remote_get( $url );
+
+                $body = wp_remote_retrieve_body( $raw_geocode );
+                $body = json_decode( $body );
+                if ( isset( $body->main->temp ) )
+                    set_transient( 'ts_weather_location_' . $post_id, $body, 60 * 60 * 1 );
+                $dataWeather = $body;
+            } else {
+                $dataWeather = $cache;
+            }
+
+            return $dataWeather;
+        }
+
+        static function get_location_temp( $post_id = false ) {
+            /*if ( !$post_id ) $post_id = get_the_ID();
+            $lat = get_post_meta( $post_id, 'map_lat', true );
+            $lng = get_post_meta( $post_id, 'map_lng', true );
+            if ( !$lat and !$lng ) return false;
+            $dataWeather = self::_get_location_weather( $post_id );
+
+            $c = 0;
+            $f = 0;
+            if ( isset( $dataWeather->main->temp ) ) {
+                $k           = $dataWeather->main->temp;
+                $temp_format = st()->get_option( 'st_weather_temp_unit', 'c' );
+                $c           = self::_change_temp( $k, $temp_format );
+                $f           = self::_change_temp( $k, 'f' );
+            }
+            $icon = '';
+            if ( !empty( $dataWeather->weather[ 0 ]->icon ) ) {
+                $icon = self::get_weather_icons( $dataWeather->weather[ 0 ]->icon );
+            }
+
+            return [
+                'temp'   => $c,
+                'temp_k' => $f,
+                'icon'   => $icon
+            ];*/
+        }
+
 
 //        function plugin_dir($url = false) {
 //            return ABSPATH . 'wp-content/plugins/' . $this->plugin_name . '/' . $url;
@@ -593,6 +652,128 @@ if ( !class_exists( 'TravelHelper' ) ) {
 //            }
 //        }
 
+
+        static function find_currency( $currency_name, $compare_key = 'name' ) {
+            $currency_name = esc_attr( $currency_name );
+            $all_currency = self::$_cachedAlCurrency;
+            if ( !empty( $all_currency ) ) {
+                foreach ( $all_currency as $key ) {
+                    if ( $key[ $compare_key ] == $currency_name ) {
+                        return $key;
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        static function get_currency( $theme_option = false ) {
+            $all = self::$_cachedAlCurrency;
+            //return array for theme options choise
+            if ( $theme_option ) {
+                $choice = [];
+                if ( !empty( $all ) and is_array( $all ) ) {
+                    foreach ( $all as $key => $value ) {
+                        $choice[] = [
+                            'label' => $value[ 'title' ],
+                            'value' => $value[ 'name' ]
+                        ];
+                    }
+                }
+                return $choice;
+            }
+            return $all;
+        }
+
+        static function booking_primary_currency() {
+            return self::$_booking_primary_currency;
+        }
+        static function get_default_currency( $need = false ){
+            $primary = self::booking_primary_currency();
+            $primary_obj = self::find_currency( $primary );
+            if ( $primary_obj ) {
+                if ( $need and isset( $primary_obj[ $need ] ) ) return $primary_obj[ $need ];
+                return $primary_obj;
+            } else {
+                //If user dont set the primary currency, we take the first of list all currency
+                $all_currency = self::get_currency();
+                if ( isset( $all_currency[ 0 ] ) ) {
+                    if ( $need and isset( $all_currency[ 0 ][ $need ] ) ) return $all_currency[ 0 ][ $need ];
+                    return $all_currency[ 0 ];
+                }
+            }
+        }
+
+        static function get_current_currency( $need = false ) {
+            //Check session of user first
+            if ( isset( $_SESSION[ 'currency' ][ 'name' ] ) ) {
+                $name = $_SESSION[ 'currency' ][ 'name' ];
+                if ( $session_currency = self::find_currency( $name ) ) {
+                    if ( $need and isset( $session_currency[ $need ] ) ) return $session_currency[ $need ];
+                    return $session_currency;
+                }
+            }
+
+            return self::get_default_currency( $need );
+        }
+        static function format_money( $money = false, $need_convert = true, $precision = 0 ) {
+            $money              = (float)$money;
+            /*$symbol             = TSAdminRoom::get_current_currency( 'symbol' );
+            $precision          = TSAdminRoom::get_current_currency( 'booking_currency_precision', 2 );
+            $thousand_separator = TSAdminRoom::get_current_currency( 'thousand_separator', ',' );
+            $decimal_separator  = TSAdminRoom::get_current_currency( 'decimal_separator', '.' );*/
+            $symbol             = get_woocommerce_currency_symbol();
+//            $symbol             = self::get_current_currency( 'symbol' );
+            $precision          = TSAdminRoom::get_current_currency( 'booking_currency_precision', 2 );
+            $thousand_separator = TSAdminRoom::get_current_currency( 'thousand_separator', ',' );
+            $decimal_separator  = TSAdminRoom::get_current_currency( 'decimal_separator', '.' );
+            if ( $money == 0 ) {
+                return __( "Free", 'trizen-helper' );
+            }
+
+            if ( $need_convert ) {
+                $money = convert_money( $money );
+            }
+
+            /*if ( is_array( $precision ) ) {
+                $precision = st()->get_option( 'booking_currency_precision', 2 );
+            }*/
+
+            if ( $precision ) {
+                $money = round( $money, 2 );
+            }
+
+            $template = 'left';
+
+            if ( !$template ) {
+                $template = 'left';
+            }
+
+            if ( is_array( $decimal_separator ) ) {
+                $decimal_separator =  '.';
+            }
+            if ( is_array( $thousand_separator ) ) {
+                $thousand_separator = ',';
+            }
+            $money = number_format( (float)$money, (int)$precision, $decimal_separator, $thousand_separator );
+
+            switch ( $template ) {
+                case "right":
+                    $money_string = $money . $symbol;
+                    break;
+                case "left_space":
+                    $money_string = $symbol . " " . $money;
+                    break;
+                case "right_space":
+                    $money_string = $money . " " . $symbol;
+                    break;
+                case "left":
+                default:
+                    $money_string = $symbol . $money;
+                    break;
+            }
+            return $money_string;
+        }
 
         static function paging_room( $query = false ) {
             global $wp_query, $ts_search_query;

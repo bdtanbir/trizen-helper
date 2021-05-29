@@ -1463,7 +1463,7 @@ if ( !class_exists( 'TSAdminRoom' ) ) {
                                     'date'   => date( 'Y-m-d', $i ),
                                     'day'    => date( 'd', $i ),
                                     'status' => 'available_allow_fist',
-                                    'price'  => (isset($data_price_room[$i]) ? format_money($data_price_room[$i]) : 0)
+                                    'price'  => (isset($data_price_room[$i]) ? TravelHelper::format_money($data_price_room[$i]) : 0)
                                 ];
                             } else if ( in_array( $d, $list_date_last_half_day ) ) {
                                 $return[] = [
@@ -1471,7 +1471,7 @@ if ( !class_exists( 'TSAdminRoom' ) ) {
                                     'date'   => date( 'Y-m-d', $i ),
                                     'day'    => date( 'd', $i ),
                                     'status' => 'available_allow_last',
-                                    'price'  => (isset($data_price_room[$i]) ? format_money($data_price_room[$i]) : 0)
+                                    'price'  => (isset($data_price_room[$i]) ? TravelHelper::format_money($data_price_room[$i]) : 0)
                                 ];
                             } else {
                                 $return[] = [
@@ -1479,7 +1479,7 @@ if ( !class_exists( 'TSAdminRoom' ) ) {
                                     'date'   => date( 'Y-m-d', $i ),
                                     'day'    => date( 'd', $i ),
                                     'status' => 'available',
-                                    'price'  => (isset($data_price_room[$i]) ? format_money($data_price_room[$i]) : 0)
+                                    'price'  => (isset($data_price_room[$i]) ? TravelHelper::format_money($data_price_room[$i]) : 0)
                                 ];
                             }
 

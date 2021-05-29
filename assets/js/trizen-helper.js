@@ -115,6 +115,7 @@
 
     /* Searching Room Availability */
     $('.form-check-availability-hotel', body).submit(function (ev) {
+        alert('availability');
         ev.preventDefault();
         var form = $(this),
             parent = form.parent(),

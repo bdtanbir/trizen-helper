@@ -45,13 +45,13 @@ if(!class_exists('TS_Woocommerce')) {
             add_action('woocommerce_cart_calculate_fees', array($this, 'ts_add_booking_fee'));
             add_filter( 'woocommerce_admin_order_date_format' , array($this, 'woo_custom_post_date_column_time'));
             add_action( 'woocommerce_cart_collaterals', array($this, 'action_woocommerce_cart_collaterals'), 10);
-            add_filter( 'woocommerce_currency', array($this,'ts_woocommerce_currency_symbol'), 1 );
+//            add_filter( 'woocommerce_currency', array($this,'ts_woocommerce_currency_symbol'), 1 );
         }
         /*Set currency woocommerce when checkout*/
-        public function ts_woocommerce_currency_symbol(  $currency ){
+        /*public function ts_woocommerce_currency_symbol(  $currency ){
             $currency = TSAdminRoom::get_current_currency('name');
             return $currency;
-        }
+        }*/
         public function action_woocommerce_cart_collaterals( $woocommerce_cart_totals ) {
         }
         function woo_custom_post_date_column_time(){
@@ -224,7 +224,7 @@ if(!class_exists('TS_Woocommerce')) {
          * */
         function _change_default_price($return,$price,$arg=[]){
             $price=$price/pow(10,(int)wc_get_price_decimals());
-            return format_money($price);
+            return TravelHelper::format_money($price);
         }
         function _add_thumb_img_hover() {
             global $product;

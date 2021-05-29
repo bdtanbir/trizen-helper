@@ -33,8 +33,8 @@
                         ?>
                         <div class="item">
                             <label><?php echo esc_html($stat[ 'title' ]); ?></label>
-                            <input class="st_review_stats" type="hidden"
-                                   name="st_review_stats[<?php echo trim( $stat[ 'title' ] ); ?>]">
+                            <input class="ts_review_stats" type="hidden"
+                                   name="ts_review_stats[<?php echo trim( $stat[ 'title' ] ); ?>]">
                             <div class="rates">
                                 <?php
                                 for ( $i = 1; $i <= 5; $i++ ) {

@@ -7,8 +7,8 @@
  */
 
 if ( !class_exists( 'TSHotel' ) ) {
-    class TSHotel extends TravelObject {
-        static $_inst;
+    class TSHotel extends TravelerObject {
+        protected static $_inst;
         static $_instance;
         //Current Hotel ID
         private $hotel_id;
@@ -187,7 +187,7 @@ if ( !class_exists( 'TSHotel' ) ) {
         }
 
         public function ts_filter_hotel_ajax() {
-            check_ajax_referer( 'ajax-search', '_wpnonce_search_ajax', true );
+            /*check_ajax_referer( 'ajax-search', '_wpnonce_search_ajax', true );
             $page_number = get( 'page' );
             $style       = get( 'layout' );
             $orderby     = get( 'orderby' );
@@ -235,17 +235,17 @@ if ( !class_exists( 'TSHotel' ) ) {
             } else $query = $wp_query;
 
             ob_start();
-                ?>
+                */?><!--
                 <div class="row row-wrap loop_hotel loop_grid_hotel style_box">
                     <?php
-                    while ( $query->have_posts() ) {
+/*                    while ( $query->have_posts() ) {
                         $query->the_post();
                         echo 'i am hotel grid';
                     }
-                    ?>
+                    */?>
                 </div>
                 <?php
-            if ( !$query->found_posts ) {
+/*            if ( !$query->found_posts ) {
                 echo '<h3 class="ajax-filter-not-found">' . __( 'No hotel found', 'trizen-helper' ) . '</h3>';
             }
             //echo st()->load_template('hotel/loop',false,array('style'=>$st_style));
@@ -255,15 +255,15 @@ if ( !class_exists( 'TSHotel' ) ) {
 
             //Pagination
             ob_start();
-            ?>
+            */?>
             <p>
                 <small>
                     <?php
-                    set_query_var( 'paged', $page_number );
+/*                    set_query_var( 'paged', $page_number );
                     if ( is_rtl() || st()->get_option( 'right_to_left' ) == 'on' ):
-                        ?>
+                        */?>
                         <?php
-                        if ( !empty( $ts_search_query ) ) {
+/*                        if ( !empty( $ts_search_query ) ) {
                             $wp_query = $ts_search_query;
                         }
                         if ( $wp_query->found_posts ):
@@ -275,13 +275,13 @@ if ( !class_exists( 'TSHotel' ) ) {
                             if ( $last > $wp_query->found_posts ) $last = $wp_query->found_posts;
                             echo ' ' . ( $posts_per_page * ( $page - 1 ) + 1 ) . ' - ' . $last;
                         endif;
-                        ?>
-                        .&nbsp;&nbsp;<?php echo balanceTags( $hotel->get_result_string() ) ?>
+                        */?>
+                        .&nbsp;&nbsp;<?php /*echo balanceTags( $hotel->get_result_string() ) */?>
 
-                    <?php else: ?>
-                        <?php echo balanceTags( $hotel->get_result_string() ) ?>. &nbsp;&nbsp;
+                    <?php /*else: */?>
+                        <?php /*echo balanceTags( $hotel->get_result_string() ) */?>. &nbsp;&nbsp;
                         <?php
-                        if ( !empty( $ts_search_query ) ) {
+/*                        if ( !empty( $ts_search_query ) ) {
                             $wp_query = $ts_search_query;
                         }
                         if ( $wp_query->found_posts ):
@@ -293,16 +293,16 @@ if ( !class_exists( 'TSHotel' ) ) {
                             if ( $last > $wp_query->found_posts ) $last = $wp_query->found_posts;
                             echo ' ' . ( $posts_per_page * ( $page - 1 ) + 1 ) . ' - ' . esc_attr($last);
                         endif;
-                        ?>
-                    <?php endif; ?>
+                        */?>
+                    <?php /*endif; */?>
                 </small>
             </p>
             <div class="row">
                 <?php
-                TravelHelper::paging(); ?>
+/*                TravelHelper::paging(); */?>
             </div>
-            <?php
-            $ajax_filter_pag = ob_get_contents();
+            --><?php
+/*            $ajax_filter_pag = ob_get_contents();
             ob_clean();
             ob_end_flush();
             $count  = balanceTags( $hotel->get_result_string() );
@@ -313,7 +313,7 @@ if ( !class_exists( 'TSHotel' ) ) {
                 'page'    => $page_number
             ];
             echo json_encode( $result );
-            die;
+            die;*/
         }
 
         public function ts_fetch_inventory() {
@@ -430,7 +430,7 @@ if ( !class_exists( 'TSHotel' ) ) {
             if ( $new_item > 0 ) {
                 echo json_encode( [
                     'status'  => 1,
-                    'message' => esc_html__( 'Successffully added', 'trizen-helper' )
+                    'message' => esc_html__( 'Successfully added', 'trizen-helper' )
                 ] );
                 die;
             } else {
@@ -526,7 +526,7 @@ if ( !class_exists( 'TSHotel' ) ) {
                         'start'      => date( 'Y-m-d', $item[ 'check_in' ] ),
                         'end'        => date( 'Y-m-d', strtotime( '+1 day', $item[ 'check_out' ] ) ),
                         'price'      => (float)$item[ 'price' ],
-                        'price_text' => format_money( $item[ 'price' ] ),
+                        'price_text' => TravelHelper::format_money( $item[ 'price' ] ),
                         'status'     => $item[ 'status' ],
                         'adult_price' => floatval( $item['adult_price'] ),
                         'child_price' => floatval( $item['child_price'] ),
@@ -652,9 +652,9 @@ if ( !class_exists( 'TSHotel' ) ) {
                             'label'       => $number_room - $ordered,
                             'desc'        => sprintf( __( '%s left', 'trizen-helper' ), $number_room - $ordered ),
                             'customClass' => 'ganttBlue',
-                            'price'       => format_money( $price, [ 'simple_html' => true ] ),
-                            'adult_price' => format_money( $adult_price, [ 'simple_html' => true ] ),
-                            'child_price' => format_money( $child_price, [ 'simple_html' => true ] ),
+                            'price'       => TravelHelper::format_money( $price, [ 'simple_html' => true ] ),
+                            'adult_price' => TravelHelper::format_money( $adult_price, [ 'simple_html' => true ] ),
+                            'child_price' => TravelHelper::format_money( $child_price, [ 'simple_html' => true ] ),
                             'price_by_per_person' => $price_by_per_person
                         ];
                     } else {
@@ -664,9 +664,9 @@ if ( !class_exists( 'TSHotel' ) ) {
                             'label'       => __( 'O', 'trizen-helper' ),
                             'desc'        => __( 'Out of stock', 'trizen-helper' ),
                             'customClass' => 'ganttOrange',
-                            'price'       => format_money( $price, [ 'simple_html' => true ] ),
-                            'adult_price' => format_money( $adult_price, [ 'simple_html' => true ] ),
-                            'child_price' => format_money( $child_price, [ 'simple_html' => true ] ),
+                            'price'       => TravelHelper::format_money( $price, [ 'simple_html' => true ] ),
+                            'adult_price' => TravelHelper::format_money( $adult_price, [ 'simple_html' => true ] ),
+                            'child_price' => TravelHelper::format_money( $child_price, [ 'simple_html' => true ] ),
                             'price_by_per_person' => $price_by_per_person
                         ];
                     }
@@ -677,9 +677,9 @@ if ( !class_exists( 'TSHotel' ) ) {
                         'label'       => __( 'N', 'trizen-helper' ),
                         'desc'        => __( 'Not Available', 'trizen-helper' ),
                         'customClass' => 'ganttRed',
-                        'price'       => format_money( $price, [ 'simple_html' => true ] ),
-                        'adult_price' => format_money( $adult_price, [ 'simple_html' => true ] ),
-                        'child_price' => format_money( $child_price, [ 'simple_html' => true ] ),
+                        'price'       => TravelHelper::format_money( $price, [ 'simple_html' => true ] ),
+                        'adult_price' => TravelHelper::format_money( $adult_price, [ 'simple_html' => true ] ),
+                        'child_price' => TravelHelper::format_money( $child_price, [ 'simple_html' => true ] ),
                         'price_by_per_person' => $price_by_per_person
                     ];
                 }
@@ -936,15 +936,15 @@ if ( !class_exists( 'TSHotel' ) ) {
 
             if ( get_post_type( $post_id ) == 'ts_hotel' ) {
                 $all_stats       = $this->get_review_stats();
-                $st_review_stats = post( 'ts_review_stats' );
+                $ts_review_stats = post( 'ts_review_stats' );
 
                 if ( !empty( $all_stats ) && is_array( $all_stats ) ) {
                     $total_point = 0;
                     foreach ( $all_stats as $key => $value ) {
-                        if ( isset( $st_review_stats[ $value[ 'title' ] ] ) ) {
-                            $total_point += $st_review_stats[ $value[ 'title' ] ];
+                        if ( isset( $ts_review_stats[ $value[ 'title' ] ] ) ) {
+                            $total_point += $ts_review_stats[ $value[ 'title' ] ];
                             //Now Update the Each Stat Value
-                            update_comment_meta( $comment_id, 'ts_stat_' . sanitize_title( $value[ 'title' ] ), $st_review_stats[ $value[ 'title' ] ] );
+                            update_comment_meta( $comment_id, 'ts_stat_' . sanitize_title( $value[ 'title' ] ), $ts_review_stats[ $value[ 'title' ] ] );
                         }
                     }
 
@@ -958,7 +958,7 @@ if ( !class_exists( 'TSHotel' ) ) {
                     }
                     update_comment_meta( $comment_id, 'comment_rate', $rate );
                     //Now Update the Stats Value
-                    update_comment_meta( $comment_id, 'ts_review_stats', $st_review_stats );
+                    update_comment_meta( $comment_id, 'ts_review_stats', $ts_review_stats );
                 }
             }
 
@@ -1025,7 +1025,7 @@ if ( !class_exists( 'TSHotel' ) ) {
                                 <li><i class="fa fa-smile-o"></i>
                                 </li>
                             </ul>
-                            <input type="hidden" class="st_review_stats" value="0" name="ts_review_stats[' . esc_attr($value[ 'title' ]) . ']">
+                            <input type="hidden" class="ts_review_stats" value="0" name="ts_review_stats[' . esc_attr($value[ 'title' ]) . ']">
                                 </li>';
                     }
                     $stat_html .= '</ul>';
@@ -1406,7 +1406,11 @@ if ( !class_exists( 'TSHotel' ) ) {
             }
         }
 
-        function search_room( $param = [] ) {
+        function testfunction() {
+            echo 'test function';
+        }
+
+        function search_room( ) {
             $this->alter_search_room_query();
             $page = request( 'paged_room' );
             if ( !$page ) {
@@ -1414,7 +1418,7 @@ if ( !class_exists( 'TSHotel' ) ) {
             }
             $arg = apply_filters( 'ts_ajax_search_room_arg', [
                 'post_type'      => 'hotel_room',
-                'posts_per_page' => '10',
+                'posts_per_page' => 10,
                 'paged'          => $page,
             ] );
             query_posts( $arg );
@@ -1663,7 +1667,7 @@ if ( !class_exists( 'TSHotel' ) ) {
             } elseif ( isset( $_REQUEST[ 'location_name' ] ) && !empty( $_REQUEST[ 'location_name' ] ) ) {
                 $location_name = request( 'location_name', '' );
 
-                $ids_location = TravelObject::_get_location_by_name( $location_name );
+                $ids_location = TravelerObject::_get_location_by_name( $location_name );
 
                 if ( !empty( $ids_location ) && is_array( $ids_location ) ) {
                     $where .= TravelHelper::_ts_get_where_location( $ids_location, [ 'ts_hotel' ], $where );
@@ -2234,8 +2238,8 @@ if ( !class_exists( 'TSHotel' ) ) {
          * */
         static function is_show_min_price() {
             /*$show_min_or_avg = st()->get_option( 'hotel_show_min_price', 'avg_price' );
-            if ( $show_min_or_avg == 'min_price' ) return true;
-            return false;*/
+            if ( $show_min_or_avg == 'min_price' ) return true;*/
+            return true;
         }
 
         /**
