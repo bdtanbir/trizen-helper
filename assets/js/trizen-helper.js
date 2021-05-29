@@ -54,16 +54,15 @@
         autoUpdateInput: true,
         singleDatePicker: true,
     });*/
-    var body = $('body');
     $('.form-date-search', body).each(function () {
         var parent = $(this),
-            date_wrapper = $('.date-wrapper', parent),
-            check_in_input = $('.check-in-input', parent),
-            check_out_input = $('.check-out-input', parent),
-            check_in_out = $('.check-in-out', parent),
-            check_in_render = $('.check-in-render', parent),
+            date_wrapper     = $('.date-wrapper', parent),
+            check_in_input   = $('.check-in-input', parent),
+            check_out_input  = $('.check-out-input', parent),
+            check_in_out     = $('.check-in-out', parent),
+            check_in_render  = $('.check-in-render', parent),
             check_out_render = $('.check-out-render', parent);
-        var timepicker = parent.data('timepicker');
+        var timepicker       = parent.data('timepicker');
         if (typeof timepicker == 'undefined' || timepicker == '') {
             timepicker = false;
         } else {

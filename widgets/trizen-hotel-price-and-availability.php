@@ -97,7 +97,7 @@ class trizen_hpa_widget extends WP_Widget {
                                     </label>
                                     <div class="check-in-check-out d-flex form-group form-control">
                                         <i class="la la-calendar form-icon"></i>
-                                        <div class="render check-in-render"><?php echo esc_html($start) . esc_html__(' -', 'trizen-helper'); ?></div>
+                                        <div class="render check-in-render"><?php echo esc_html($start); ?></div>&nbsp;-&nbsp;
                                         <div class="render check-out-render"><?php echo esc_html($end); ?></div>
                                     </div>
                                 </div>
