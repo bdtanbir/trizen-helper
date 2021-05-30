@@ -22,6 +22,7 @@ $trizen_hotel_faqs_title   = get_post_meta(get_the_ID(), 'trizen_hotel_faqs_titl
 $trizen_hotel_faqs_content = get_post_meta(get_the_ID(), 'trizen_hotel_faqs_content', true);
 $google_api_key            = get_post_meta(get_the_ID(), 'gmap_apikey', true);
 $enable_gmap               = get_post_meta(get_the_ID(), 'enable_google_map', true);
+$enable_auto_calculate     = get_post_meta(get_the_ID(), 'enable_is_auto_calculate', true);
 
 if($enable_gmap == 1) {
     $gmap_show = '';
@@ -133,7 +134,7 @@ $query = new WP_Query($args)
                                 type="checkbox"
                                 name="enable_google_map"
                                 id="enable_google_map"
-                                value="<?php esc_html_e('1', 'trizen-helper'); ?>"
+                                value="<?php esc_attr_e('1', 'trizen-helper'); ?>"
                                 <?php echo esc_attr($is_checked); ?>/>
                             <span></span>
                         </div>
@@ -279,12 +280,35 @@ $query = new WP_Query($args)
                 </div>
             </div>
             <div class="tab-content" id="tab-price">
+                <div class="form-settings" id="enable_is_auto_calculate_setting">
+                    <label for="enable_is_auto_calculate" class="title">
+                        <?php esc_html_e('Set auto calculation average price','trizen-helper'); ?>
+                    </label>
+                    <span class="description">
+                        <?php echo __('The average price of hotel. <strong>On: Automatically; OFF: Input manually</strong>', 'trizen-helper'); ?>
+                    </span>
+                    <?php
+                    $is_checked_auto_c = ($enable_auto_calculate == 1) ? 'checked' : '';
+                    ?>
+                    <div class="form-input">
+                        <div class="nice-checkbox">
+                            <input
+                                type="checkbox"
+                                name="enable_is_auto_calculate"
+                                id="enable_is_auto_calculate"
+                                value="<?php esc_attr_e('1', 'trizen-helper'); ?>"
+                                <?php echo esc_attr($is_checked_auto_c); ?>/>
+                            <span></span>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="form-settings" id="hotel_price_setting">
                     <label for="trizen_hotel_regular_price" class="title">
 			            <?php esc_html_e('Regular price', 'trizen-helper'); ?>
                     </label>
                     <span class="description">
-                        <?php esc_html_e('Enter regular price here', 'trizen-helper'); ?>
+                        <?php esc_html_e('Enter regular price here. ', 'trizen-helper'); echo '('.get_woocommerce_currency_symbol().')'; ?>
                     </span>
                     <div class="form-input">
                         <input
@@ -292,25 +316,26 @@ $query = new WP_Query($args)
                             name="trizen_hotel_regular_price"
                             type="text"
                             value="<?php echo esc_attr($hotel_regular_price); ?>"
-                            placeholder="<?php esc_attr_e('$', 'trizen-helper'); ?>" />
+                            placeholder="<?php echo get_woocommerce_currency_symbol(); ?>" />
                     </div>
                 </div>
-                <div class="form-settings" id="hotel_sale_price_setting">
+
+                <!--<div class="form-settings" id="hotel_sale_price_setting">
                     <label for="trizen_hotel_sale_price" class="title">
-			            <?php esc_html_e('Sale price', 'trizen-helper'); ?>
+			            <?php /*esc_html_e('Sale price', 'trizen-helper'); */?>
                     </label>
                     <span class="description">
-                        <?php esc_html_e('Enter sale price here', 'trizen-helper'); ?>
+                        <?php /*esc_html_e('Enter sale price here', 'trizen-helper'); */?>
                     </span>
                     <div class="form-input">
                         <input
                             id="trizen_hotel_sale_price"
                             name="trizen_hotel_sale_price"
                             type="text"
-                            value="<?php echo esc_attr($hotel_sale_price); ?>"
-                            placeholder="<?php esc_attr_e('$', 'trizen-helper'); ?>" />
+                            value="<?php /*echo esc_attr($hotel_sale_price); */?>"
+                            placeholder="<?php /*echo get_woocommerce_currency_symbol(); */?>" />
                     </div>
-                </div>
+                </div>-->
             </div>
             <div class="tab-content" id="tab-hotel-features">
                 <div class="form-settings" id="hotel_features_setting">

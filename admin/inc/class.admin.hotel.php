@@ -339,7 +339,7 @@ if ( !class_exists( 'TSAdminHotel' ) ) {
         }*/
 
         /**
-         * @update 1.0
+         * @since 1.0
          */
         static function _update_avg_price( $post_id = FALSE ) {
             if ( !$post_id ) {
@@ -348,8 +348,8 @@ if ( !class_exists( 'TSAdminHotel' ) ) {
             $post_type = get_post_type( $post_id );
             if ( $post_type == 'ts_hotel' ) {
                 $hotel_id         = $post_id;
-                $is_auto_caculate = get_post_meta( $hotel_id, 'is_auto_caculate', TRUE );
-                if ( $is_auto_caculate != 'off' ) {
+                $is_auto_caculate = get_post_meta( $hotel_id, 'enable_is_auto_calculate', TRUE );
+                if ( $is_auto_caculate == 1 ) {
                     $query  = [
                         'post_type'      => 'hotel_room',
                         'posts_per_page' => 100,
@@ -381,7 +381,7 @@ if ( !class_exists( 'TSAdminHotel' ) ) {
         /**
          *
          *
-         * @update 1.2.4
+         * @since 1.0
          *
          */
         static function _update_min_price( $post_id = FALSE ) {

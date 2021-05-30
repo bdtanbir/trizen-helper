@@ -76,6 +76,10 @@ if(!function_exists('trizen_register_meta_boxes')) {
         $visible = (int)$visible;
         update_post_meta( $post_id,  'enable_google_map', $visible );
 
+        $visible = isset( $_POST['enable_is_auto_calculate'] ) && $_POST['enable_is_auto_calculate'] == 1;
+        $visible = (int)$visible;
+        update_post_meta( $post_id,  'enable_is_auto_calculate', $visible );
+
 		$fields = [
 			'address',
 			'trizen_hotel_video_url',

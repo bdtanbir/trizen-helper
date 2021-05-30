@@ -1696,8 +1696,8 @@ if ( !class_exists( 'TSAdminRoom' ) ) {
             $post_type = get_post_type($post_id);
             if ($post_type == 'ts_hotel') {
                 $hotel_id = $post_id;
-                $is_auto_caculate = get_post_meta($hotel_id, 'is_auto_caculate', true);
-                if ($is_auto_caculate != 'off') {
+                $is_auto_caculate = get_post_meta($hotel_id, 'enable_is_auto_calculate', true);
+                if ($is_auto_caculate == 1) {
                     $query = [
                         'post_type'      => 'hotel_room',
                         'posts_per_page' => -1,
@@ -1729,8 +1729,8 @@ if ( !class_exists( 'TSAdminRoom' ) ) {
             if ( $post_type == 'hotel_room' ) {
                 $hotel_id = get_post_meta( $post_id, 'room_parent', true );
                 if ( !empty( $hotel_id ) ) {
-                    $is_auto_caculate = get_post_meta( $hotel_id, 'is_auto_caculate', true );
-                    if ( $is_auto_caculate != 'off' ) {
+                    $is_auto_caculate = get_post_meta( $hotel_id, 'enable_is_auto_calculate', true );
+                    if ( $is_auto_caculate == 1 ) {
                         $query  = [
                             'post_type'      => 'hotel_room',
                             'posts_per_page' => 999,

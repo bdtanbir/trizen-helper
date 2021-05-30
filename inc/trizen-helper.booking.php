@@ -1480,41 +1480,6 @@ function get_avg_price_hotel( $hotel_id ) {
     if ( empty( $hotel_id ) ) $hotel_id = get_the_ID();
     $price = get_post_meta( $hotel_id, 'trizen_hotel_regular_price', true );
     return $price;
-    // remove in ver 1.2.4
-    /*global $wpdb;
-    $rooms = self::_getAllRoomHotelID($hotel_id);
-    $avg_price = 0;
-    $check_in = STInput::request('start', '');
-    $check_out = STInput::request('end', '');
-    if(empty($check_in)){
-        $check_in = date('m/d/Y');
-    }else{
-        $check_in = TravelHelper::convertDateFormat($check_in);
-    }
-    if(empty($check_out)){
-        $check_out = date('m/d/Y', strtotime("+1 day"));
-    }else{
-        $check_out = TravelHelper::convertDateFormat($check_out);
-    }
-    $room_num_search = STInput::request('room_num_search', 1);
-    if(intval($room_num_search) <= 0){
-        $room_num_search = 1;
-    }
-    $room_full_ordered = HotelHelper::_get_room_cant_book_by_id($hotel_id, date('Y-m-d',strtotime($check_in)), date('Y-m-d',strtotime($check_out)), $room_num_search);
-    if(is_array($rooms) && count($rooms)){
-        $i = 0;
-        foreach($rooms as $room){
-            if(!in_array($room, $room_full_ordered)){
-                $price = STPrice::getRoomPriceOnlyCustomPrice($room, strtotime($check_in), strtotime($check_out), $room_num_search);
-                if($price > 0){
-                    $avg_price += $price;
-                }
-            }
-            $i++;
-        }
-        $avg_price /= $i;
-    }
-    return $avg_price;*/
 }
 
 

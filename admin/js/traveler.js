@@ -9567,13 +9567,13 @@ jQuery(document).ready(function($){
             $('.data_deposit_payment_status').fadeOut(500)
         }
     });
-    if ($(".is_auto_caculate").val() == 'off') {
+    if ($(".is_auto_caculate").val() == 0) {
         $('.data_is_auto_caculate').fadeIn(500)
     } else {
         $('.data_is_auto_caculate').fadeOut(500)
     }
     $('.is_auto_caculate').change(function () {
-        if ($(this).val() == 'off') {
+        if ($(this).val() == 0) {
             $('.data_is_auto_caculate').fadeIn(500)
         } else {
             $('.data_is_auto_caculate').fadeOut(500)

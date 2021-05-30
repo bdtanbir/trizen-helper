@@ -158,7 +158,6 @@
 }
 .trizen-hotel-infos-content .form-settings .description {
     display: block;
-    font-style: italic;
     margin-bottom: 6px;
 }
 .trizen-hotel-infos-content .form-settings select,
@@ -1542,6 +1541,7 @@ button {
     cursor: pointer;
     position: relative;
     transition: .3s;
+    border: 1px solid #ddd;
 }
 .nice-checkbox input {
     width: 100%;
@@ -1569,6 +1569,7 @@ button {
 }
 .nice-checkbox input:checked~span {
     background: #287dfa;
+    border-color: #287dfa;
 }
 .nice-checkbox input:checked~span:before {
     left: 33px;

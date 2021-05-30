@@ -295,8 +295,8 @@ function trizen_helper_admin_script()
 		'prev_month'          => __('prev month', 'trizen-helper'),
 		'next_month'          => __('next month', 'trizen-helper'),
 		'currency_smbl'       => '$',
-		'time_format'        => trizen_get_option('time_format', '12h'),
-        'ts_search_nonce'    => wp_create_nonce("ts_search_security"),
+		'time_format'         => trizen_get_option('time_format', '12h'),
+        'ts_search_nonce'     => wp_create_nonce("ts_search_security"),
 	]);
 
 
