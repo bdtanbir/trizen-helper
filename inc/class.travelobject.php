@@ -650,7 +650,7 @@ sin( radians( mt1.meta_value ) ) ) ) AS distance
 
                 switch ($post_type) {
                     case "ts_hotel":
-                        $meta_key = get_post_meta(get_the_ID(), 'trizen_hotel_regular_price', true);
+                        $meta_key = get_post_meta(get_the_ID(), 'price_avg', true);
                         //if($meta_key == 'avg_price'){
                         $where = "where 1=1 and ( {$wpdb->posts}.post_status = 'publish' )";
                         $where = TravelHelper::edit_where_wpml($where);

@@ -30,7 +30,7 @@ class trizen_hpa_widget extends WP_Widget {
 
 
         $price = get_price();
-		$hotel_regular_price = get_post_meta( get_the_ID(), 'trizen_hotel_regular_price', true );
+		$hotel_regular_price = get_post_meta( get_the_ID(), 'price_avg', true );
 		$hotel_sale_price    = get_post_meta( get_the_ID(), 'trizen_hotel_sale_price', true );
         $adult_number        = get( 'adult_number', 1 );
         $child_number        = get( 'child_number', 0 );

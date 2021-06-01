@@ -214,7 +214,7 @@ function getRoomPriceOnlyCustomPrice($room_id = '', $check_in = '', $check_out =
 	$hotel_id = get_post_meta($room_id, 'room_parent', true);
 
 	if(get_post_type($room_id) == 'hotel_room'){
-		$price_ori = floatval(get_post_meta($room_id, 'trizen_hotel_regular_price', true));
+		$price_ori = floatval(get_post_meta($room_id, 'price_avg', true));
 		if($price_ori < 0) $price_ori = 0;
 
 		$total_price = 0;
@@ -828,6 +828,36 @@ function getDateFormatMoment() {
             }
         }
     }
+    return $format;
+}
+
+
+function getDateFormatMomentText() {
+    $format = trizen_get_option('datetime_format', '{mm}/{dd}/{yyyy}');
+
+    $ori_format = [
+        '{d}' => 'd',
+        '{dd}' => 'dd',
+        '{D}' => 'D',
+        '{DD}' => 'l',
+        '{m}' => 'm',
+        '{mm}' => 'mm',
+        '{M}' => 'M',
+        '{MM}' => 'MM',
+        '{yy}' => 'yy',
+        '{yyyy}' => 'yyyy'
+    ];
+    preg_match_all("/({)[a-zA-Z]+(})/", $format, $out);
+
+    $out = $out[0];
+    foreach ($out as $key => $val) {
+        foreach ($ori_format as $ori_key => $ori_val) {
+            if ($val == $ori_key) {
+                $format = str_replace($val, $ori_val, $format);
+            }
+        }
+    }
+
     return $format;
 }
 
@@ -1478,7 +1508,7 @@ function save_review_stats( $comment_id )
 
 function get_avg_price_hotel( $hotel_id ) {
     if ( empty( $hotel_id ) ) $hotel_id = get_the_ID();
-    $price = get_post_meta( $hotel_id, 'trizen_hotel_regular_price', true );
+    $price = get_post_meta( $hotel_id, 'price_avg', true );
     return $price;
 }
 

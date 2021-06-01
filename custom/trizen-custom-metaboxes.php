@@ -83,7 +83,7 @@ if(!function_exists('trizen_register_meta_boxes')) {
 		$fields = [
 			'address',
 			'trizen_hotel_video_url',
-			'trizen_hotel_regular_price',
+			'price_avg',
 			'trizen_hotel_sale_price',
 			'trizen_hotel_features_title',
 			'trizen_hotel_features_stitle',

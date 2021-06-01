@@ -59,10 +59,11 @@ require_once TRIZEN_HELPER_PATH.'admin/inc/class.admin.location.relationships.ph
 require_once TRIZEN_HELPER_PATH.'admin/inc/helper/travel-helper.php';
 require_once TRIZEN_HELPER_PATH.'admin/inc/helper/hotel.helper.php';
 require_once TRIZEN_HELPER_PATH.'inc/class.hotel-helper.php';
-//require_once TRIZEN_HELPER_PATH.'inc/class.hotel.php';
+require_once TRIZEN_HELPER_PATH.'inc/class.hotel.php';
 //require_once TRIZEN_HELPER_PATH.'inc/class.travelobject.php';
 require_once TRIZEN_HELPER_PATH.'inc/helper/price.helper.php';
 require_once TRIZEN_HELPER_PATH.'inc/hotel-alone-helper.php';
+require_once TRIZEN_HELPER_PATH.'inc/class.single_hotel.php';
 
 
 add_action( 'wp_ajax_ts_get_availability_hotel', '_get_availability_hotel' );
@@ -458,6 +459,22 @@ if (function_exists('ts_is_ajax') == false) {
             return true;
         }
         return false;
+    }
+//}
+
+
+
+//if (!function_exists('ts_get_link_with_search')) {
+    function ts_get_link_with_search($link = false, $need = array(), $data = array()) {
+        $form_data = array();
+        if (!empty($need)) {
+            foreach ($need as $key) {
+                if (isset($data[$key]) and $data[$key]) {
+                    $form_data[$key] = $data[$key];
+                }
+            }
+        }
+        return esc_url(add_query_arg($form_data, $link));
     }
 //}
 

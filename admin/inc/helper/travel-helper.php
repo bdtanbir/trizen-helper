@@ -93,6 +93,50 @@ if ( !class_exists( 'TravelHelper' ) ) {
             return $results;
         }
 
+
+        static function recursiveKeySort( &$by_ref_array ) {
+            ksort( $by_ref_array );
+            foreach ( $by_ref_array as $key => $value ) {
+                if ( isset( $value[ 'children' ] ) ) {
+                    self::recursiveKeySort( $value[ 'children' ] );
+                    $by_ref_array[ $key ][ 'children' ] = $value[ 'children' ];
+                }
+                $by_ref_array[ $key ] = $value;
+            }
+
+            return $by_ref_array;
+        }
+        static function buildTree( array &$elements, $parentId = 1 ){
+            $branch = [];
+            foreach ( $elements as $element ) {
+                if ( $element[ 'parent_id' ] == $parentId ) {
+                    $children = self::buildTree( $elements, $element[ 'post_id' ] );
+                    if ( $children ) {
+                        $element[ 'children' ] = $children;
+                    }
+                    $branch[ $element[ 'post_title' ] ] = $element;
+                    unset( $elements[ $element[ 'post_id' ] ] );
+                }
+            }
+            return $branch;
+        }
+        static function buildTreeHasSort( $lists ) {
+            $arr = [];
+            if ( !empty( $lists ) ) {
+                $lists_temp = $lists;
+                unset( $lists );
+                foreach ( $lists_temp as $k => $v ) {
+                    $lists[ $v->post_title ] = (array)$v;
+                }
+                $lists = self::buildTree( $lists );
+                self::recursiveKeySort( $lists );
+
+                return $lists;
+            } else {
+                return $arr;
+            }
+        }
+
         /**
          * @since   1.0
          **/
@@ -123,6 +167,66 @@ if ( !class_exists( 'TravelHelper' ) ) {
         static function woocommerce_default_currency_smbl() {
             $currency = get_woocommerce_currency_symbol();
             return $currency;
+        }
+
+        static function buildTreeOptionLocation($locations, $location_id) {
+            if (is_array($locations) && count($locations)):
+                foreach ($locations as $key => $value):
+                    $level = 20;
+                    if ($value['lv'] == 2) {
+                        $level = $value['lv'] * 10;
+                    }
+                    if ($value['lv'] > 2) {
+                        $level = $value['lv'] * 10 + (($value['lv'] - 2) * 10);
+                    }
+                    $class_f = '';
+                    if ($value['lv'] == 1)
+                        $class_f = 'parent_li';
+                    ?>
+                    <li style="padding-left: <?php echo esc_attr($level) . 'px;'; ?>" <?php selected($value['ID'], $location_id); ?>
+                        data-country="<?php echo esc_attr($value['Country']); ?>"
+                        data-value="<?php echo esc_attr($value['ID']); ?>" class="item <?php echo esc_attr($class_f); ?>">
+                        <?php
+                        if ($value['lv'] == 2) {
+                            echo '<i class="la la-map-marker"></i>';
+                            echo '<span class="lv2">' . esc_html($value['post_title']) . '</span>';
+                        } else {
+                            if ($value['lv'] == 1) {
+                                echo '<span class="parent">' . esc_html($value['post_title']) . '</span>';
+                            } else {
+                                echo '<span class="child">' . esc_html($value['post_title']) . '</span>';
+                            }
+                        }
+                        ?>
+                    </li>
+                    <?php
+                    if (isset($value['children'])) {
+                        if (is_array($value['children'])) {
+                            self::buildTreeOptionLocation($value['children'], $location_id);
+                        }
+                    }
+                endforeach;
+            endif;
+        }
+
+        static function primary_lang(){
+            $lang = '';
+            if (self::is_wpml()) {
+                global $sitepress;
+                $lang = $sitepress->get_default_language();
+            }
+            return $lang;
+        }
+
+        static function post_translated($post_id, $post_type = 'post', $lang = '') {
+            if (TravelHelper::is_wpml() && has_filter('wpml_object_id')) {
+                if (empty($lang)) {
+                    $lang = TravelHelper::current_lang();
+                }
+                return apply_filters('wpml_object_id', $post_id, $post_type, true, $lang);
+            } else {
+                return $post_id;
+            }
         }
 
         static function edit_join_wpml( $join, $post_type ) {

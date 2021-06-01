@@ -1723,7 +1723,7 @@ if ( !class_exists( 'TSAdminRoom' ) ) {
                     if ($traver->post_count) {
                         $avg_price = $price / $traver->post_count;
                     }
-                    update_post_meta($hotel_id, 'trizen_hotel_regular_price', $avg_price);
+                    update_post_meta($hotel_id, 'price_avg', $avg_price);
                 }
             }
             if ( $post_type == 'hotel_room' ) {
@@ -1760,7 +1760,7 @@ if ( !class_exists( 'TSAdminRoom' ) ) {
                         if ( $traver->post_count ) {
                             $avg_price = $price / $traver->post_count;
                         }
-                        update_post_meta( $hotel_id, 'trizen_hotel_regular_price', $avg_price );
+                        update_post_meta( $hotel_id, 'price_avg', $avg_price );
                     }
                 }
             }
@@ -1906,7 +1906,7 @@ if ( !class_exists( 'TSAdminRoom' ) ) {
 
                 $rate_review          = TSReview::get_avg_rate($id); // rate review
                 $hotel_star           = get_post_meta($id, 'hotel_star', true); // hotel star
-                $price_avg            = get_post_meta($id, 'trizen_hotel_regular_price', true); // price avg
+                $price_avg            = get_post_meta($id, 'price_avg', true); // price avg
                 $min_price            = get_post_meta($id, 'min_price', true); // price avg
                 $hotel_booking_period = get_post_meta($id, 'hotel_booking_period', true); // price avg
                 $map_lat              = get_post_meta($id, 'map_lat', true); // map_lat

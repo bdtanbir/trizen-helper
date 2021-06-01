@@ -197,3 +197,10 @@ function trizen_custom_post_types() {
 
 add_action( 'init', 'trizen_custom_post_types' );
 
+
+if(!function_exists('ts_reg_shortcode')) {
+    function ts_reg_shortcode($tag , $func) {
+        add_shortcode($tag , $func);
+    }
+}
+

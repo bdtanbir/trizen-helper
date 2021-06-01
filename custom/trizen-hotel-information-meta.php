@@ -1,7 +1,7 @@
 <?php
 $hotel_address_title = get_post_meta( get_the_ID(), 'address', true );
 $hotel_video         = get_post_meta( get_the_ID(), 'trizen_hotel_video_url', true );
-$hotel_regular_price = get_post_meta( get_the_ID(), 'trizen_hotel_regular_price', true );
+$hotel_regular_price = get_post_meta( get_the_ID(), 'price_avg', true );
 $hotel_sale_price    = get_post_meta( get_the_ID(), 'trizen_hotel_sale_price', true );
 if(empty($hotel_video)) {
     $hotel_video_src = 'https://www.youtube.com/watch?v=5u1WISBbo5I';
@@ -304,7 +304,7 @@ $query = new WP_Query($args)
                 </div>
 
                 <div class="form-settings" id="hotel_price_setting">
-                    <label for="trizen_hotel_regular_price" class="title">
+                    <label for="price_avg" class="title">
 			            <?php esc_html_e('Regular price', 'trizen-helper'); ?>
                     </label>
                     <span class="description">
@@ -312,8 +312,8 @@ $query = new WP_Query($args)
                     </span>
                     <div class="form-input">
                         <input
-                            id="trizen_hotel_regular_price"
-                            name="trizen_hotel_regular_price"
+                            id="price_avg"
+                            name="price_avg"
                             type="text"
                             value="<?php echo esc_attr($hotel_regular_price); ?>"
                             placeholder="<?php echo get_woocommerce_currency_symbol(); ?>" />

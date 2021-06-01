@@ -150,7 +150,6 @@ class TS_Model {
 	 * Run Get Query and store the result
 	 *
 	 * @since 1.0
-	 * @author dannie
 	 *
 	 * @param bool $limit
 	 * @param bool $offset
@@ -173,8 +172,6 @@ class TS_Model {
 
 	/**
 	 * Add Where Clause to current Query
-	 *
-	 * @author dannie
 	 * @since 1.0
 	 *
 	 * @param $key
@@ -205,20 +202,17 @@ class TS_Model {
 
     /**
      * Add OR Where Clause to current Query
-     * @author dannie
      * @since 1.0
      * @param $key
      * @param bool|FALSE $value
      * @param bool
      * @return $this
      */
-    function or_where($key, $value = FALSE, $raw_where = FALSE)
-    {
+    function or_where($key, $value = FALSE, $raw_where = FALSE){
         if (is_array($key) and !empty($key)) {
             foreach ($key as $k1 => $v1) {
                 $this->or_where($k1, $v1, $raw_where);
             }
-
             return $this;
         }
         if (is_string($key)) {
@@ -229,7 +223,6 @@ class TS_Model {
                 'is_raw' => $raw_where
             );
         }
-
         return $this;
     }
 
@@ -238,18 +231,14 @@ class TS_Model {
      * Add Select
      *
      * @since 1.0
-     * @author dannie
-     *
      * @param $column_name string|array Name of Column or Array of Column
      * @return TS_Model Current Object
      *
      */
-    function select($column_name)
-    {
+    function select($column_name){
         if (is_array($column_name) and !empty($column_name)) {
             foreach ($column_name as $v) $this->select($v);
         }
-
         if (is_string($column_name)) {
             $this->_select_query[] = $column_name;
         }
@@ -258,15 +247,13 @@ class TS_Model {
 
     /**
      * Add Table Join
-     * @author dannie
      * @since 1.0
      * @param $table string Name of table
      * @param $on_clause string on clause
      * @param $join_key string join keyword, default is INNER
      * @return TS_Model Current Object
      */
-    function join($table, $on_clause, $join_key = 'INNER')
-    {
+    function join($table, $on_clause, $join_key = 'INNER') {
         if (is_array($table) and !empty($table)) {
             foreach ($table as $v) {
                 $v = wp_parse_args($v, array(
@@ -277,11 +264,9 @@ class TS_Model {
                 $this->join($v['table'], $v['on'], $v['keyword']);
             }
         }
-
         if (is_string($table)) {
             $this->_join_query[] = array('table' => $table, 'on' => $on_clause, 'keyword' => $join_key);
         }
-
         return $this;
     }
 
@@ -290,24 +275,20 @@ class TS_Model {
      * @param string $value
      * @return TS_Model
      */
-    function orderby($key, $value = 'asc')
-    {
+    function orderby($key, $value = 'asc'){
         if (is_array($key) and !empty($key)) {
             foreach ($key as $k1 => $v1) {
                 $this->orderby($k1, $v1);
             }
-
             return $this;
         }
         if (is_string($key)) {
             $this->_order_query[$key] = $value;
         }
-
         return $this;
     }
 
-    function groupby($key)
-    {
+    function groupby($key) {
         if (is_array($key) and !empty($key)) {
             foreach ($key as $v1) {
                 $this->groupby($v1);
@@ -316,12 +297,10 @@ class TS_Model {
         if (is_string($key)) {
             $this->_groupby[] = $key;
         }
-
         return $this;
     }
 
-    function having($key)
-    {
+    function having($key) {
         if (is_array($key) and !empty($key)) {
             foreach ($key as $v1) {
                 $this->having($v1);
@@ -330,15 +309,12 @@ class TS_Model {
         if (is_string($key)) {
             $this->_having[] = $key;
         }
-
         return $this;
     }
 
     /**
      * Change Table Name of Current Model
      * @since 1.0
-     * @author dannie
-     *
      * @param bool $table_name
      * @return $this
      */
@@ -346,47 +322,36 @@ class TS_Model {
         if($table_name){
             $this->table_name=$table_name;
         }
-
         return $this;
     }
 
     /**
      * Return All Last Query Result
      * @since 1.0
-     * @author dannie
      * @return array
      */
-    function result()
-    {
+    function result() {
         $data = $this->_last_result;
         $this->_clear_query();
-
         return $data;
     }
 
 	/**
 	 * Return first row of last query result
-	 *
-	 * @author dannie
 	 * @since 1.0
 	 *
 	 * @return bool|array
 	 */
-	function row($key=false)
-	{
+	function row($key=false) {
 		$data = isset($this->_last_result[0]) ? $this->_last_result[0] : FALSE;
 		$this->_clear_query();
-
 		if(!empty($key)) return isset($data[$key])?$data[$key]:null;
-
 		return $data;
-
 	}
 
     /**
      * Get single row by table key
      * @since 1.0
-     * @author dannie
      * @param $id
      * @return array|bool|null|object|void
      */
@@ -407,18 +372,14 @@ class TS_Model {
     /**
      * Get columns of the table
      * @since 1.0
-     * @author dannie
      * @return array
      */
-    function get_columns()
-    {
+    function get_columns() {
         return apply_filters('wpbooking_model_table_' . $this->table_name . '_columns', $this->columns);
     }
 
     /**
      * Check Meta Table is ready
-     * @since 1.0
-     * @author dannie
      * @since 1.0
      * @return bool
      */
@@ -430,8 +391,6 @@ class TS_Model {
 
     /**
      * Check Meta Table is Created
-     * @since 1.0
-     * @author dannie
      * @since 1.0
      */
     public function _check_meta_table_is_working() {
@@ -511,12 +470,10 @@ class TS_Model {
     /**
      * Run Update Query
      * @since 1.0
-     * @author dannie
      * @param array $data
      * @return bool|false|int
      */
-    function update($data = array())
-    {
+    function update($data = array()){
         if (empty($data)) {
             return FALSE;
         }
@@ -544,14 +501,12 @@ class TS_Model {
                         default:
                             $where .= $wpdb->prepare(' ' . $value['clause'] . ' ' . $value['key'] . '=%s ', array($value['value']));
                             break;
-
                     }
                 } else {
                     $where .= ' ' . $value['clause'] . ' ' . $value['key'];
                 }
             }
         }
-
         $set = FALSE;
         foreach ($data as $key => $value) {
             $prepare='%s';
@@ -573,12 +528,10 @@ class TS_Model {
 
     /**
      * Delete from table with where clause
-     * @author dannie
      * @since 1.0
      * @return bool|false|int
      */
-    function delete()
-    {
+    function delete(){
         global $wpdb;
         $table_name = $wpdb->prefix . $this->table_name;
 
@@ -603,7 +556,6 @@ class TS_Model {
                         default:
                             $where .= $wpdb->prepare(' ' . $value['clause'] . ' ' . $value['key'] . '=%s ', array($value['value']));
                             break;
-
                     }
                 } else {
                     $where .= ' ' . $value['clause'] . ' ' . $value['key'];
@@ -611,10 +563,7 @@ class TS_Model {
 
             }
         }
-
-
         $query = "DELETE FROM " . $table_name . " ";
-
         $query .= $where;
         $this->_clear_query();
         return $wpdb->query($query);
@@ -622,8 +571,6 @@ class TS_Model {
 
     /**
      * Upgrade meta table
-     * @since 1.0
-     * @author dannie
      * @since 1.0
      */
     public function _upgrade_table() {
@@ -762,15 +709,11 @@ class TS_Model {
      * Build the query
      *
      * @since 1.0
-     * @author dannie
-     *
      * @return bool|string
      */
-    public function _get_query()
-    {
+    public function _get_query() {
         global $wpdb;
         $table_name = $wpdb->prefix . $this->table_name;
-
         $select = FALSE;
         if (!empty($this->_select_query)) {
 
@@ -778,7 +721,6 @@ class TS_Model {
         } else {
             $select = '*';
         }
-
         $join = FALSE;
         if (!empty($this->_join_query)) {
             foreach ($this->_join_query as $j) {
@@ -787,22 +729,18 @@ class TS_Model {
                     'on'      => FALSE,
                     'keyword' => FALSE
                 ));
-
                 if (!$j['table'] or !$j['on']) continue;
 
-                $table = $wpdb->prefix . $j['table'];
-
+                $table = $wpdb->prefix . $j['tble'];
                 // Replace JOIN ON to add Table prefix to Table Name
                 $j['on'] = str_replace($j['table'], $table, $j['on']);
                 $j['on'] = str_replace($this->table_name, $table_name, $j['on']);
-
                 $join .= ' ' . $j['keyword'] . ' JOIN ' . $table . ' ON ' . $j['on'];
             }
         }
 
         $where = ' WHERE 1=1 ';
         if (!empty($this->_where_query)) {
-
             foreach ($this->_where_query as $key => $value) {
                 $value = wp_parse_args($value, array(
                     'key'    => FALSE,
@@ -821,18 +759,15 @@ class TS_Model {
                         default:
                             $where .= $wpdb->prepare(' ' . $value['clause'] . ' ' . $value['key'] . '=%s ', array($value['value']));
                             break;
-
                     }
                 } else {
                     $where .= ' ' . $value['clause'] . ' ' . $value['key'];
                 }
-
             }
         }
 
         // Like
         if (!empty($this->_like_query)) {
-
             foreach ($this->_like_query as $key => $value) {
                 $value = wp_parse_args($value,
                     array(
@@ -852,11 +787,9 @@ class TS_Model {
                     default:
                         $where .= ' ' . $value['clause'] . ' ' . $value['key'] . " LIKE '%" . $wpdb->_real_escape($value['value']) . "%' ";
                         break;
-
                 }
             }
         }
-
 
         $order = FALSE;
         if (!empty($this->_order_query)) {
@@ -864,44 +797,31 @@ class TS_Model {
             foreach ($this->_order_query as $k => $v) {
                 $order .= ' ' . $k . ' ' . $v . ',';
             }
-
             $order = substr($order, 0, -1);
         }
-
         $groupby = FALSE;
-
         if (!empty($this->_groupby)) {
             $groupby = ' GROUP BY ';
             foreach ($this->_groupby as $k => $v) {
                 $groupby .= ' ' . $v . ',';
             }
-
             $groupby = substr($groupby, 0, -1);
-
             $having = FALSE;
             if (!empty($this->_having)) {
                 $having .= ' HAVING ';
                 foreach ($this->_having as $k => $v) {
                     $having .= ' ' . $v . ',';
                 }
-
                 $having = substr($having, 0, -1);
-
                 $groupby .= ' ' . $having;
             }
-
         }
-
         $limit = FALSE;
         if (!empty($this->_limit_query[0])) {
             $limit = ' LIMIT ';
-
             $offset = !empty($this->_limit_query[1]) ? $this->_limit_query[1] : 0;
-
             $limit .= $offset . ',' . $this->_limit_query[0];
-
         }
-
         if ($select) {
             $query = "SELECT  SQL_CALC_FOUND_ROWS {$select} FROM {$table_name} ";
             //$query=$wpdb->prepare($query,array($select));
@@ -910,17 +830,13 @@ class TS_Model {
             $query .= $groupby;
             $query .= $order;
             $query .= $limit;
-
             return $query;
         }
-
         return FALSE;
     }
 
     /**
      * Get Table Name with Prefix
-     *
-     * @author dannie
      * @since 1.0
      *
      *
@@ -940,7 +856,6 @@ class TS_Model {
      * Clear Query Condition after each query
      *
      * @since 1.0
-     * @author dannie
      */
     public function _clear_query()
     {
@@ -991,39 +906,30 @@ class TS_Model {
 	/**
 	 * Run Insert Query
 	 * @since 1.0
-	 * @author dannie
 	 * @param array $data
 	 * @return bool|int
 	 */
-	function insert($data = array())
-	{
+	function insert($data = array()){
 		if (empty($data)) {
 			return FALSE;
 		}
 		global $wpdb;
 		$table_name = $wpdb->prefix . $this->table_name;
-
 		$set         = FALSE;
 		$set_data    = array();
 		$set_columns = FALSE;
-
 		foreach ($data as $key => $value) {
 			//if(!array_key_exists($key,$this->columns)) continue;
 			$set        .= "%s,";
 			$set_data[]  = $value;
 			$set_columns.=$key.',';
 		}
-
 		$set = substr($set, 0, -1);
 		$set_columns = substr($set_columns, 0, -1);
-
 		$query = "INSERT INTO " . $table_name . " ({$set_columns}) VALUES ($set)";
-
 		$query = $wpdb->prepare($query, $set_data);
-
 		$this->_last_query = $query;
 		$wpdb->query($query);
-
 		$this->_clear_query();
 		return $wpdb->insert_id;
 

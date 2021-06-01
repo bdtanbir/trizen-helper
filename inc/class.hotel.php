@@ -7,7 +7,7 @@
  */
 
 if ( !class_exists( 'TSHotel' ) ) {
-    class TSHotel extends TravelerObject {
+    class TSHotel {
         protected static $_inst;
         static $_instance;
         //Current Hotel ID
@@ -366,7 +366,7 @@ if ( !class_exists( 'TSHotel' ) ) {
             die;
         }
 
-        function st_origin_id( $post_id, $service_type = 'post' ) {
+        function ts_origin_id( $post_id, $service_type = 'post' ) {
             if ( function_exists( 'wpml_object_id_filter' ) ) {
                 global $sitepress;
                 $a = wpml_object_id_filter( $post_id, $service_type, true, $sitepress->get_default_language() );
@@ -1291,61 +1291,60 @@ if ( !class_exists( 'TSHotel' ) ) {
             return 'left';
         }
 
-        function get_result_string()
-        {
-            global $wp_query, $st_search_query;
-            if ( $st_search_query ) {
-                $query = $st_search_query;
-            } else $query = $wp_query;
-            $result_string = $p1 = $p2 = $p3 = $p4 = '';
+    function get_result_string() {
+        global $wp_query, $ts_search_query;
+        if ( $ts_search_query ) {
+            $query = $ts_search_query;
+        } else $query = $wp_query;
+        $result_string = $p1 = $p2 = $p3 = $p4 = '';
 
-            if ( $query->found_posts ) {
-                if ( $query->found_posts > 1 ) {
-                    $p1 = sprintf( __( '%s hotels', 'trizen-helper' ), $query->found_posts );
-                } else {
-                    $p1 = sprintf( __( '%s hotel', 'trizen-helper' ), $query->found_posts );
-                }
+        if ( $query->found_posts ) {
+            if ( $query->found_posts > 1 ) {
+                $p1 = sprintf( __( '%s Hotels found', 'trizen-helper' ), $query->found_posts );
             } else {
-                $p1 = __( 'No hotel found', 'trizen-helper' );
+                $p1 = sprintf( __( '%s Hotel found', 'trizen-helper' ), $query->found_posts );
             }
+        } else {
+            $p1 = __( 'No Hotel found', 'trizen-helper' );
+        }
 
-            $location_id = get( 'location_id' );
-            if ( $location_id and $location = get_post( $location_id ) ) {
-                $p2 = sprintf( __( 'in %s', 'trizen-helper' ), get_the_title( $location_id ) );
-            } elseif ( request( 'location_name' ) ) {
-                $p2 = sprintf( __( 'in %s', 'trizen-helper' ), request( 'location_name' ) );
-            } elseif ( request( 'address' ) ) {
-                $p2 = sprintf( __( 'in %s', 'trizen-helper' ), request( 'address' ) );
+        $location_id = get( 'location_id' );
+        if ( $location_id and $location = get_post( $location_id ) ) {
+            $p2 = sprintf( __( '%s: ', 'trizen-helper' ), get_the_title( $location_id ) );
+        } elseif ( request( 'location_name' ) ) {
+            $p2 = sprintf( __( '%s: ', 'trizen-helper' ), request( 'location_name' ) );
+        } elseif ( request( 'address' ) ) {
+            $p2 = sprintf( __( '%s: ', 'trizen-helper' ), request( 'address' ) );
+        }
+
+        if ( request( 'ts_google_location', '' ) != '' ) {
+            $p2 .= sprintf( __( ' in %s', 'trizen-helper' ), esc_html( request( 'ts_google_location', '' ) ) );
+        }
+        $start = convertDateFormat( get( 'start' ) );
+        $end   = convertDateFormat( get( 'end' ) );
+        $start = strtotime( $start );
+        $end = strtotime( $end );
+        if ( $start and $end ) {
+            $p3 = sprintf( __( 'on %s', 'trizen-helper' ), date_i18n( 'M d', $start ) . ' - ' . date_i18n( 'M d', $end ) );
+        }
+
+        if ( $adult_num = get( 'adult_number' ) ) {
+            if ( $adult_num > 1 ) {
+                $p4 = sprintf( __( 'for %s adults', 'trizen-helper' ), $adult_num );
+            } else {
+                $p4 = sprintf( __( 'for %s adult', 'trizen-helper' ), $adult_num );
             }
-
-            if ( request( 'ts_google_location', '' ) != '' ) {
-                $p2 .= sprintf( __( ' in %s', 'trizen-helper' ), esc_html( request( 'ts_google_location', '' ) ) );
-            }
-            $start = convertDateFormat( get( 'start' ) );
-            $end   = convertDateFormat( get( 'end' ) );
-            $start = strtotime( $start );
-            $end = strtotime( $end );
-            if ( $start and $end ) {
-                $p3 = sprintf( __( 'on %s', 'trizen-helper' ), date_i18n( 'M d', $start ) . ' - ' . date_i18n( 'M d', $end ) );
-            }
-
-            if ( $adult_num = get( 'adult_number' ) ) {
-                if ( $adult_num > 1 ) {
-                    $p4 = sprintf( __( 'for %s adults', 'trizen-helper' ), $adult_num );
-                } else {
-                    $p4 = sprintf( __( 'for %s adult', 'trizen-helper' ), $adult_num );
-                }
-
-            }
-
-            // check Right to left
-            /*if ( st()->get_option( 'right_to_left' ) == 'on' || is_rtl() ) {
-
-                return $p1 . ' ' . $p4 . ' ' . $p3 . ' ' . $p2;
-            }*/
-            return esc_html( $p1 . ' ' . $p2 . ' ' . $p3 . ' ' . $p4 );
 
         }
+
+        // check Right to left
+        /*if ( st()->get_option( 'right_to_left' ) == 'on' || is_rtl() ) {
+
+            return $p1 . ' ' . $p4 . ' ' . $p3 . ' ' . $p2;
+        }*/
+        return esc_html( $p2 . ' ' . $p1 . ' ' . $p3 . ' ' . $p4 );
+
+    }
 
 
         function ajax_search_room() {
@@ -1893,7 +1892,7 @@ if ( !class_exists( 'TSHotel' ) ) {
 
 
         /**
-         * @update 1.0
+         * @since 1.0
          */
         function _get_where_query_tab_location( $where ) {
             $location_id = get_the_ID();
@@ -1939,7 +1938,7 @@ if ( !class_exists( 'TSHotel' ) ) {
                 $groupby  .= " HAVING ";
                 /*$meta_key = st()->get_option( 'hotel_show_min_price', 'avg_price' );
                 if ( $meta_key == 'avg_price' ) */
-                $meta_key = "trizen_hotel_regular_price";
+                $meta_key = "price_avg";
 
                 $price    = get( 'price_range', '0;0' );
                 $priceobj = explode( ';', $price );
@@ -2039,7 +2038,7 @@ if ( !class_exists( 'TSHotel' ) ) {
                 }
 //                $is_featured = st()->get_option( 'is_featured_search_hotel', 'off' );
                 if ( empty( $ts_search_args[ 'ts_orderby' ] ) ) {
-                    $query->set( 'meta_key', 'is_featured' );
+//                    $query->set( 'meta_key', 'is_featured' );
                     $query->set( 'orderby', 'meta_value' );
                     $query->set( 'order', 'DESC' );
                 }
@@ -2069,11 +2068,11 @@ if ( !class_exists( 'TSHotel' ) ) {
                         $query->set( 'meta_key', 'discount_rate' );
                         $query->set( 'orderby', 'meta_value_num' );
                     }
-                    if ( $ts_orderby == 'featured' ) {
+                    /*if ( $ts_orderby == 'featured' ) {
                         $query->set( 'meta_key', 'is_featured' );
                         $query->set( 'orderby', 'meta_value' );
                         $query->set( 'order', 'DESC' );
-                    }
+                    }*/
                 }
                 if ( !empty( $ts_search_args[ 'sort_taxonomy' ] ) and $sort_taxonomy = $ts_search_args[ 'sort_taxonomy' ] ) {
                     if ( isset( $ts_search_args[ "id_term_" . $sort_taxonomy ] ) ) {
@@ -2101,14 +2100,14 @@ if ( !class_exists( 'TSHotel' ) ) {
         }
 
         /**
-         * since 1.0
+         * @since 1.0
          */
         function _get_order_by_query( $orderby ) {
             if ( $check = get( 'orderby' ) ) {
                 global $wpdb;
                 /*$meta_key = st()->get_option( 'hotel_show_min_price', 'avg_price' );
                 if ( $meta_key == 'avg_price' ) */
-                    $meta_key = "trizen_hotel_regular_price";
+                    $meta_key = "price_avg";
                 switch ( $check ) {
                     case "price_asc":
                         $orderby = ' ts_price asc';
@@ -2212,7 +2211,7 @@ if ( !class_exists( 'TSHotel' ) ) {
             if ( !$post_id ) {
                 $post_id = get_the_ID();
             }
-            $price = get_post_meta( $post_id, 'trizen_hotel_regular_price', true );
+            $price = get_post_meta( $post_id, 'price_avg', true );
             $price = apply_filters( 'ts_apply_tax_amount', $price );
             return $price;
         }
@@ -2287,7 +2286,7 @@ if ( !class_exists( 'TSHotel' ) ) {
         static function get_min_max_price( $post_type = 'ts_hotel' ) {
             /*$meta_key = st()->get_option( 'hotel_show_min_price', 'avg_price' );
             if ( $meta_key == 'avg_price' )*/
-            $meta_key = "trizen_hotel_regular_price";
+            $meta_key = "price_avg";
 
             if ( empty( $post_type ) || !TSAdminRoom::checkTableDuplicate( $post_type ) ) {
                 return [ 'price_min' => 0, 'price_max' => 500 ];
@@ -2611,8 +2610,8 @@ if ( !class_exists( 'TSHotel' ) ) {
 
         }
 
+        /* @since 1.0 */
         static function get_cart_item_total( $item_id, $item ) {
-            /* @since 1.0 */
             $count_sale   = 0;
             $price_sale   = $item[ 'price' ];
             $adult_price2 = 0;
@@ -2634,13 +2633,12 @@ if ( !class_exists( 'TSHotel' ) ) {
         }
 
         static function inst() {
-            if ( !self::$_inst ) {
+            if (empty(self::$_inst)) {
                 self::$_inst = new self();
             }
-
             return self::$_inst;
         }
     }
 
-    TSHotel::inst()->init();
+    TSHotel::inst();
 }
