@@ -69,8 +69,8 @@ if ( !class_exists( 'STUpgradeData' ) ) {
                         'featured'    => esc_sql( $val[ 'featured_image' ] ),
                         'description' => esc_sql( $val[ 'description' ] ),
                         'icon'        => esc_sql( $val[ 'icon' ] ),
-                        'lat'         => esc_sql( $val[ 'map_lat' ] ),
-                        'lng'         => esc_sql( $val[ 'map_lng' ] ),
+                        'lat'         => esc_sql( $val[ 'lat' ] ),
+                        'lng'         => esc_sql( $val[ 'lng' ] ),
                     ];
                     $wpdb->insert( $wpdb->prefix . 'ts_properties', $data );
                 }

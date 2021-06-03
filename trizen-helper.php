@@ -47,6 +47,7 @@ if(is_admin()) {
     require_once TRIZEN_HELPER_PATH.'admin/inc/class.admin.availability.php';
     require_once TRIZEN_HELPER_PATH.'core/database/tables/ts_price.php';
 }
+require_once TRIZEN_HELPER_PATH.'admin/inc/class.tsadmin.php';
 require_once TRIZEN_HELPER_PATH.'admin/inc/helper/nested_sets_model.helper.php';
 require_once TRIZEN_HELPER_PATH.'admin/inc/class.admin.room.php';
 require_once TRIZEN_HELPER_PATH.'admin/inc/helper/availability.helper.php';
@@ -341,6 +342,13 @@ function trizen_helper_scripts() {
         true
     );
 	wp_enqueue_script('trizen-helper-js', TRIZEN_HELPER_URI .'assets/js/trizen-helper.js', array('jquery', 'trizen-js'), _S_VERSION, true);
+
+	wp_localize_script('jquery', 'ts_params', [
+        'site_url'        => site_url(),
+        'ajax_url'        => admin_url('admin-ajax.php'),
+        'ts_search_nonce' => wp_create_nonce("ts_search_security"),
+        '_s'              => wp_create_nonce('ts_frontend_security'),
+    ]);
 
 }
 add_action('wp_enqueue_scripts', 'trizen_helper_scripts');

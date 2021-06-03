@@ -137,8 +137,8 @@ class trizen_hpa_widget extends WP_Widget {
                 <div class="btn-box pt-2">
                     <input class="theme-btn text-center w-100 mb-2 font-size-18"
                            type="submit"
-                           name="submit"
-                           value="<?php esc_attr_e('Check Availability', 'trizen-helper') ?>">
+                           value="<?php esc_attr_e('Check Availability', 'trizen-helper'); ?>"
+                           name="submit" />
                     <div class="d-flex align-items-center justify-content-between pt-2">
                         <a href="#" class="btn theme-btn-hover-gray font-size-15" data-toggle="modal" data-target="#sharePopupForm">
                             <i class="la la-share mr-1"></i> <?php esc_html_e('Share', 'trizen-helper'); ?>

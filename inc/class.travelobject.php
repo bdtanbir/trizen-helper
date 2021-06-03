@@ -397,8 +397,8 @@ class TravelerObject {
         if (is_null($range)) {
             $range = trizen_get_option('distance_for_nearby', 25);
         }
-        $map_lat   = (float)get_post_meta($post_id, 'map_lat', true);
-        $map_lng   = (float)get_post_meta($post_id, 'map_lng', true);
+        $map_lat   = (float)get_post_meta($post_id, 'lat', true);
+        $map_lng   = (float)get_post_meta($post_id, 'lng', true);
         $post_type = get_post_type($post_id);
 
         $location_key = 'id_location';
@@ -414,8 +414,8 @@ class TravelerObject {
         global $wpdb;
         $where = " $wpdb->posts.ID = mt1.post_id
             and $wpdb->posts.ID=mt2.post_id
-            AND mt1.meta_key = 'map_lat'
-            and mt2.meta_key = 'map_lng'
+            AND mt1.meta_key = 'lat'
+            and mt2.meta_key = 'lng'
             and $wpdb->posts.ID !=$post_id
             AND $wpdb->posts.post_status = 'publish'
             AND $wpdb->posts.post_type = '{$this->post_type}'
@@ -452,8 +452,8 @@ sin( radians( mt1.meta_value ) ) ) ) AS distance
             global $wpdb;
             $where = "$wpdb->posts.ID = mt1.post_id
             and $wpdb->posts.ID=mt2.post_id
-            AND mt1.meta_key = 'map_lat'
-            and mt2.meta_key = 'map_lng'
+            AND mt1.meta_key = 'lat'
+            and mt2.meta_key = 'lng'
             AND $wpdb->posts.post_status = 'publish'
             AND $wpdb->posts.post_type IN ({$data_post_type})
             AND $wpdb->posts.post_date < NOW()";

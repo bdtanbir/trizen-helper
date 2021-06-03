@@ -29,9 +29,9 @@ if ( !class_exists( 'TSHotelHelper' ) ) {
         function init() {
 //            parent::init();
 
-            add_action('template_redirect', [$this, 'ajax_search_room'], 1);
-            add_action( 'wp_ajax_ajax_search_room', [ $this, 'ajax_search_room' ] );
-            add_action( 'wp_ajax_nopriv_ajax_search_room', [ $this, 'ajax_search_room' ] );
+//            add_action('template_redirect', [$this, 'ajax_search_room'], 1);
+//            add_action( 'wp_ajax_ajax_search_room', [ $this, 'ajax_search_room' ] );
+//            add_action( 'wp_ajax_nopriv_ajax_search_room', [ $this, 'ajax_search_room' ] );
         }
 
 
@@ -146,7 +146,7 @@ if ( !class_exists( 'TSHotelHelper' ) ) {
             $this->remove_search_room_query();
         }
 
-        function ajax_search_room() {
+        /*function ajax_search_room() {
             if ( post( 'room_search' ) ) {
                 $result = [
                     'status' => 1,
@@ -199,7 +199,7 @@ if ( !class_exists( 'TSHotelHelper' ) ) {
                 echo json_encode( $result );
                 die();
             }
-        }
+        }*/
 
         static function inst() {
             if ( !self::$_inst ) {

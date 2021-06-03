@@ -114,11 +114,9 @@
 
     /* Searching Room Availability */
     $('.form-check-availability-hotel', body).submit(function (ev) {
-        alert('availability');
         ev.preventDefault();
         var form = $(this),
             parent = form.parent(),
-            loader = $('.loader-wrapper', parent),
             message = $('.message-wrapper', form);
         var has_fixed = form.closest('.fixed-on-mobile');
         if (has_fixed.hasClass('open')) {
@@ -129,22 +127,23 @@
             name: 'security',
             value: ts_params._s
         });
-        message.html('');
-        loader.show();
-        $('.ts-list-rooms .loader-wrapper').show();
+        message.html('failed post');
+        // loader.show();
+        // $('.ts-list-rooms .loader-wrapper').show();
         $.post(ts_params.ajax_url, data, function (respon) {
             if (typeof respon == 'object') {
                 if (respon.message) {
                     message.html(respon.message);
                 }
-                $('.ts-list-rooms .fetch').html(respon.html);
+                console.log('I am Log: '+respon)
+                // $('.ts-list-rooms .fetch').html(respon.html);
                 $('html, body').animate({
                     scrollTop: $('.ts-list-rooms', body).offset().top - 150
                 }, 500);
                 $('[data-toggle="tooltip"]').tooltip();
             }
-            $('.ts-list-rooms .loader-wrapper').hide();
-            loader.hide();
+            // $('.ts-list-rooms .loader-wrapper').hide();
+            // loader.hide();
         }, 'json');
     });
 

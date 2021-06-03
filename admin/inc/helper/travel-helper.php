@@ -661,9 +661,9 @@ if ( !class_exists( 'TravelHelper' ) ) {
         }
 
         private static function _get_location_weather( $post_id = false ) {
-            if ( !$post_id ) $post_id = get_the_ID();
-            $lat = get_post_meta( $post_id, 'map_lat', true );
-            $lng = get_post_meta( $post_id, 'map_lng', true );
+            /*if ( !$post_id ) $post_id = get_the_ID();
+            $lat = get_post_meta( $post_id, 'lat', true );
+            $lng = get_post_meta( $post_id, 'lng', true );
             if ( $lat and $lng ) {
                 $url = "http://api.openweathermap.org/data/2.5/weather?APPID=" . st()->get_option( 'weather_api_key', 'a82498aa9918914fa4ac5ba584a7e623' ) . "&lat=" . $lat . '&lon=' . $lng;
             } else {
@@ -688,13 +688,13 @@ if ( !class_exists( 'TravelHelper' ) ) {
                 $dataWeather = $cache;
             }
 
-            return $dataWeather;
+            return $dataWeather;*/
         }
 
         static function get_location_temp( $post_id = false ) {
             /*if ( !$post_id ) $post_id = get_the_ID();
-            $lat = get_post_meta( $post_id, 'map_lat', true );
-            $lng = get_post_meta( $post_id, 'map_lng', true );
+            $lat = get_post_meta( $post_id, 'lat', true );
+            $lng = get_post_meta( $post_id, 'lng', true );
             if ( !$lat and !$lng ) return false;
             $dataWeather = self::_get_location_weather( $post_id );
 
@@ -806,6 +806,43 @@ if ( !class_exists( 'TravelHelper' ) ) {
                     return $all_currency[ 0 ];
                 }
             }
+        }
+
+        static function format_money_from_db($money = '', $currency = false) {
+
+
+            extract(wp_parse_args($currency, TravelHelper::get_current_currency()));
+            if ($money == 0) {
+                return __("Free", 'trizen-helper');
+            }
+
+            $money = convert_money($money, $rate);
+
+            if (!empty($booking_currency_precision)) {
+                $money = round($money, $booking_currency_precision);
+            }
+
+            $thousand_separator = self::get_current_currency('thousand_separator', ',');
+            $decimal_separator = self::get_current_currency('decimal_separator', '.');
+            $money = number_format((float) $money, (int) $booking_currency_precision, $decimal_separator, $thousand_separator);
+
+            switch ($booking_currency_pos) {
+                case "right":
+                    $money_string = $money . $symbol;
+                    break;
+                case "left_space":
+                    $money_string = $symbol . " " . $money;
+                    break;
+
+                case "right_space":
+                    $money_string = $money . " " . $symbol;
+                    break;
+                case "left":
+                default:
+                    $money_string = $symbol . $money;
+                    break;
+            }
+            return $money_string;
         }
 
         static function get_current_currency( $need = false ) {

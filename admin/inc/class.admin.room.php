@@ -1909,8 +1909,8 @@ if ( !class_exists( 'TSAdminRoom' ) ) {
                 $price_avg            = get_post_meta($id, 'price_avg', true); // price avg
                 $min_price            = get_post_meta($id, 'min_price', true); // price avg
                 $hotel_booking_period = get_post_meta($id, 'hotel_booking_period', true); // price avg
-                $map_lat              = get_post_meta($id, 'map_lat', true); // map_lat
-                $map_lng              = get_post_meta($id, 'map_lng', true); // map_lng
+                $map_lat              = get_post_meta($id, 'lat', true); // lat
+                $map_lng              = get_post_meta($id, 'lng', true); // lng
 
                 if ($num_rows == 1) {
                     $data = [
