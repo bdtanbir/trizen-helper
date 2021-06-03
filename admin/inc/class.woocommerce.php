@@ -90,11 +90,11 @@ if(!class_exists('TS_Woocommerce')) {
 			}*/
         }
         /**
-         * @since 1.1.9
+         * @since 1.0
          *
-*@param $price
+         * @param $price
          *
-*@return bool|int
+         * @return bool|int
          */
         function _change_wc_product_rate($price)
         {

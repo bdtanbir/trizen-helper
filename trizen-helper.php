@@ -496,7 +496,6 @@ function destroy_cart() {
     delete_cart( 'ts_cart_coupon' );
 
     do_action( 'ts_after_destroy_cart' );
-
 }
 
 add_action( 'init', '_remove_cart' );
@@ -512,3 +511,16 @@ function _remove_cart() {
     }
 }
 
+
+
+add_filter('ts_is_woocommerce_checkout', 'ts_check_is_checkout_woocomerce');
+if (!function_exists('ts_check_is_checkout_woocomerce')) {
+    function ts_check_is_checkout_woocomerce($check) {
+        if (class_exists('Woocommerce')) {
+            $check = true;
+        } else {
+            $check = false;
+        }
+        return $check;
+    }
+}
