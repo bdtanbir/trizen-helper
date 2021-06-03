@@ -489,6 +489,16 @@ if (function_exists('ts_is_ajax') == false) {
 
 
 
+function destroy_cart() {
+    do_action( 'ts_before_destroy_cart' );
+
+    delete_cart( 'ts_cart' );
+    delete_cart( 'ts_cart_coupon' );
+
+    do_action( 'ts_after_destroy_cart' );
+
+}
+
 add_action( 'init', '_remove_cart' );
 function _remove_cart() {
     if (get('action', '') === 'ts-remove-cart' && wp_verify_nonce(get('security', ''), 'ts-security')) {
