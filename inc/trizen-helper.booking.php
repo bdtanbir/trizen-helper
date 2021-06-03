@@ -726,23 +726,20 @@ function post_origin($post_id, $post_type = 'post') {
 	}
 }
 
-function getDateFormatJs( $need = null, $type = '' )
-{
+function getDateFormatJs( $need = null, $type = '' ) {
 	//$need from theme options placeholder fields
 	if ( $need ) return $need;
-	$format    = trizen_get_option( 'datetime_format', '{mm}/{dd}/{yyyy}' );
+	$format    = '{mm}/{dd}/{yyyy}';
 	$format_js = str_replace( [ '{', '}' ], '', $format );
 	if ( $type == 'calendar' ) {
 		$format_js = str_replace( 'M', 'MMM', $format_js );
 	}
-
 	if ($type == 'admin-calendar') {
 		$year = strpos($format, 'yyyy');
 		if ($year !== false) {
 			$format_js = str_replace('yyyy', 'yy', $format_js);
 		}
 	}
-
 	return $format_js;
 }
 
@@ -761,7 +758,7 @@ function trizen_get_option($option_id, $default = false) {
 	return ts_traveler_get_option($option_id, $default);
 }
 function getDateFormat() {
-	$format = trizen_get_option('datetime_format', '{mm}/{dd}/{yyyy}');
+	$format = '{mm}/{dd}/{yyyy}';
 
 	$ori_format = [
 		'{d}' => 'j',
@@ -806,7 +803,7 @@ function convertDateFormat($date) {
 
 
 function getDateFormatMoment() {
-    $format = trizen_get_option( 'datetime_format', '{mm}/{dd}/{yyyy}' );
+    $format = '{dd}/{mm}/{yyyy}';
     $ori_format = [
         '{d}'    => 'D',
         '{dd}'   => 'DD',
@@ -833,7 +830,7 @@ function getDateFormatMoment() {
 
 
 function getDateFormatMomentText() {
-    $format = trizen_get_option('datetime_format', '{mm}/{dd}/{yyyy}');
+    $format = '{dd}/{mm}/{yyyy}';
 
     $ori_format = [
         '{d}' => 'd',

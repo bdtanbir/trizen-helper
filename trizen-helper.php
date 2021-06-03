@@ -297,13 +297,13 @@ function trizen_helper_admin_script()
 		'prev_month'          => __('prev month', 'trizen-helper'),
 		'next_month'          => __('next month', 'trizen-helper'),
 		'currency_smbl'       => '$',
-		'time_format'         => trizen_get_option('time_format', '12h'),
+		'time_format'         => '12h',
         'ts_search_nonce'     => wp_create_nonce("ts_search_security"),
 	]);
 
 
 	wp_localize_script('jquery', 'locale_daterangepicker', [
-		'direction'        => (is_rtl() || trizen_get_option('right_to_left') == 'on')? 'rtl': 'ltr',
+		'direction'        => (is_rtl()) ? 'rtl': 'ltr',
 		'applyLabel'       => esc_html__('Apply', 'trizen-helper'),
 		'cancelLabel'      => esc_html__('Cancel', 'trizen-helper'),
 		'fromLabel'        => esc_html__('From', 'trizen-helper'),
@@ -311,7 +311,7 @@ function trizen_helper_admin_script()
 		'customRangeLabel' => esc_html__('Custom', 'trizen-helper'),
 		'daysOfWeek'       =>  [esc_html__('Su', 'trizen-helper'), esc_html__('Mo', 'trizen-helper'), esc_html__('Tu', 'trizen-helper'), esc_html__('We', 'trizen-helper'), esc_html__('Th', 'trizen-helper'), esc_html__('Fr', 'trizen-helper'), esc_html__('Sa', 'trizen-helper')],
 		'monthNames'       => [esc_html__('January', 'trizen-helper'), esc_html__('February', 'trizen-helper'), esc_html__('March', 'trizen-helper'), esc_html__('April', 'trizen-helper'), esc_html__('May', 'trizen-helper'), esc_html__('June', 'trizen-helper'), esc_html__('July', 'trizen-helper'), esc_html__('August', 'trizen-helper'), esc_html__('September', 'trizen-helper'), esc_html__('October', 'trizen-helper'), esc_html__('November', 'trizen-helper'), esc_html__('December', 'trizen-helper')],
-		'firstDay'         => (int)trizen_get_option('start_week', 0),
+		'firstDay'         => (int)0,
 		'today'            => esc_html__('Today', 'trizen-helper'),
 		'please_waite'     => esc_html__('Please wait...', 'trizen-helper'),
 		'buttons'          => esc_html__('buttons', 'trizen-helper'),
@@ -387,7 +387,9 @@ if (!function_exists('ts_check_service_available')) {
     }
 }
 
-/** 1.1.4  */
+/**
+ * @since 1.0
+ */
 if (!function_exists('ts_get_page_search_result')) {
     function ts_get_page_search_result($post_type) {
         if (empty($post_type))
@@ -434,7 +436,6 @@ if (!function_exists('ts_get_discount_value')) {
         return $rs;
     }
 }
-
 
 if(!function_exists('ts_list_taxonomy')) {
     function ts_list_taxonomy($post_type='post'){
@@ -486,4 +487,18 @@ if (function_exists('ts_is_ajax') == false) {
     }
 //}
 
+
+
+add_action( 'init', '_remove_cart' );
+function _remove_cart() {
+    if (get('action', '') === 'ts-remove-cart' && wp_verify_nonce(get('security', ''), 'ts-security')) {
+        if (class_exists('WC_Product')) {
+            global $woocommerce;
+            WC()->cart->empty_cart();
+        }
+        destroy_cart();
+        wp_redirect(remove_query_arg(['action', 'security']));
+        exit();
+    }
+}
 
