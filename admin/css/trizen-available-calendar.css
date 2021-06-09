@@ -1,5 +1,9 @@
 
-
+button:focus,
+input:focus,
+textarea:focus {
+    outline: none;
+}
 .calendar-wrapper {
     display: flex;
     flex-wrap: wrap;
@@ -286,6 +290,8 @@ When it's NOT activated, the fc-button classes won't even be in the DOM.
     display: flex;
     justify-content: space-between;
     align-items: center;
+    padding: 5px;
+    border-radius: 4px;
 }
 .fc .fc-toolbar.fc-header-toolbar {
     margin-bottom: 1.5em;
@@ -1214,11 +1220,27 @@ A VERTICAL event
     position: relative;
 }
 .fc-toolbar .fc-right{
+    float: none !important;
     width: 30%;
     top: 0;
     left: 0;
+    text-align: right;
 }
-.fc-toolbar .fc-center{ width: 40%; float: left}
+.fc-toolbar .fc-button-group #label_calendar_change_month {
+    margin-left: 2px;
+    border-color: #eee;
+}
+.fc-toolbar .fc-right .fc-button-group {
+    float: none;
+}
+.fc-toolbar .fc-right .fc-button-group .fc-button {
+    background: #287dfa;
+    border-radius: 0;
+}
+/*"\f105"  "\f104"*/
+.fc-toolbar .fc-clear {display:none;}
+.calendar-content .fc-toolbar .fc-center,
+.fc-toolbar .fc-center{ display:none; width: 40%; float: left}
 .fc-toolbar .fc-center h2{width: 100%}
 .fc-toolbar .fc-button{
     height: 40px;

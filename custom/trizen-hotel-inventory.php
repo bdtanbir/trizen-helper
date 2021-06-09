@@ -24,7 +24,7 @@ $rooms[] = [
 	'name'  => get_the_title(),
 ];
 endwhile; wp_reset_postdata();
-wp_enqueue_script('bulk-calendar');
+//wp_enqueue_script('bulk-calendar');
 wp_enqueue_script('trizen-hotel-inventory');
 
 ?>

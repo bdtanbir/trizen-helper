@@ -1,6 +1,11 @@
 <?php
 global $post;
 
+if( is_admin() ){
+    $post_id = get_the_ID();
+}else{
+    $post_id = STInput::get('id','');
+}
 ?>
 
 <div class="calendar-wrapper" data-post-id="<?php echo esc_attr($post->ID); ?>">
@@ -43,7 +48,7 @@ global $post;
 
             <div class="field-group">
                 <label for="calendar_price">
-                    <?php esc_html_e('Price ($)', 'trizen-helper'); ?>
+                    <?php esc_html_e('Price', 'trizen-helper'); echo __(' (', 'trizen-helper').get_woocommerce_currency_symbol().__(')', 'trizen-helper'); ?>
                 </label>
                 <input type="text" class="widefat" name="calendar_price" id="calendar_price" placeholder="<?php esc_attr_e('Price', 'trizen-helper'); ?>">
             </div>
@@ -76,6 +81,161 @@ global $post;
                 </button>
             </div>
 
+
+            <!-- Form Bulk Edit -->
+            <div id="form-bulk-edit" class="form-bulk-edit-activity-hotel-room">
+                <div class="form-container">
+                    <div class="form-title form-bulk-header">
+                        <h3 class="clearfix" style="font-size: 18px;">
+                            <?php esc_html_e('Bulk Price Edit', 'trizen-helper'); ?>
+                            <button class="trizen-btn" id="calendar-bulk-close" type="button">
+                                <?php esc_html_e('Close', 'trizen-helper'); ?>
+                            </button>
+                        </h3>
+                    </div>
+                    <h4 style="margin-top: 10px; font-size: 16px;">
+                        <?php esc_html_e('Choose Date: ', 'trizen-helper'); ?>
+                    </h4>
+
+                    <div class="form-content clearfix d-flex">
+                        <div class="form-group">
+                            <div class="form-title">
+                                <h4>
+                                    <input type="checkbox" class="check-all" data-name="day-of-week"> <?php esc_html_e('Days Of Week', 'trizen-helper'); ?>
+                                </h4>
+                            </div>
+                            <div class="form-content">
+                                <label class="block"><input type="checkbox" name="day-of-week[]" value="<?php esc_attr_e('Sunday', 'trizen-helper') ;?>"><?php esc_html_e('Sunday', 'trizen-helper'); ?></label>
+                                <label class="block"><input type="checkbox" name="day-of-week[]" value="<?php esc_attr_e('Monday', 'trizen-helper') ;?>"><?php esc_html_e('Monday', 'trizen-helper'); ?></label>
+                                <label class="block"><input type="checkbox" name="day-of-week[]" value="<?php esc_attr_e('Tuesday', 'trizen-helper') ;?>"><?php esc_html_e('Tuesday', 'trizen-helper'); ?></label>
+                                <label class="block"><input type="checkbox" name="day-of-week[]" value="<?php esc_attr_e('Wednesday', 'trizen-helper') ;?>"><?php esc_html_e('Wednesday', 'trizen-helper'); ?></label>
+                                <label class="block"><input type="checkbox" name="day-of-week[]" value="<?php esc_attr_e('Thursday', 'trizen-helper') ;?>"><?php esc_html_e('Thursday', 'trizen-helper'); ?></label>
+                                <label class="block"><input type="checkbox" name="day-of-week[]" value="<?php esc_attr_e('Friday', 'trizen-helper') ;?>"><?php esc_html_e('Friday', 'trizen-helper'); ?></label>
+                                <label class="block"><input type="checkbox" name="day-of-week[]" value="<?php esc_attr_e('Saturday', 'trizen-helper') ;?>"><?php esc_html_e('Saturday', 'trizen-helper'); ?></label>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="form-title">
+                                <h4>
+                                    <input type="checkbox" class="check-all" data-name="day-of-month"> <?php esc_html_e('Day Of Month', 'trizen-helper'); ?>
+                                </h4>
+                            </div>
+                            <div class="form-content">
+                                <?php
+                                    for($i = 1; $i <= 31; $i ++) {
+                                        if($i == 1) {
+                                            echo '<div>';
+                                        }
+                                        ?>
+                                            <label for="">
+                                                <input type="checkbox" name="day-of-month[]" value="<?php echo esc_attr($i); ?>"><?php echo esc_html($i); ?>
+                                            </label>
+                                        <?php
+                                        if($i != 1 && $i % 5 == 0) echo '</div><div>';
+                                        if($i == 31) echo '</div>';
+                                    }
+                                ?>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="form-title">
+                                <h4>
+                                    <input type="checkbox" class="check-all" data-name="months"> <?php esc_html_e('Months', 'trizen-helper'); ?>
+                                </h4>
+                            </div>
+                            <div class="form-content">
+                                <?php
+                                $months = array(
+                                    'January'   => esc_html__('January', 'trizen-helper'),
+                                    'February'  => esc_html__('February', 'trizen-helper'),
+                                    'March'     => esc_html__('March', 'trizen-helper'),
+                                    'April'     => esc_html__('April', 'trizen-helper'),
+                                    'May'       => esc_html__('May', 'trizen-helper'),
+                                    'June'      => esc_html__('June', 'trizen-helper'),
+                                    'July'      => esc_html__('July', 'trizen-helper'),
+                                    'August'    => esc_html__('August', 'trizen-helper'),
+                                    'September' => esc_html__('September', 'trizen-helper'),
+                                    'October'   => esc_html__('October', 'trizen-helper'),
+                                    'November'  => esc_html__('November', 'trizen-helper'),
+                                    'December'  => esc_html__('December', 'trizen-helper'),
+                                );
+                                $i = 0;
+                                foreach ($months as $key => $month) {
+                                    if( $i == 0 ) {
+                                        echo '<div>';
+                                    } ?>
+                                    <label for="">
+                                        <input type="checkbox" name="months[]" value="<?php echo esc_attr($key); ?>"><?php echo esc_html($month); ?>
+                                    </label>
+                                <?php
+                                    if($i != 0 && ($i +1) % 2 == 0) echo '</div><div>';
+                                    if($i + 1 == count($months)) echo '</div>';
+                                    $i++;
+                                }
+                                ?>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="form-title">
+                                <h4>
+                                    <input type="checkbox" class="check-all" data-name="years"> <?php esc_html_e('Years', 'trizen-helper'); ?>
+                                </h4>
+                            </div>
+                            <div class="form-content">
+                                <?php
+                                    $year = date('Y');
+                                    $j = $year -1;
+                                    for ($i = $year; $i <= $year + 2; $i ++) {
+                                        if($i == $year) {
+                                            echo '<div>';
+                                        }
+                                        ?>
+                                        <label for="">
+                                            <input type="checkbox" name="years[]" value="<?php echo esc_attr($i); ?>"><?php echo esc_html($i); ?>
+                                        </label>
+                                        <?php
+                                        if( $i != $year && ($i == $j + 2 ) ) { echo '</div><div>'; $j = $i; }
+                                        if( $i == $year + 2 ) echo '</div>';
+
+                                    }
+                                ?>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-content form-bulk-price-op clearfix">
+                        <div class="row">
+                            <div class="col-xs-12 col-sm-6">
+                                <label for="base-price-bulk" class="block">
+                                    <?php esc_html_e('Price', 'trizen-helper'); ?>
+                                    <input type="text" class="form-control" value="0" name="price-bulk" id="base-price-bulk" placeholder="<?php esc_attr_e('Price', 'trizen-helper'); ?>">
+                                </label>
+
+                                <label class="block">
+                                    <?php esc_html_e('Status' ,'trizen-helper'); ?>
+                                    <select name="status" id="" class="form-control">
+                                        <option value="available">
+                                            <?php esc_html_e('Available', 'trizen-helper'); ?>
+                                        </option>
+                                        <option value="unavailable">
+                                            <?php esc_html_e('Unavailable', 'trizen-helper'); ?>
+                                        </option>
+                                    </select>
+                                </label>
+                            </div>
+                        </div>
+                        <input type="hidden" name="post-id" value="<?php echo esc_attr($post_id); ?>">
+                        <div class="form-message"></div>
+                    </div>
+                    <div class="form-footer">
+                        <button id="calendar-bulk-save" class="button trizen-btn" type="button">
+                            <?php esc_html_e('Save', 'trizen-helper'); ?>
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
     <div class="right-side">

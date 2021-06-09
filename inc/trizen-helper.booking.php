@@ -833,15 +833,15 @@ function getDateFormatMomentText() {
     $format = '{dd}/{mm}/{yyyy}';
 
     $ori_format = [
-        '{d}' => 'd',
-        '{dd}' => 'dd',
-        '{D}' => 'D',
-        '{DD}' => 'l',
-        '{m}' => 'm',
-        '{mm}' => 'mm',
-        '{M}' => 'M',
-        '{MM}' => 'MM',
-        '{yy}' => 'yy',
+        '{d}'    => 'd',
+        '{dd}'   => 'dd',
+        '{D}'    => 'D',
+        '{DD}'   => 'l',
+        '{m}'    => 'm',
+        '{mm}'   => 'mm',
+        '{M}'    => 'M',
+        '{MM}'   => 'MM',
+        '{yy}'   => 'yy',
         '{yyyy}' => 'yyyy'
     ];
     preg_match_all("/({)[a-zA-Z]+(})/", $format, $out);
@@ -902,8 +902,7 @@ function get_discount_rate($post_id = '', $check_in = ''){
     }
 }
 
-function do_add_to_cart()
-{
+function do_add_to_cart() {
  	$pass_validate = true;
 
  	$item_id = intval( request( 'room_id', '' ) );
@@ -911,7 +910,6 @@ function do_add_to_cart()
 	if ( $item_id <= 0 ) {
 		set_message( __( 'This hotel is not available.', 'trizen-helper' ), 'danger' );
 		$pass_validate = false;
-
 		return false;
 	}
 

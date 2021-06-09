@@ -59,7 +59,7 @@ $query = new WP_Query($args)
         <div class="trizen-hotel-infos-content">
             <div class="tab-content current" id="tab-location">
                 <div class="form-settings" id="hotel_location_setting">
-                    <label for="price" class="title">
+                    <label for="hotel_location_srch" class="title">
                         <?php esc_html_e('Hotel Location', 'trizen-helper'); ?>
                     </label>
                     <span class="description">
@@ -67,11 +67,11 @@ $query = new WP_Query($args)
                     </span>
 
                     <div class="ts-select-location">
-                        <input placeholder="<?php esc_html_e('Type to search', 'trizen-helper'); ?>" type="text"
+                        <input id="hotel_location_srch" placeholder="<?php esc_html_e('Type to search', 'trizen-helper'); ?>" type="text"
                                class="widefat form-control" name="search" value="">
                         <div class="location-list-wrapper">
                             <?php
-                            $html_location = TravelHelper::treeLocationHtml();
+                            $html_location  = TravelHelper::treeLocationHtml();
                             $multi_location = maybe_unserialize(get_post_meta(get_the_ID(), 'multi_location', true));
                             if (!empty($multi_location) && !is_array($multi_location)) {
                                 $multi_location = explode(',', $multi_location);
@@ -84,10 +84,10 @@ $query = new WP_Query($args)
                                 foreach ($html_location as $key => $location):
                             ?>
                                 <div class="location-list" data-name="<?php echo esc_attr($location['parent_name']); ?>" style="margin-left: <?php echo esc_attr( $location['level']) . 'px;'; ?>">
-                                    <label for="<?php echo 'location-' . esc_attr($location['ID']); ?>">
-                                        <input <?php if (in_array('_' . $location['ID'] . '_', $multi_location)) echo 'checked'; ?>
+                                    <label for="<?php echo esc_attr__('location-', 'trizen-helper') . esc_attr($location['ID']); ?>">
+                                        <input <?php if (in_array('_' . $location['ID'] . '_', $multi_location)) esc_attr_e('checked', 'trizen-helper'); ?>
                                                 type="checkbox"
-                                                id="<?php echo 'location-' . esc_attr($location['ID']); ?>"
+                                                id="<?php echo esc_attr__('location-', 'trizen-helper') . esc_attr($location['ID']); ?>"
                                                 value="<?php echo '_' . esc_attr($location['ID']) . '_'; ?>"
                                                 name="multi_location[]"
                                                 data-post-id="<?php echo esc_attr($location['post_id']); ?>"

@@ -185,7 +185,7 @@ if ( !class_exists( 'TSHotel' ) ) {
         }
 
         public function setQueryHotelSearch(){
-            /*$page_number = get('page');
+            $page_number = get('page');
             global $wp_query, $ts_search_query;
             $hotel = $this;
             $hotel->alter_search_query();
@@ -199,7 +199,7 @@ if ( !class_exists( 'TSHotel' ) ) {
             ];
             query_posts($args);
             $ts_search_query = $wp_query;
-            $hotel->remove_alter_search_query();*/
+            $hotel->remove_alter_search_query();
         }
 
         public function ts_filter_hotel_ajax_location() {
@@ -308,13 +308,13 @@ if ( !class_exists( 'TSHotel' ) ) {
             if ($query->have_posts()) {
                 while ($query->have_posts()) {
                     $query->the_post();
-                    if ($fullwidth) {
-                        echo 'I am FullWidth Loop';
+//                    if ($fullwidth) {
+//                        echo 'I am FullWidth Loop';
 //                        echo st()->load_template('layouts/modern/hotel/elements/loop/' . esc_attr($format), $style, ['show_map' => $half_map_show, 'fullwidth' => true]);
-                    } else {
-                        echo 'I am Normal Loop';
+//                    } else {
+                        echo TRIZEN_HELPER_PATH .'inc/hotel/search/loop-room-item.php';
 //                        echo st()->load_template('layouts/modern/hotel/elements/loop/' . esc_attr($format), $style, ['show_map' => $half_map_show]);
-                    }
+//                    }
 //                    if ($is_popup_map)
 //                        $popup_map .= st()->load_template('layouts/modern/hotel/elements/loop/popupmap');
                     //Map
@@ -331,8 +331,8 @@ if ( !class_exists( 'TSHotel' ) ) {
                         $data_map[$stt]['lng'] = $map_lng;
                         $post_type_name = get_post_type_object($post_type);
                         $post_type_name->label;
-                        $data_map[$stt]['content_html'] = preg_replace('/^\s+|\n|\r|\s+$/m', '', 'Popup Map Title');
-                        $data_map[$stt]['content_adv_html'] = preg_replace('/^\s+|\n|\r|\s+$/m', '', 'Here Will Be Hotel Files name');
+                        $data_map[$stt]['content_html'] = preg_replace('/^\s+|\n|\r|\s+$/m', '', TRIZEN_HELPER_PATH .'inc/hotel/search/loop-room-item.php');
+                        $data_map[$stt]['content_adv_html'] = preg_replace('/^\s+|\n|\r|\s+$/m', '', TRIZEN_HELPER_PATH .'inc/hotel/search/loop-room-item.php');
                         $stt++;
                     }
                     //End map
@@ -341,7 +341,7 @@ if ( !class_exists( 'TSHotel' ) ) {
                 if ($is_popup_map)
                     $popup_map .= '<div class="col-xs-12">' . esc_html__('Hotel None', 'trizen-helper') . '</div>';
                 echo ($style == 'grid') ? '<div class="col-xs-12">' : '';
-                echo 'Hotel None !';
+                echo TRIZEN_HELPER_PATH .'inc/hotel/search/loop-room-none.php';
                 echo '</div>';
             }
             echo '</div>';
@@ -1573,144 +1573,152 @@ if ( !class_exists( 'TSHotel' ) ) {
             return $where;
         }
 
-        function _get_join_query( $join ) {
-            //if (!TravelHelper::checkTableDuplicate('ts_hotel')) return $join;
+        function _get_join_query($join) {
+            //if (!checkTableDuplicate('ts_hotel')) return $join;
             global $wpdb;
             $table  = $wpdb->prefix . 'ts_room_availability';
             $table2 = $wpdb->prefix . 'ts_hotel';
             $table3 = $wpdb->prefix . 'hotel_room';
-            $join .= " INNER JOIN {$table} as tb ON {$wpdb->prefix}posts.ID = tb.parent_id AND status = 'available'";
+            $disable_avai_check = 'off';
+            if ($disable_avai_check == 'off') {
+                $join .= " INNER JOIN {$table} as tb ON {$wpdb->prefix}posts.ID = tb.parent_id AND status = 'available'";
+                $join .= " INNER JOIN {$table3} as tb3 ON (tb.post_id = tb3.post_id and tb3.`status` IN ('publish', 'private'))";
+            }
             $join .= " INNER JOIN {$table2} as tb2 ON {$wpdb->prefix}posts.ID = tb2.post_id";
-            //zzz Join with table hotel room to get discount rate
-            $join .= " INNER JOIN {$table3} as tb3 ON tb.post_id = tb3.post_id";
             return $join;
         }
+//        function _get_join_query( $join ) {
+//            //if (!TravelHelper::checkTableDuplicate('ts_hotel')) return $join;
+//            global $wpdb;
+//            $table  = $wpdb->prefix . 'ts_room_availability';
+//            $table2 = $wpdb->prefix . 'ts_hotel';
+//            $table3 = $wpdb->prefix . 'hotel_room';
+//            $join .= " INNER JOIN {$table} as tb ON {$wpdb->prefix}posts.ID = tb.parent_id AND status = 'available'";
+//            $join .= " INNER JOIN {$table2} as tb2 ON {$wpdb->prefix}posts.ID = tb2.post_id";
+//            //zzz Join with table hotel room to get discount rate
+//            $join .= " INNER JOIN {$table3} as tb3 ON tb.post_id = tb3.post_id";
+//            return $join;
+//        }
 
-        function _get_where_query( $where ) {
-            //if (!checkTableDuplicate('ts_hotel')) return $where;
+
+        function _get_where_query($where) {
             global $wpdb, $ts_search_args;
-            if ( !$ts_search_args ) $ts_search_args = $_REQUEST;
-            /**
-             * Merge data with element args with search args
-             * @since  1.0
-             */
-            if ( !empty( $ts_search_args[ 'ts_location' ] ) ) {
-                if ( empty( $ts_search_args[ 'only_featured_location' ] ) or $ts_search_args[ 'only_featured_location' ] == 'no' )
-                    $ts_search_args[ 'location_id' ] = $ts_search_args[ 'ts_location' ];
+            if (!$ts_search_args) $ts_search_args = $_REQUEST;
+            if (!empty($ts_search_args['ts_location'])) {
+                if (empty($ts_search_args['only_featured_location']) or $ts_search_args['only_featured_location'] == 'no')
+                    $ts_search_args['location_id'] = $ts_search_args['ts_location'];
             }
-
-            if ( isset( $ts_search_args[ 'location_id' ] ) && !empty( $ts_search_args[ 'location_id' ] ) ) {
-                $location_id = $ts_search_args[ 'location_id' ];
-
-                $where = TravelHelper::_ts_get_where_location( $location_id, [ 'ts_hotel' ], $where );
-            } elseif ( isset( $_REQUEST[ 'location_name' ] ) && !empty( $_REQUEST[ 'location_name' ] ) ) {
-                $location_name = request( 'location_name', '' );
-
-                $ids_location = TSHotel::_get_location_by_name( $location_name );
-
-                if ( !empty( $ids_location ) && is_array( $ids_location ) ) {
-                    $where .= TravelHelper::_ts_get_where_location( $ids_location, [ 'ts_hotel' ], $where );
+            if (isset($ts_search_args['location_id']) && !empty($ts_search_args['location_id'])) {
+                $location_id = $ts_search_args['location_id'];
+                $location_id = post_origin($location_id, 'location');
+                $where = TravelHelper::_ts_get_where_location($location_id, ['ts_hotel'], $where);
+            } elseif (isset($_REQUEST['location_name']) && !empty($_REQUEST['location_name'])) {
+                $location_name = request('location_name', '');
+                $ids_location  = TravelerObject::_get_location_by_name($location_name);
+                if (!empty($ids_location) && is_array($ids_location)) {
+                    foreach ($ids_location as $key => $id) {
+                        $ids_location[$key] = post_origin($id, 'location');
+                    }
+                    $where .= TravelHelper::_ts_get_where_location($ids_location, ['ts_hotel'], $where);
                 } else {
                     $where .= " AND (tb2.address LIKE '%{$location_name}%'";
                     $where .= " OR {$wpdb->prefix}posts.post_title LIKE '%{$location_name}%')";
                 }
             }
-
-            if ( isset( $_REQUEST[ 'item_name' ] ) && !empty( $_REQUEST[ 'item_name' ] ) ) {
-                $item_name = request( 'item_name', '' );
-                $where     .= " AND {$wpdb->prefix}posts.post_title LIKE '%{$item_name}%'";
+            if (isset($_REQUEST['item_name']) && !empty($_REQUEST['item_name'])) {
+                $item_name = request('item_name', '');
+                $where    .= " AND {$wpdb->prefix}posts.post_title LIKE '%{$item_name}%'";
             }
-
-            if ( isset( $_REQUEST[ 'item_id' ] ) and !empty( $_REQUEST[ 'item_id' ] ) ) {
-                $item_id = request( 'item_id', '' );
-                $where   .= " AND ({$wpdb->prefix}posts.ID = '{$item_id}')";
+            if (isset($_REQUEST['item_id']) and !empty($_REQUEST['item_id'])) {
+                $item_id = request('item_id', '');
+                $where  .= " AND ({$wpdb->prefix}posts.ID = '{$item_id}')";
             }
-
-            if ( isset( $_GET[ 'start' ] ) && !empty( $_GET[ 'start' ] ) && isset( $_GET[ 'end' ] ) && !empty( $_GET[ 'end' ] ) ) {
-                $check_in  = date( 'Y-m-d', strtotime( convertDateFormat( $_GET[ 'start' ] ) ) );
-                $check_out = date( 'Y-m-d', strtotime( convertDateFormat( $_GET[ 'end' ] ) ) );
-
-                $check_in_stamp  = strtotime( convertDateFormat( $_GET[ 'start' ] ) );
-                $check_out_stamp = strtotime( convertDateFormat( $_GET[ 'end' ] ) );
-                $today = date( 'm/d/Y' );
-                $period = dateDiff( $today, $check_in );
-                $adult_number = get( 'adult_number', 0 );
-                if ( intval( $adult_number ) < 0 ) $adult_number = 0;
-                $children_number = get( 'children_num', 0 );
-                if ( intval( $children_number ) < 0 ) $children_number = 0;
-                $number_room = get( 'room_num_search', 0 );
-                if ( intval( $number_room ) < 0 ) $number_room = 0;
-                $list_hotel = $this->get_unavailability_hotel( $check_in, $check_out, $adult_number, $children_number, $number_room );
-                if ( !is_array( $list_hotel ) || count( $list_hotel ) <= 0 ) {
-                    $list_hotel = "''";
-                } else {
-                    $list_hotel = array_filter( $list_hotel, function ( $value ) {
-                        return $value !== '';
-                    } );
-                    $list_hotel = implode( ',', $list_hotel );
-                    if ( !empty( $list_hotel ) ) {
-                        $check_in_rewhere  = get( 'start', '' );
-                        $check_out_rewhere = get( 'end', '' );
-                        if ( !empty( $check_in_rewhere ) || !empty( $check_out_rewhere ) ) {
-                            $where .= " AND {$wpdb->prefix}posts.ID NOT IN ({$list_hotel}) ";
+            $check_in  = get('start', '');
+            $check_out = get('end', '');
+            if (!empty($check_in) && !empty($check_out)) {
+                $check_in  = date('Y-m-d', strtotime(convertDateFormat($check_in)));
+                $check_out = date('Y-m-d', strtotime(convertDateFormat($check_out)));
+                $check_in_stamp  = strtotime($check_in);
+                $check_out_stamp = strtotime($check_out);
+            } else {
+                $check_in        = date('Y-m-d');
+                $check_out       = date('Y-m-d', strtotime('+1 day'));
+                $check_in_stamp  = strtotime($check_in);
+                $check_out_stamp = strtotime($check_out);
+            }
+            if ($check_in && $check_out) {
+                $today        = date('m/d/Y');
+                $period       = dateDiff($today, $check_in);
+                $adult_number = get('adult_number', 0);
+                if (intval($adult_number) < 0) $adult_number = 0;
+                $children_number = get('children_num', 0);
+                if (intval($children_number) < 0) $children_number = 0;
+                $number_room = get('room_num_search', 0);
+                if (intval($number_room) < 0) $number_room = 0;
+//                $disable_avai_check = st()->get_option('disable_availability_check', 'off');
+                $disable_avai_check = 'on';
+                if ($disable_avai_check == 'off') {
+                    $list_hotel = $this->get_unavailability_hotel($check_in, $check_out, $adult_number, $children_number, $number_room);
+                    if (!is_array($list_hotel) || count($list_hotel) <= 0) {
+                        $list_hotel = "''";
+                    } else {
+                        $list_hotel = array_filter($list_hotel, function ($value) {
+                            return $value !== '';
+                        });
+                        $list_hotel = implode(',', $list_hotel);
+                        if (!empty($list_hotel)) {
+                            $check_in_rewhere  = get('start', '');
+                            $check_out_rewhere = get('end', '');
+                            if (!empty($check_in_rewhere) || !empty($check_out_rewhere)) {
+                                $where .= " AND {$wpdb->prefix}posts.ID NOT IN ({$list_hotel}) ";
+                            }
                         }
                     }
+                    $where .= " AND tb.check_in >= {$check_in_stamp} AND tb.check_out <= {$check_out_stamp} ";
                 }
                 $where .= " AND CAST(tb2.hotel_booking_period AS UNSIGNED) <= {$period}";
-                $where .= " AND tb.check_in >= {$check_in_stamp} AND tb.check_out <= {$check_out_stamp} ";
             } else {
-                $where .= " AND check_in >= UNIX_TIMESTAMP(CURRENT_DATE) ";
+                $disable_avai_check = 'on';
+                if ($disable_avai_check == 'off') {
+                    $where .= " AND check_in >= UNIX_TIMESTAMP(CURRENT_DATE) ";
+                }
             }
-            if ( isset( $_REQUEST[ 'star_rate' ] ) && !empty( $_REQUEST[ 'star_rate' ] ) ) {
-                $stars    = get( 'star_rate', 1 );
-                $stars    = explode( ',', $stars );
+            if (isset($_REQUEST['star_rate']) && !empty($_REQUEST['star_rate'])) {
+                $stars    = get('star_rate', 1);
+                $stars    = explode(',', $stars);
                 $all_star = [];
-                if ( !empty( $stars ) && is_array( $stars ) ) {
-                    foreach ( $stars as $val ) {
-                        for ( $i = $val; $i < $val + 0.9; $i += 0.1 ) {
-                            if ( $i ) {
+                if (!empty($stars) && is_array($stars)) {
+                    foreach ($stars as $val) {
+                        if ($val == 'zero') {
+                            $val = 0;
+                            for ($i = $val; $i < $val + 1; $i = $i + 0.1) {
+                                $all_star[] = $i;
+                            }
+                        } else {
+                            for ($i = $val + 0.1; $i <= $val + 1.1; $i = $i + 0.1) {
                                 $all_star[] = $i;
                             }
                         }
                     }
                 }
-                $list_star = implode( ',', $all_star );
-                if ( $list_star ) {
+                $list_star = implode(',', $all_star);
+                if ($list_star) {
                     $where .= " AND (tb2.rate_review IN ({$list_star}))";
                 }
             }
-            if ( isset( $_REQUEST[ 'hotel_rate' ] ) && !empty( $_REQUEST[ 'hotel_rate' ] ) ) {
-                $hotel_rate = get( 'hotel_rate', '' );
-                $where      .= " AND (tb2.hotel_star IN ({$hotel_rate}))";
+            if (isset($_REQUEST['hotel_rate']) && !empty($_REQUEST['hotel_rate'])) {
+                $hotel_rate = get('hotel_rate', '');
+                $where     .= " AND (tb2.hotel_star IN ({$hotel_rate}))";
             }
-//            if (isset($_REQUEST['price_range']) && !empty($_REQUEST['price_range'])) {
-//                $meta_key = st()->get_option('hotel_show_min_price', 'avg_price');
-//                if ($meta_key == 'avg_price') $meta_key = "price_avg";
-//
-//                $price = STInput::get('price_range', '0;0');
-//                $priceobj = explode(';', $price);
-
-//                // convert to default money
-//                $priceobj[0] = TravelHelper::convert_money_to_default($priceobj[0]);
-//                $priceobj[1] = TravelHelper::convert_money_to_default($priceobj[1]);
-
-//                $where .=$wpdb->prepare(" AND ts_price >= %f ",$priceobj[0]);
-//
-//                if (isset($priceobj[1])) {
-//
-//                    $priceobj[1] = TravelHelper::convert_money_to_default($priceobj[1]);
-//                    $where .=$wpdb->prepare(" AND ts_price <= %f ",$priceobj[1]);
-//                }
-//            }
-            if ( isset( $_REQUEST[ 'range' ] ) and isset( $_REQUEST[ 'location_id' ] ) ) {
-                $range     = get( 'range', '0;5' );
-                $rangeobj  = explode( ';', $range );
-                $range_min = $rangeobj[ 0 ];
-                $range_max = $rangeobj[ 1 ];
-                $location_id = request( 'location_id' );
-                $post_type   = get_query_var( 'post_type' );
-                $map_lat     = (float)get_post_meta( $location_id, 'lat', true );
-                $map_lng     = (float)get_post_meta( $location_id, 'lng', true );
+            if (isset($_REQUEST['range']) and isset($_REQUEST['location_id'])) {
+                $range       = get('range', '0;5');
+                $rangeobj    = explode(';', $range);
+                $range_min   = $rangeobj[0];
+                $range_max   = $rangeobj[1];
+                $location_id = request('location_id');
+                $post_type   = get_query_var('post_type');
+                $map_lat     = (float)get_post_meta($location_id, 'lat', true);
+                $map_lng     = (float)get_post_meta($location_id, 'lng', true);
                 global $wpdb;
                 $where .= "
                 AND $wpdb->posts.ID IN (
@@ -1728,39 +1736,38 @@ if ( !class_exists( 'TSHotel' ) ) {
                                                 AND $wpdb->posts.post_date < NOW()
                                                 GROUP BY $wpdb->posts.ID HAVING distance >= {$range_min} and distance <= {$range_max}
                                                 ORDER BY distance ASC
-                        ) as ts_data
+                        ) as st_data
 	            )";
             }
             $where_room = '';
-            if ( !empty( $_REQUEST[ 'taxonomy_hotel_room' ] ) ) {
-                $tax = request( 'taxonomy_hotel_room' );
-                if ( !empty( $tax ) and is_array( $tax ) ) {
+            if (!empty($_REQUEST['taxonomy_hotel_room'])) {
+                $tax = request('taxonomy_hotel_room');
+                if (!empty($tax) and is_array($tax)) {
                     $tax_query = [];
-                    foreach ( $tax as $key => $value ) {
-                        if ( $value ) {
-                            $ids     = [];
-                            $ids_tmp = explode( ',', $value );
-                            if ( !empty( $ids_tmp ) ) {
-                                foreach ( $ids_tmp as $k => $v ) {
-                                    if ( !empty( $v ) ) {
+                    foreach ($tax as $key => $value) {
+                        if ($value) {
+                            $ids = "";
+                            $ids_tmp = explode(',', $value);
+                            if (!empty($ids_tmp)) {
+                                foreach ($ids_tmp as $k => $v) {
+                                    if (!empty($v)) {
                                         $ids[] = $v;
                                     }
                                 }
                             }
-                            if ( !empty( $ids ) ) {
+                            if (!empty($ids)) {
                                 $tax_query[] = [
                                     'taxonomy' => $key,
-                                    'terms'    => $ids
+                                    'terms' => $ids
                                 ];
                             }
                         }
                     }
-
-                    if ( !empty( $tax_query ) ) {
+                    if (!empty($tax_query)) {
                         $where_room = ' AND (';
-                        foreach ( $tax_query as $k => $v ) {
-                            $ids = implode( ',', $v[ 'terms' ] );
-                            if ( $k > 0 ) {
+                        foreach ($tax_query as $k => $v) {
+                            $ids = implode(',', $v['terms']);
+                            if ($k > 0) {
                                 $where_room .= " AND ";
                             }
                             $where_room .= "  (
@@ -1768,55 +1775,265 @@ if ( !class_exists( 'TSHotel' ) ) {
                                                     FROM {$wpdb->prefix}term_relationships
                                                     WHERE term_taxonomy_id IN ({$ids})
                                                     AND object_id = {$wpdb->prefix}posts.ID
-                                                  ) = " . count( $v[ 'terms' ] ) . "  ";
+                                                  ) = " . count($v['terms']) . "  ";
                         }
                         $where_room .= " ) ";
                     }
                 }
             }
-//            $where .= apply_filters('ts_hotel_is_query_room_parent', " AND $wpdb->posts.ID IN
-//				(
-//				   SELECT ID FROM
-//				   (
-//					  SELECT meta1.meta_value as ID
-//							FROM {$wpdb->prefix}posts
-//
-//							INNER JOIN {$wpdb->prefix}postmeta as meta1 ON {$wpdb->prefix}posts.ID = meta1.post_id and meta1.meta_key='room_parent'
-//							WHERE 1=1
-//							{$where_room}
-//							AND {$wpdb->prefix}posts.post_type = 'hotel_room'
-//							GROUP BY meta1.meta_value
-//				   ) as ids
-//				) ");
-
-
-            /**
-             * Change Where for Element List
-             * @since  1.0
-             */
-            if ( !empty( $ts_search_args[ 'only_featured_location' ] ) and !empty( $ts_search_args[ 'featured_location' ] ) ) {
-                $featured = $ts_search_args[ 'featured_location' ];
-                if ( $ts_search_args[ 'only_featured_location' ] == 'yes' and is_array( $featured ) ) {
-
-                    if ( is_array( $featured ) && count( $featured ) ) {
-                        $where     .= " AND (";
+            if (!empty($ts_search_args['only_featured_location']) and !empty($ts_search_args['featured_location'])) {
+                $featured = $ts_search_args['featured_location'];
+                if ($ts_search_args['only_featured_location'] == 'yes' and is_array($featured)) {
+                    if (is_array($featured) && count($featured)) {
+                        $where .= " AND (";
                         $where_tmp = "";
-                        foreach ( $featured as $item ) {
-                            if ( empty( $where_tmp ) ) {
+                        foreach ($featured as $item) {
+                            if (empty($where_tmp)) {
                                 $where_tmp .= " tb2.multi_location LIKE '%_{$item}_%'";
                             } else {
                                 $where_tmp .= " OR tb2.multi_location LIKE '%_{$item}_%'";
                             }
                         }
-                        $featured  = implode( ',', $featured );
+                        $featured = implode(',', $featured);
                         $where_tmp .= " OR tb2.id_location IN ({$featured})";
-                        $where     .= $where_tmp . ")";
+                        $where .= $where_tmp . ")";
                     }
                 }
             }
-
             return $where;
         }
+
+//        function _get_where_query( $where ) {
+//            //if (!checkTableDuplicate('ts_hotel')) return $where;
+//            global $wpdb, $ts_search_args;
+//            if ( !$ts_search_args ) $ts_search_args = $_REQUEST;
+//            /**
+//             * Merge data with element args with search args
+//             * @since  1.0
+//             */
+//            if ( !empty( $ts_search_args[ 'ts_location' ] ) ) {
+//                if ( empty( $ts_search_args[ 'only_featured_location' ] ) or $ts_search_args[ 'only_featured_location' ] == 'no' )
+//                    $ts_search_args[ 'location_id' ] = $ts_search_args[ 'ts_location' ];
+//            }
+//
+//            if ( isset( $ts_search_args[ 'location_id' ] ) && !empty( $ts_search_args[ 'location_id' ] ) ) {
+//                $location_id = $ts_search_args[ 'location_id' ];
+//
+//                $where = TravelHelper::_ts_get_where_location( $location_id, [ 'ts_hotel' ], $where );
+//            } elseif ( isset( $_REQUEST[ 'location_name' ] ) && !empty( $_REQUEST[ 'location_name' ] ) ) {
+//                $location_name = request( 'location_name', '' );
+//
+//                $ids_location = TSHotel::_get_location_by_name( $location_name );
+//
+//                if ( !empty( $ids_location ) && is_array( $ids_location ) ) {
+//                    $where .= TravelHelper::_ts_get_where_location( $ids_location, [ 'ts_hotel' ], $where );
+//                } else {
+//                    $where .= " AND (tb2.address LIKE '%{$location_name}%'";
+//                    $where .= " OR {$wpdb->prefix}posts.post_title LIKE '%{$location_name}%')";
+//                }
+//            }
+//
+//            if ( isset( $_REQUEST[ 'item_name' ] ) && !empty( $_REQUEST[ 'item_name' ] ) ) {
+//                $item_name = request( 'item_name', '' );
+//                $where     .= " AND {$wpdb->prefix}posts.post_title LIKE '%{$item_name}%'";
+//            }
+//
+//            if ( isset( $_REQUEST[ 'item_id' ] ) and !empty( $_REQUEST[ 'item_id' ] ) ) {
+//                $item_id = request( 'item_id', '' );
+//                $where   .= " AND ({$wpdb->prefix}posts.ID = '{$item_id}')";
+//            }
+//
+//            if ( isset( $_GET[ 'start' ] ) && !empty( $_GET[ 'start' ] ) && isset( $_GET[ 'end' ] ) && !empty( $_GET[ 'end' ] ) ) {
+//                $check_in  = date( 'Y-m-d', strtotime( convertDateFormat( $_GET[ 'start' ] ) ) );
+//                $check_out = date( 'Y-m-d', strtotime( convertDateFormat( $_GET[ 'end' ] ) ) );
+//
+//                $check_in_stamp  = strtotime( convertDateFormat( $_GET[ 'start' ] ) );
+//                $check_out_stamp = strtotime( convertDateFormat( $_GET[ 'end' ] ) );
+//                $today = date( 'm/d/Y' );
+//                $period = dateDiff( $today, $check_in );
+//                $adult_number = get( 'adult_number', 0 );
+//                if ( intval( $adult_number ) < 0 ) $adult_number = 0;
+//                $children_number = get( 'children_num', 0 );
+//                if ( intval( $children_number ) < 0 ) $children_number = 0;
+//                $number_room = get( 'room_num_search', 0 );
+//                if ( intval( $number_room ) < 0 ) $number_room = 0;
+//                $list_hotel = $this->get_unavailability_hotel( $check_in, $check_out, $adult_number, $children_number, $number_room );
+//                if ( !is_array( $list_hotel ) || count( $list_hotel ) <= 0 ) {
+//                    $list_hotel = "''";
+//                } else {
+//                    $list_hotel = array_filter( $list_hotel, function ( $value ) {
+//                        return $value !== '';
+//                    } );
+//                    $list_hotel = implode( ',', $list_hotel );
+//                    if ( !empty( $list_hotel ) ) {
+//                        $check_in_rewhere  = get( 'start', '' );
+//                        $check_out_rewhere = get( 'end', '' );
+//                        if ( !empty( $check_in_rewhere ) || !empty( $check_out_rewhere ) ) {
+//                            $where .= " AND {$wpdb->prefix}posts.ID NOT IN ({$list_hotel}) ";
+//                        }
+//                    }
+//                }
+//                $where .= " AND CAST(tb2.hotel_booking_period AS UNSIGNED) <= {$period}";
+//                $where .= " AND tb.check_in >= {$check_in_stamp} AND tb.check_out <= {$check_out_stamp} ";
+//            } else {
+//                $where .= " AND check_in >= UNIX_TIMESTAMP(CURRENT_DATE) ";
+//            }
+//            if ( isset( $_REQUEST[ 'star_rate' ] ) && !empty( $_REQUEST[ 'star_rate' ] ) ) {
+//                $stars    = get( 'star_rate', 1 );
+//                $stars    = explode( ',', $stars );
+//                $all_star = [];
+//                if ( !empty( $stars ) && is_array( $stars ) ) {
+//                    foreach ( $stars as $val ) {
+//                        for ( $i = $val; $i < $val + 0.9; $i += 0.1 ) {
+//                            if ( $i ) {
+//                                $all_star[] = $i;
+//                            }
+//                        }
+//                    }
+//                }
+//                $list_star = implode( ',', $all_star );
+//                if ( $list_star ) {
+//                    $where .= " AND (tb2.rate_review IN ({$list_star}))";
+//                }
+//            }
+//            if ( isset( $_REQUEST[ 'hotel_rate' ] ) && !empty( $_REQUEST[ 'hotel_rate' ] ) ) {
+//                $hotel_rate = get( 'hotel_rate', '' );
+//                $where      .= " AND (tb2.hotel_star IN ({$hotel_rate}))";
+//            }
+////            if (isset($_REQUEST['price_range']) && !empty($_REQUEST['price_range'])) {
+////                $meta_key = st()->get_option('hotel_show_min_price', 'avg_price');
+////                if ($meta_key == 'avg_price') $meta_key = "price_avg";
+////
+////                $price = STInput::get('price_range', '0;0');
+////                $priceobj = explode(';', $price);
+//
+////                // convert to default money
+////                $priceobj[0] = TravelHelper::convert_money_to_default($priceobj[0]);
+////                $priceobj[1] = TravelHelper::convert_money_to_default($priceobj[1]);
+//
+////                $where .=$wpdb->prepare(" AND ts_price >= %f ",$priceobj[0]);
+////
+////                if (isset($priceobj[1])) {
+////
+////                    $priceobj[1] = TravelHelper::convert_money_to_default($priceobj[1]);
+////                    $where .=$wpdb->prepare(" AND ts_price <= %f ",$priceobj[1]);
+////                }
+////            }
+//            if ( isset( $_REQUEST[ 'range' ] ) and isset( $_REQUEST[ 'location_id' ] ) ) {
+//                $range     = get( 'range', '0;5' );
+//                $rangeobj  = explode( ';', $range );
+//                $range_min = $rangeobj[ 0 ];
+//                $range_max = $rangeobj[ 1 ];
+//                $location_id = request( 'location_id' );
+//                $post_type   = get_query_var( 'post_type' );
+//                $map_lat     = (float)get_post_meta( $location_id, 'lat', true );
+//                $map_lng     = (float)get_post_meta( $location_id, 'lng', true );
+//                global $wpdb;
+//                $where .= "
+//                AND $wpdb->posts.ID IN (
+//                        SELECT ID FROM (
+//                            SELECT $wpdb->posts.*,( 6371 * acos( cos( radians({$map_lat}) ) * cos( radians( mt1.meta_value ) ) *
+//                                            cos( radians( mt2.meta_value ) - radians({$map_lng}) ) + sin( radians({$map_lat}) ) *
+//                                            sin( radians( mt1.meta_value ) ) ) ) AS distance
+//                                                FROM $wpdb->posts, $wpdb->postmeta as mt1,$wpdb->postmeta as mt2
+//                                                WHERE $wpdb->posts.ID = mt1.post_id
+//                                                and $wpdb->posts.ID=mt2.post_id
+//                                                AND mt1.meta_key = 'lat'
+//                                                and mt2.meta_key = 'lng'
+//                                                AND $wpdb->posts.post_status = 'publish'
+//                                                AND $wpdb->posts.post_type = '{$post_type}'
+//                                                AND $wpdb->posts.post_date < NOW()
+//                                                GROUP BY $wpdb->posts.ID HAVING distance >= {$range_min} and distance <= {$range_max}
+//                                                ORDER BY distance ASC
+//                        ) as ts_data
+//	            )";
+//            }
+//            $where_room = '';
+//            if ( !empty( $_REQUEST[ 'taxonomy_hotel_room' ] ) ) {
+//                $tax = request( 'taxonomy_hotel_room' );
+//                if ( !empty( $tax ) and is_array( $tax ) ) {
+//                    $tax_query = [];
+//                    foreach ( $tax as $key => $value ) {
+//                        if ( $value ) {
+//                            $ids     = [];
+//                            $ids_tmp = explode( ',', $value );
+//                            if ( !empty( $ids_tmp ) ) {
+//                                foreach ( $ids_tmp as $k => $v ) {
+//                                    if ( !empty( $v ) ) {
+//                                        $ids[] = $v;
+//                                    }
+//                                }
+//                            }
+//                            if ( !empty( $ids ) ) {
+//                                $tax_query[] = [
+//                                    'taxonomy' => $key,
+//                                    'terms'    => $ids
+//                                ];
+//                            }
+//                        }
+//                    }
+//
+//                    if ( !empty( $tax_query ) ) {
+//                        $where_room = ' AND (';
+//                        foreach ( $tax_query as $k => $v ) {
+//                            $ids = implode( ',', $v[ 'terms' ] );
+//                            if ( $k > 0 ) {
+//                                $where_room .= " AND ";
+//                            }
+//                            $where_room .= "  (
+//                                                    SELECT COUNT(1)
+//                                                    FROM {$wpdb->prefix}term_relationships
+//                                                    WHERE term_taxonomy_id IN ({$ids})
+//                                                    AND object_id = {$wpdb->prefix}posts.ID
+//                                                  ) = " . count( $v[ 'terms' ] ) . "  ";
+//                        }
+//                        $where_room .= " ) ";
+//                    }
+//                }
+//            }
+////            $where .= apply_filters('ts_hotel_is_query_room_parent', " AND $wpdb->posts.ID IN
+////				(
+////				   SELECT ID FROM
+////				   (
+////					  SELECT meta1.meta_value as ID
+////							FROM {$wpdb->prefix}posts
+////
+////							INNER JOIN {$wpdb->prefix}postmeta as meta1 ON {$wpdb->prefix}posts.ID = meta1.post_id and meta1.meta_key='room_parent'
+////							WHERE 1=1
+////							{$where_room}
+////							AND {$wpdb->prefix}posts.post_type = 'hotel_room'
+////							GROUP BY meta1.meta_value
+////				   ) as ids
+////				) ");
+//
+//
+//            /**
+//             * Change Where for Element List
+//             * @since  1.0
+//             */
+//            if ( !empty( $ts_search_args[ 'only_featured_location' ] ) and !empty( $ts_search_args[ 'featured_location' ] ) ) {
+//                $featured = $ts_search_args[ 'featured_location' ];
+//                if ( $ts_search_args[ 'only_featured_location' ] == 'yes' and is_array( $featured ) ) {
+//
+//                    if ( is_array( $featured ) && count( $featured ) ) {
+//                        $where     .= " AND (";
+//                        $where_tmp = "";
+//                        foreach ( $featured as $item ) {
+//                            if ( empty( $where_tmp ) ) {
+//                                $where_tmp .= " tb2.multi_location LIKE '%_{$item}_%'";
+//                            } else {
+//                                $where_tmp .= " OR tb2.multi_location LIKE '%_{$item}_%'";
+//                            }
+//                        }
+//                        $featured  = implode( ',', $featured );
+//                        $where_tmp .= " OR tb2.id_location IN ({$featured})";
+//                        $where     .= $where_tmp . ")";
+//                    }
+//                }
+//            }
+//
+//            return $where;
+//        }
 
 
         /**
@@ -1850,193 +2067,358 @@ if ( !class_exists( 'TSHotel' ) ) {
             remove_filter( 'posts_groupby', [ $this, '_change_posts_groupby' ] );
         }
 
-        public function _change_posts_fields( $fields ) {
+        public function _change_posts_fields($fields) {
             global $wpdb;
-            //zzz Calc discount price inner join with table hotel room
-            $fields .= ', min(CAST(CASE WHEN IFNULL(tb.adult_price, 0) = 0 THEN tb.price ELSE tb.adult_price END AS DECIMAL) - (CAST(CASE WHEN IFNULL(tb.adult_price, 0) = 0 THEN tb.price ELSE tb.adult_price END AS DECIMAL) * ((IFNULL(tb3.discount_rate, 1))/100))) as ts_price, tb2.price_avg as ts_price_avg';
-            //$fields .=', min(CAST(tb.price AS DECIMAL)) as ts_price';
+            $disable_avai_check = 'off';
+            if ($disable_avai_check == 'off') {
+                $fields .= ', min(CAST(CASE WHEN IFNULL(tb.adult_price, 0) = 0 THEN tb.price ELSE tb.adult_price END AS DECIMAL) ) as ts_price';
+            } else {
+                if (self::is_show_min_price()) {
+                    $fields .= ', min(CAST(tb2.min_price as DECIMAL)) as ts_price';
+                } else {
+                    $fields .= ', min(CAST(tb2.price_avg as DECIMAL)) as ts_price';
+                }
+            }
             return $fields;
         }
+//        public function _change_posts_fields( $fields ) {
+//            global $wpdb;
+//            //zzz Calc discount price inner join with table hotel room
+//            $fields .= ', min(CAST(CASE WHEN IFNULL(tb.adult_price, 0) = 0 THEN tb.price ELSE tb.adult_price END AS DECIMAL) - (CAST(CASE WHEN IFNULL(tb.adult_price, 0) = 0 THEN tb.price ELSE tb.adult_price END AS DECIMAL) * ((IFNULL(tb3.discount_rate, 1))/100))) as ts_price, tb2.price_avg as ts_price_avg';
+//            //$fields .=', min(CAST(tb.price AS DECIMAL)) as ts_price';
+//            return $fields;
+//        }
 
-        public function _change_posts_groupby( $groupby ) {
+        public function _change_posts_groupby($groupby) {
             global $wpdb;
             //if ( !$groupby or strpos( $wpdb->posts . '.ID', $groupby ) === false ) {
             $groupby = $wpdb->posts . '.ID ';
-            if ( isset( $_REQUEST[ 'price_range' ] ) && !empty( $_REQUEST[ 'price_range' ] ) ) {
-                $groupby  .= " HAVING ";
-                /*$meta_key = st()->get_option( 'hotel_show_min_price', 'avg_price' );
-                if ( $meta_key == 'avg_price' ) */
+            if (isset($_REQUEST['price_range']) && !empty($_REQUEST['price_range'])) {
+                $groupby .= " HAVING ";
+//                $meta_key = 'avg_price';
+//                if ($meta_key == 'avg_price')
                 $meta_key = "price_avg";
-
-                $price    = get( 'price_range', '0;0' );
-                $priceobj = explode( ';', $price );
-
+                $price    = get('price_range', '0;0');
+                $priceobj = explode(';', $price);
                 // convert to default money
-                $priceobj[ 0 ] = TSAdminRoom::convert_money_to_default( $priceobj[ 0 ] );
-                $priceobj[ 1 ] = TSAdminRoom::convert_money_to_default( $priceobj[ 1 ] );
-                $groupby .= $wpdb->prepare( " ts_price >= %f ", $priceobj[ 0 ] );
-                if ( isset( $priceobj[ 1 ] ) ) {
-                    $priceobj[ 1 ] = TSAdminRoom::convert_money_to_default( $priceobj[ 1 ] );
-                    $groupby       .= $wpdb->prepare( " AND ts_price <= %f ", $priceobj[ 1 ] );
+                $priceobj[0] = TSAdminRoom::convert_money_to_default($priceobj[0]);
+                $priceobj[1] = TSAdminRoom::convert_money_to_default($priceobj[1]);
+                $groupby    .= $wpdb->prepare(" ts_price >= %f ", $priceobj[0]);
+                if (isset($priceobj[1])) {
+                    $groupby .= $wpdb->prepare(" AND ts_price <= %f ", $priceobj[1]);
                 }
             }
             // }
-
             return $groupby;
         }
+//        public function _change_posts_groupby( $groupby ) {
+//            global $wpdb;
+//            //if ( !$groupby or strpos( $wpdb->posts . '.ID', $groupby ) === false ) {
+//            $groupby = $wpdb->posts . '.ID ';
+//            if ( isset( $_REQUEST[ 'price_range' ] ) && !empty( $_REQUEST[ 'price_range' ] ) ) {
+//                $groupby  .= " HAVING ";
+//                /*$meta_key = st()->get_option( 'hotel_show_min_price', 'avg_price' );
+//                if ( $meta_key == 'avg_price' ) */
+//                $meta_key = "price_avg";
+//
+//                $price    = get( 'price_range', '0;0' );
+//                $priceobj = explode( ';', $price );
+//
+//                // convert to default money
+//                $priceobj[ 0 ] = TSAdminRoom::convert_money_to_default( $priceobj[ 0 ] );
+//                $priceobj[ 1 ] = TSAdminRoom::convert_money_to_default( $priceobj[ 1 ] );
+//                $groupby .= $wpdb->prepare( " ts_price >= %f ", $priceobj[ 0 ] );
+//                if ( isset( $priceobj[ 1 ] ) ) {
+//                    $priceobj[ 1 ] = TSAdminRoom::convert_money_to_default( $priceobj[ 1 ] );
+//                    $groupby       .= $wpdb->prepare( " AND ts_price <= %f ", $priceobj[ 1 ] );
+//                }
+//            }
+//            // }
+//
+//            return $groupby;
+//        }
 
-        function change_search_hotel_arg( $query ) {
-            if ( empty( $_REQUEST[ 'isajax' ] ) ) {
-                if ( is_admin() and empty( $_REQUEST[ 'is_search_map' ] ) ) return $query;
-            }
+
+        function change_search_hotel_arg($query) {
+            if (is_admin() and empty($_REQUEST['is_search_map']) and empty($_REQUEST['is_search_page'])) return $query;
             /**
              * Global Search Args used in Element list and map display
              * @since 1.0
              */
             global $ts_search_args;
-            if ( !$ts_search_args ) $ts_search_args = $_REQUEST;
-
-            $post_type      = get_query_var( 'post_type' );
-            $posts_per_page = '12';
-            if ( $post_type == 'ts_hotel' ) {
-                $query->set( 'author', '' );
-
-                if ( get( 'item_name' ) ) {
-                    $query->set( 's', get( 'item_name' ) );
+            if (!$ts_search_args) $ts_search_args = $_REQUEST;
+            $post_type      = get_query_var('post_type');
+            $posts_per_page = 12;
+            if ($post_type == 'ts_hotel') {
+                $query->set('author', '');
+                if (get('item_name')) {
+                    $query->set('s', get('item_name'));
                 }
-
-                if ( empty( $_REQUEST[ 'is_search_map' ] ) && empty( $query->query[ 'is_ts_location_list_hotel' ] ) ) {
-                    $query->set( 'posts_per_page', $posts_per_page );
+                if ((empty($_REQUEST['is_search_map']) && empty($query->query['is_ts_location_list_hotel'])) or !empty($_REQUEST['is_search_page'])) {
+                    $query->set('posts_per_page', $posts_per_page);
                 }
-
                 $has_tax_in_element = [];
-                if ( is_array( $ts_search_args ) ) {
-                    foreach ( $ts_search_args as $key => $val ) {
-                        if ( strpos( $key, 'taxonomies--' ) === 0 && !empty( $val ) ) {
-                            $has_tax_in_element[ $key ] = $val;
+                if (is_array($ts_search_args)) {
+                    foreach ($ts_search_args as $key => $val) {
+                        if (strpos($key, 'taxonomies--') === 0 && !empty($val)) {
+                            $has_tax_in_element[$key] = $val;
                         }
                     }
                 }
-
-                if ( !empty( $has_tax_in_element ) ) {
+                if (!empty($has_tax_in_element)) {
                     $tax_query = [];
-                    foreach ( $has_tax_in_element as $tax => $value ) {
-                        $tax_name = str_replace( 'taxonomies--', '', $tax );
-                        if ( !empty( $value ) ) {
-                            $value       = explode( ',', $value );
+                    foreach ($has_tax_in_element as $tax => $value) {
+                        $tax_name = str_replace('taxonomies--', '', $tax);
+                        if (!empty($value)) {
+                            $value = explode(',', $value);
                             $tax_query[] = [
                                 'taxonomy' => $tax_name,
                                 'terms'    => $value,
                                 'operator' => 'IN',
                             ];
                         }
-
                     }
-                    if ( !empty( $tax_query ) ) {
-                        $query->set( 'tax_query', $tax_query );
+                    if (!empty($tax_query)) {
+                        $type_filter_option_attribute = 'and';
+                        array_push($tax_query,array('relation' => $type_filter_option_attribute));
+                        $query->set('tax_query', $tax_query);
                     }
                 }
-
-                $tax = request( 'taxonomy' );
-
-                if ( !empty( $tax ) and is_array( $tax ) ) {
+                $tax = request('taxonomy');
+                if (!empty($tax) and is_array($tax)) {
                     $tax_query = [];
-                    foreach ( $tax as $key => $value ) {
-                        if ( $value ) {
-                            $value = explode( ',', $value );
-                            if ( !empty( $value ) and is_array( $value ) ) {
-                                foreach ( $value as $k => $v ) {
-                                    if ( !empty( $v ) ) {
+                    foreach ($tax as $key => $value) {
+                        if ($value) {
+                            $value = explode(',', $value);
+                            if (!empty($value) and is_array($value)) {
+                                foreach ($value as $k => $v) {
+                                    if (!empty($v)) {
+                                        $v     = post_origin($v, $key);
                                         $ids[] = $v;
                                     }
                                 }
                             }
-                            if ( !empty( $ids ) ) {
+                            if (!empty($ids)) {
                                 $tax_query[] = [
-                                    'taxonomy' => $key,
-                                    'terms'    => $ids,
-                                    //'COMPARE'=>"IN",
-                                    'operator' => 'IN',
+                                    'taxonomy'  => $key,
+                                    'terms'     => $ids,
+                                    //'COMPARE' => "IN",
+                                    'operator'  => 'IN',
                                 ];
                             }
                             $ids = [];
                         }
                     }
-                    $query->set( 'tax_query', $tax_query );
+                    $query->set('tax_query', $tax_query);
                 }
-//                $is_featured = st()->get_option( 'is_featured_search_hotel', 'off' );
-                if ( empty( $ts_search_args[ 'ts_orderby' ] ) ) {
-//                    $query->set( 'meta_key', 'is_featured' );
-                    $query->set( 'orderby', 'meta_value' );
-                    $query->set( 'order', 'DESC' );
-                }
-
                 /**
                  * Post In and Post Order By from Element
-                 * @since  1.0
+                 * @since  1.2.5
                  * @author quandq
                  */
-                if ( !empty( $ts_search_args[ 'ts_number_ht' ] ) ) {
-                    $query->set( 'posts_per_page', $ts_search_args[ 'ts_number_ht' ] );
+                if (!empty($ts_search_args['ts_number_ht'])) {
+                    $query->set('posts_per_page', $ts_search_args['ts_number_ht']);
                 }
-                if ( !empty( $ts_search_args[ 'ts_ids' ] ) ) {
-                    $query->set( 'post__in', explode( ',', $ts_search_args[ 'ts_ids' ] ) );
-                    $query->set( 'orderby', 'post__in' );
+                if (!empty($ts_search_args['ts_ids'])) {
+                    $query->set('post__in', explode(',', $ts_search_args['ts_ids']));
+                    $query->set('orderby', 'post__in');
                 }
-                if ( !empty( $ts_search_args[ 'ts_orderby' ] ) and $ts_orderby = $ts_search_args[ 'ts_orderby' ] ) {
-                    if ( $ts_orderby == 'sale' ) {
-                        $query->set( 'meta_key', 'total_sale_number' );
-                        $query->set( 'orderby', 'meta_value_num' );
-                    }
-                    if ( $ts_orderby == 'rate' ) {
-                        $query->set( 'meta_key', 'rate_review' );
-                        $query->set( 'orderby', 'meta_value' );
-                    }
-                    if ( $ts_orderby == 'discount' ) {
-                        $query->set( 'meta_key', 'discount_rate' );
-                        $query->set( 'orderby', 'meta_value_num' );
-                    }
-                    /*if ( $ts_orderby == 'featured' ) {
-                        $query->set( 'meta_key', 'is_featured' );
-                        $query->set( 'orderby', 'meta_value' );
-                        $query->set( 'order', 'DESC' );
-                    }*/
+                if (!empty($ts_search_args['posts_per_page'])) {
+                    $query->set('posts_per_page', $ts_search_args['posts_per_page']);
                 }
-                if ( !empty( $ts_search_args[ 'sort_taxonomy' ] ) and $sort_taxonomy = $ts_search_args[ 'sort_taxonomy' ] ) {
-                    if ( isset( $ts_search_args[ "id_term_" . $sort_taxonomy ] ) ) {
-                        $id_term     = $ts_search_args[ "id_term_" . $sort_taxonomy ];
+                if (!empty($ts_search_args['ts_orderby']) and $ts_orderby = $ts_search_args['ts_orderby']) {
+                    if ($ts_orderby == 'sale') {
+                        $query->set('meta_key', 'total_sale_number');
+                        $query->set('orderby', 'meta_value_num');
+                    }
+                    if ($ts_orderby == 'rate') {
+                        $query->set('meta_key', 'rate_review');
+                        $query->set('orderby', 'meta_value');
+                    }
+                    if ($ts_orderby == 'discount') {
+                        $query->set('meta_key', 'discount_rate');
+                        $query->set('orderby', 'meta_value_num');
+                    }
+                    if ($ts_orderby == 'featured') {
+                        $query->set('meta_key', 'is_featured');
+                        $query->set('orderby', 'meta_value');
+                        $query->set('order', 'DESC');
+                    }
+                }
+                if (!empty($ts_search_args['sort_taxonomy']) and $sort_taxonomy = $ts_search_args['sort_taxonomy']) {
+                    if (isset($ts_search_args["id_term_" . $sort_taxonomy])) {
+                        $id_term = $ts_search_args["id_term_" . $sort_taxonomy];
                         $tax_query[] = [
                             [
                                 'taxonomy'         => $sort_taxonomy,
                                 'field'            => 'id',
-                                'terms'            => explode( ',', $id_term ),
+                                'terms'            => explode(',', $id_term),
                                 'include_children' => false
                             ],
                         ];
                     }
                 }
-
-
-                if ( !empty( $meta_query ) ) {
-                    $query->set( 'meta_query', $meta_query );
+                if (!empty($meta_query)) {
+                    $query->set('meta_query', $meta_query);
                 }
-
-                if ( !empty( $tax_query ) ) {
-                    $query->set( 'tax_query', $tax_query );
+                if (!empty($tax_query)) {
+                    $query->set('tax_query', $tax_query);
                 }
             }
         }
+//        function change_search_hotel_arg( $query ) {
+//            if ( empty( $_REQUEST[ 'isajax' ] ) ) {
+//                if ( is_admin() and empty( $_REQUEST[ 'is_search_map' ] ) ) return $query;
+//            }
+//            /**
+//             * Global Search Args used in Element list and map display
+//             * @since 1.0
+//             */
+//            global $ts_search_args;
+//            if ( !$ts_search_args ) $ts_search_args = $_REQUEST;
+//
+//            $post_type      = get_query_var( 'post_type' );
+//            $posts_per_page = '12';
+//            if ( $post_type == 'ts_hotel' ) {
+//                $query->set( 'author', '' );
+//
+//                if ( get( 'item_name' ) ) {
+//                    $query->set( 's', get( 'item_name' ) );
+//                }
+//
+//                if ( empty( $_REQUEST[ 'is_search_map' ] ) && empty( $query->query[ 'is_ts_location_list_hotel' ] ) ) {
+//                    $query->set( 'posts_per_page', $posts_per_page );
+//                }
+//
+//                $has_tax_in_element = [];
+//                if ( is_array( $ts_search_args ) ) {
+//                    foreach ( $ts_search_args as $key => $val ) {
+//                        if ( strpos( $key, 'taxonomies--' ) === 0 && !empty( $val ) ) {
+//                            $has_tax_in_element[ $key ] = $val;
+//                        }
+//                    }
+//                }
+//
+//                if ( !empty( $has_tax_in_element ) ) {
+//                    $tax_query = [];
+//                    foreach ( $has_tax_in_element as $tax => $value ) {
+//                        $tax_name = str_replace( 'taxonomies--', '', $tax );
+//                        if ( !empty( $value ) ) {
+//                            $value       = explode( ',', $value );
+//                            $tax_query[] = [
+//                                'taxonomy' => $tax_name,
+//                                'terms'    => $value,
+//                                'operator' => 'IN',
+//                            ];
+//                        }
+//
+//                    }
+//                    if ( !empty( $tax_query ) ) {
+//                        $query->set( 'tax_query', $tax_query );
+//                    }
+//                }
+//
+//                $tax = request( 'taxonomy' );
+//
+//                if ( !empty( $tax ) and is_array( $tax ) ) {
+//                    $tax_query = [];
+//                    foreach ( $tax as $key => $value ) {
+//                        if ( $value ) {
+//                            $value = explode( ',', $value );
+//                            if ( !empty( $value ) and is_array( $value ) ) {
+//                                foreach ( $value as $k => $v ) {
+//                                    if ( !empty( $v ) ) {
+//                                        $ids[] = $v;
+//                                    }
+//                                }
+//                            }
+//                            if ( !empty( $ids ) ) {
+//                                $tax_query[] = [
+//                                    'taxonomy' => $key,
+//                                    'terms'    => $ids,
+//                                    //'COMPARE'=>"IN",
+//                                    'operator' => 'IN',
+//                                ];
+//                            }
+//                            $ids = [];
+//                        }
+//                    }
+//                    $query->set( 'tax_query', $tax_query );
+//                }
+////                $is_featured = st()->get_option( 'is_featured_search_hotel', 'off' );
+//                if ( empty( $ts_search_args[ 'ts_orderby' ] ) ) {
+////                    $query->set( 'meta_key', 'is_featured' );
+//                    $query->set( 'orderby', 'meta_value' );
+//                    $query->set( 'order', 'DESC' );
+//                }
+//
+//                /**
+//                 * Post In and Post Order By from Element
+//                 * @since  1.0
+//                 * @author quandq
+//                 */
+//                if ( !empty( $ts_search_args[ 'ts_number_ht' ] ) ) {
+//                    $query->set( 'posts_per_page', $ts_search_args[ 'ts_number_ht' ] );
+//                }
+//                if ( !empty( $ts_search_args[ 'ts_ids' ] ) ) {
+//                    $query->set( 'post__in', explode( ',', $ts_search_args[ 'ts_ids' ] ) );
+//                    $query->set( 'orderby', 'post__in' );
+//                }
+//                if ( !empty( $ts_search_args[ 'ts_orderby' ] ) and $ts_orderby = $ts_search_args[ 'ts_orderby' ] ) {
+//                    if ( $ts_orderby == 'sale' ) {
+//                        $query->set( 'meta_key', 'total_sale_number' );
+//                        $query->set( 'orderby', 'meta_value_num' );
+//                    }
+//                    if ( $ts_orderby == 'rate' ) {
+//                        $query->set( 'meta_key', 'rate_review' );
+//                        $query->set( 'orderby', 'meta_value' );
+//                    }
+//                    if ( $ts_orderby == 'discount' ) {
+//                        $query->set( 'meta_key', 'discount_rate' );
+//                        $query->set( 'orderby', 'meta_value_num' );
+//                    }
+//                    /*if ( $ts_orderby == 'featured' ) {
+//                        $query->set( 'meta_key', 'is_featured' );
+//                        $query->set( 'orderby', 'meta_value' );
+//                        $query->set( 'order', 'DESC' );
+//                    }*/
+//                }
+//                if ( !empty( $ts_search_args[ 'sort_taxonomy' ] ) and $sort_taxonomy = $ts_search_args[ 'sort_taxonomy' ] ) {
+//                    if ( isset( $ts_search_args[ "id_term_" . $sort_taxonomy ] ) ) {
+//                        $id_term     = $ts_search_args[ "id_term_" . $sort_taxonomy ];
+//                        $tax_query[] = [
+//                            [
+//                                'taxonomy'         => $sort_taxonomy,
+//                                'field'            => 'id',
+//                                'terms'            => explode( ',', $id_term ),
+//                                'include_children' => false
+//                            ],
+//                        ];
+//                    }
+//                }
+//
+//
+//                if ( !empty( $meta_query ) ) {
+//                    $query->set( 'meta_query', $meta_query );
+//                }
+//
+//                if ( !empty( $tax_query ) ) {
+//                    $query->set( 'tax_query', $tax_query );
+//                }
+//            }
+//        }
 
         /**
          * @since 1.0
          */
-        function _get_order_by_query( $orderby ) {
-            if ( $check = get( 'orderby' ) ) {
+        function _get_order_by_query($orderby) {
+            if (strpos($orderby, "FIELD(") !== false && (strpos($orderby, "posts.ID") !== false)) {
+                return $orderby;
+            }
+            if ($check = get('orderby')) {
                 global $wpdb;
-                /*$meta_key = st()->get_option( 'hotel_show_min_price', 'avg_price' );
-                if ( $meta_key == 'avg_price' ) */
-                    $meta_key = "price_avg";
-                switch ( $check ) {
+                $meta_key = "price_avg";
+                switch ($check) {
                     case "price_asc":
                         $orderby = ' ts_price asc';
                         break;
@@ -2056,27 +2438,72 @@ if ( !class_exists( 'TSHotel' ) ) {
                         $orderby = $wpdb->posts . '.post_modified desc';
                         break;
                     default:
-                        /*$is_featured = st()->get_option( 'is_featured_search_hotel', 'off' );
-                        if ( !empty( $is_featured ) and $is_featured == 'on') {
-                            //$orderby = 'tb_ts_hotel.is_featured desc';
-                        }else{*/
+                        $is_featured = 'off';
+                        if (!empty($is_featured) and $is_featured == 'on') {
+                            $orderby = 'tb2.is_featured desc';
+                        } else {
                             $orderby = $wpdb->posts . '.post_modified desc';
-//                        }
+                        }
                         break;
                 }
-            }
-            else {
+            } else {
                 global $wpdb;
-                /*$is_featured = st()->get_option( 'is_featured_search_hotel', 'off' );
-                if ( !empty( $is_featured ) and $is_featured == 'on') {
-                    //$orderby = 'tb_ts_hotel.is_featured desc';
-                }else{*/
+                $is_featured = 'off';
+                if (!empty($is_featured) and $is_featured == 'on') {
+                    $orderby = 'tb2.is_featured desc';
+                } else {
                     $orderby = $wpdb->posts . '.post_modified desc';
-//                }
+                }
             }
-
             return $orderby;
         }
+//        function _get_order_by_query( $orderby ) {
+//            if ( $check = get( 'orderby' ) ) {
+//                global $wpdb;
+//                /*$meta_key = st()->get_option( 'hotel_show_min_price', 'avg_price' );
+//                if ( $meta_key == 'avg_price' ) */
+//                    $meta_key = "price_avg";
+//                switch ( $check ) {
+//                    case "price_asc":
+//                        $orderby = ' ts_price asc';
+//                        break;
+//                    case "price_desc":
+//                        $orderby = ' ts_price desc';
+//                        break;
+//                    case "name_asc":
+//                        $orderby = $wpdb->posts . '.post_title';
+//                        break;
+//                    case "name_desc":
+//                        $orderby = $wpdb->posts . '.post_title desc';
+//                        break;
+//                    case "rand":
+//                        $orderby = ' rand()';
+//                        break;
+//                    case "new":
+//                        $orderby = $wpdb->posts . '.post_modified desc';
+//                        break;
+//                    default:
+//                        /*$is_featured = st()->get_option( 'is_featured_search_hotel', 'off' );
+//                        if ( !empty( $is_featured ) and $is_featured == 'on') {
+//                            //$orderby = 'tb_ts_hotel.is_featured desc';
+//                        }else{*/
+//                            $orderby = $wpdb->posts . '.post_modified desc';
+////                        }
+//                        break;
+//                }
+//            }
+//            else {
+//                global $wpdb;
+//                /*$is_featured = st()->get_option( 'is_featured_search_hotel', 'off' );
+//                if ( !empty( $is_featured ) and $is_featured == 'on') {
+//                    //$orderby = 'tb_ts_hotel.is_featured desc';
+//                }else{*/
+//                    $orderby = $wpdb->posts . '.post_modified desc';
+////                }
+//            }
+//
+//            return $orderby;
+//        }
 
 
         //Helper class
@@ -2376,9 +2803,7 @@ if ( !class_exists( 'TSHotel' ) ) {
         function get_unavailability_hotel( $check_in, $check_out, $adult_number, $children_number, $number_room = 1 ) {
             $check_in  = strtotime( $check_in );
             $check_out = strtotime( $check_out );
-
-            $r = [];
-
+            $r         = [];
             $list_hotel = TS_Hotel_Room_Availability::inst()
                 ->select( 'post_id, parent_id' )
                 ->where( "check_in >=", $check_in )
@@ -2394,9 +2819,7 @@ if ( !class_exists( 'TSHotel' ) ) {
                     $r[] = $hotel_id;
                 }
             }
-
             $freqs = array_count_values($r);
-
             global $wpdb;
             $sql_count_room = "SELECT room_parent, count(room_parent) as number_room FROM {$wpdb->prefix}hotel_room as ht INNER JOIN {$wpdb->prefix}posts as p ON ht.post_id = p.ID WHERE p.post_status = 'publish' GROUP By room_parent";
             $count_room_by_hotel = $wpdb->get_results($sql_count_room, ARRAY_A);
@@ -2409,133 +2832,7 @@ if ( !class_exists( 'TSHotel' ) ) {
                     }
                 }
             }
-
             return $rs;
-
-            /*global $wpdb;
-        $check_in = strtotime($check_in);
-        $check_out = strtotime($check_out);
-
-        $having = FALSE;
-        $having_number_room = false;
-
-        $where_number = "";
-
-        if ($adult_number) {
-            $where_number .= " OR {$wpdb->prefix}postmeta.meta_value < {$adult_number} ";
-        }
-
-        if ($children_number) {
-            $where_number .= " OR ts_meta1.meta_value  {$children_number} ";
-        }
-
-        if ($number_room) {
-            $having_number_room .= "room.number_room - total_booked < {$number_room}";
-            $where_number .= " OR ts_meta3.meta_value < {$number_room} ";
-        }
-
-        if ($having) {
-            $having = 'Having ' . $having;
-        }
-        if ($having_number_room) {
-            $having_number_room = 'Having ' . $having_number_room;
-        }
-        $query = "
-            SELECT ID, hotel_id, count(hotel_id) as total_room
-            FROM
-            (
-            SELECT
-                ID,
-                {$wpdb->prefix}postmeta.meta_value as adult_number,
-                ts_meta1.meta_value as children_number,
-                ts_meta3.meta_value as number_room,
-                ts_meta2.meta_value as hotel_id
-            FROM
-                {$wpdb->posts}
-            JOIN {$wpdb->prefix}postmeta on {$wpdb->prefix}postmeta.post_id={$wpdb->prefix}posts.ID and {$wpdb->prefix}postmeta.meta_key='adult_number'
-            JOIN {$wpdb->prefix}postmeta as ts_meta1 on ts_meta1.post_id={$wpdb->prefix}posts.ID and ts_meta1.meta_key='children_number'
-            JOIN {$wpdb->prefix}postmeta as ts_meta3 on ts_meta3.post_id={$wpdb->prefix}posts.ID and ts_meta3.meta_key='number_room'
-            JOIN {$wpdb->prefix}postmeta as ts_meta2 on ts_meta2.post_id={$wpdb->prefix}posts.ID and ts_meta2.meta_key='room_parent'
-            where 1=1
-            AND post_type='hotel_room'
-
-            AND {$wpdb->prefix}posts.ID IN
-            (
-                SELECT room_id from(
-                    SELECT
-                room_id,
-                sum(room_num_search) AS total_booked,
-                room.number_room
-            FROM
-                {$wpdb->prefix}ts_order_item_meta
-            INNER JOIN {$wpdb->prefix}hotel_room AS room ON room.post_id = {$wpdb->prefix}ts_order_item_meta.room_id
-            WHERE
-                1 = 1
-            AND (
-                (
-                    check_in_timestamp <= {$check_in}
-                    AND check_out_timestamp >= {$check_in}
-                )
-                OR (
-                    check_in_timestamp >= {$check_in}
-                    AND check_in_timestamp <= {$check_out}
-                )
-            )
-            AND ts_booking_post_type = 'ts_hotel'
-            AND STATUS NOT IN (
-                'trash',
-                'canceled',
-                'wc-cancelled'
-            )
-            GROUP BY
-                room_id
-                {$having_number_room}
-
-                ) as booked_table
-            )
-
-            OR {$wpdb->prefix}posts.ID IN
-            (
-                SELECT
-                        post_id
-                    FROM
-                        {$wpdb->prefix}ts_room_availability
-                    WHERE
-                        1 = 1
-                    AND (
-                        check_in >= {$check_in}
-                        AND check_out <= {$check_out}
-                        AND `status` = 'unavailable'
-                    )
-            )
-
-            {$where_number}
-
-            GROUP BY {$wpdb->prefix}posts.ID
-            )
-             as room_data
-                GROUP BY hotel_id
-                HAVING
-                total_room >= (
-                SELECT count(post_id)
-                FROM wp_postmeta
-                WHERE
-                    meta_key = 'room_parent'
-                    AND
-                    meta_value = hotel_id
-                )
-            ";
-
-        $res = $wpdb->get_results($query, ARRAY_A);
-        if (!is_wp_error($res)) {
-            $r = [];
-            foreach ($res as $key => $value) {
-                $r[] = $value['hotel_id'];
-            }
-
-            return $r;
-        }*/
-
         }
 
         /* @since 1.0 */

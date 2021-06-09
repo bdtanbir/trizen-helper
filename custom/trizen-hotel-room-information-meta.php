@@ -52,7 +52,7 @@ $hotel_rooms = new WP_Query($default);
 		<div class="trizen-hotel-infos-content">
             <div class="tab-content current" id="tab-room-location">
                 <div class="form-settings" id="hotel_location_setting">
-                    <label for="price" class="title">
+                    <label for="hotel_room_location_srch" class="title">
                         <?php esc_html_e('Location', 'trizen-helper'); ?>
                     </label>
                     <span class="description">
@@ -60,7 +60,7 @@ $hotel_rooms = new WP_Query($default);
                     </span>
 
                     <div class="ts-select-location">
-                        <input placeholder="<?php esc_html_e('Type to search', 'trizen-helper'); ?>" type="text"
+                        <input id="hotel_room_location_srch" placeholder="<?php esc_html_e('Type to search', 'trizen-helper'); ?>" type="text"
                                class="widefat form-control" name="search" value="">
                         <div class="location-list-wrapper">
                             <?php
@@ -208,7 +208,7 @@ $hotel_rooms = new WP_Query($default);
 			<div class="tab-content" id="tab-room-price">
 				<div class="form-settings" id="room_price_setting">
 					<label for="price" class="title">
-						<?php esc_html_e('Price($)', 'trizen-helper'); ?>
+						<?php esc_html_e('Price', 'trizen-helper'); echo __(' (', 'trizen-helper').get_woocommerce_currency_symbol().__(')', 'trizen-helper'); ?>
 					</label>
 					<span class="description">
                         <?php esc_html_e('The price of room per one night', 'trizen-helper'); ?>

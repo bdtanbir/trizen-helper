@@ -18,7 +18,6 @@ define( 'TRIZEN_HELPER_VERSION', '1.0' );
 
 
 add_action('plugins_loaded', 'trizen_helper_load');
-
 function trizen_helper_load() {
 	require_once TRIZEN_HELPER_PATH.'widgets/trizen-social-profile.php';
 	require_once TRIZEN_HELPER_PATH.'widgets/trizen-recent-post-with-thumbnail.php';
@@ -207,7 +206,7 @@ function trizen_helper_admin_script()
 		null,
 		true
 	);*/
-	wp_register_script(
+	wp_enqueue_script(
 		'bulk-calendar',
 		TRIZEN_HELPER_URI . ('admin/js/bulk-calendar.js'),
 		array('jquery'),
@@ -296,7 +295,7 @@ function trizen_helper_admin_script()
 		'please_waite'        => __('Please wait...', 'trizen-helper'),
 		'prev_month'          => __('prev month', 'trizen-helper'),
 		'next_month'          => __('next month', 'trizen-helper'),
-		'currency_smbl'       => '$',
+		'currency_smbl'       => get_woocommerce_currency_symbol(),
 		'time_format'         => '12h',
         'ts_search_nonce'     => wp_create_nonce("ts_search_security"),
 	]);
@@ -309,7 +308,7 @@ function trizen_helper_admin_script()
 		'fromLabel'        => esc_html__('From', 'trizen-helper'),
 		'toLabel'          => esc_html__('To', 'trizen-helper'),
 		'customRangeLabel' => esc_html__('Custom', 'trizen-helper'),
-		'daysOfWeek'       =>  [esc_html__('Su', 'trizen-helper'), esc_html__('Mo', 'trizen-helper'), esc_html__('Tu', 'trizen-helper'), esc_html__('We', 'trizen-helper'), esc_html__('Th', 'trizen-helper'), esc_html__('Fr', 'trizen-helper'), esc_html__('Sa', 'trizen-helper')],
+		'daysOfWeek'       => [esc_html__('Su', 'trizen-helper'), esc_html__('Mo', 'trizen-helper'), esc_html__('Tu', 'trizen-helper'), esc_html__('We', 'trizen-helper'), esc_html__('Th', 'trizen-helper'), esc_html__('Fr', 'trizen-helper'), esc_html__('Sa', 'trizen-helper')],
 		'monthNames'       => [esc_html__('January', 'trizen-helper'), esc_html__('February', 'trizen-helper'), esc_html__('March', 'trizen-helper'), esc_html__('April', 'trizen-helper'), esc_html__('May', 'trizen-helper'), esc_html__('June', 'trizen-helper'), esc_html__('July', 'trizen-helper'), esc_html__('August', 'trizen-helper'), esc_html__('September', 'trizen-helper'), esc_html__('October', 'trizen-helper'), esc_html__('November', 'trizen-helper'), esc_html__('December', 'trizen-helper')],
 		'firstDay'         => (int)0,
 		'today'            => esc_html__('Today', 'trizen-helper'),
