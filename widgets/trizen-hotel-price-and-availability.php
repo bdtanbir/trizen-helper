@@ -43,47 +43,19 @@ class trizen_hpa_widget extends WP_Widget {
                 <input type="hidden" name="is_search_room" value="1">
                 <input type="hidden" name="room_parent" value="<?php echo esc_attr(get_the_ID()); ?>">
 
-
                 <div class="sidebar-widget-item">
                     <div class="sidebar-book-title-wrap mb-3">
                         <?php echo $args['before_title'] . esc_html( $trizen_hpa_title ) . $args['after_title'];
                         ?>
-                            <p>
-                                <span class="text-form"><?php esc_html_e('From', 'trizen-helper'); ?></span>
-                                <span class="text-value ml-2"><?php echo TravelHelper::format_money($price); ?></span>
-                            </p>
-<?php
-                        /*if(!empty($hotel_regular_price) && !empty($hotel_sale_price)) { */?><!--
-                            <p>
-                                <span class="text-form"><?php /*esc_html_e('From', 'trizen-helper'); */?></span>
-                                <span class="text-value ml-2 mr-1"><?php /*echo esc_html($hotel_sale_price); */?></span>
-                                <span class="before-price"><?php /*echo esc_html($hotel_regular_price); */?></span>
-                            </p>
-                        <?php /*} else {
-                            if(!empty($hotel_regular_price)) {
-                                */?>
-                                <p>
-                                    <span class="text-form"><?php /*esc_html_e('From', 'trizen-helper'); */?></span>
-                                    <span class="text-value ml-2"><?php /*echo esc_html($hotel_regular_price); */?></span>
-                                </p>
-                                <?php
-/*                            } else {
-                                if(!empty($hotel_sale_price) && empty($hotel_regular_price)) { */?>
-                                    <p>
-                                    <span class="text-form">
-                                        <?php /*esc_html_e('We are sorry! First add', 'trizen-helper'); */?><strong><?php /*esc_html_e(' Regular Price', 'trizen-helper'); */?></strong><?php /*esc_html_e(' and then sale price!', 'trizen-helper'); */?>
-                                    </span>
-                                    </p>
-                                    --><?php
-/*                                }
-                            }
-                        } */?>
+                        <p>
+                            <span class="text-form"><?php esc_html_e('From', 'trizen-helper'); ?></span>
+                            <span class="text-value ml-2"><?php echo TravelHelper::format_money($price); ?></span>
+                        </p>
                     </div>
                 </div>
 
                 <div class="sidebar-widget-item">
                     <div class="contact-form-action">
-
                         <?php
                         $start = get('start', date(getDateFormat()));
                         $end   = get('end', date(getDateFormat(), strtotime("+ 1 day")));

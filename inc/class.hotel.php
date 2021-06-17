@@ -98,10 +98,63 @@ if ( !class_exists( 'TSHotel' ) ) {
             add_action( 'wp_ajax_ts_filter_hotel_ajax', [ $this, 'ts_filter_hotel_ajax' ] );
             add_action( 'wp_ajax_nopriv_ts_filter_hotel_ajax', [ $this, 'ts_filter_hotel_ajax' ] );
 
+            add_action('wp_ajax_ts_top_ajax_search', [$this, '_top_ajax_search']);
+            add_action('wp_ajax_nopriv_ts_top_ajax_search', [$this, '_top_ajax_search']);
+
             add_action( 'wp_ajax_ts_add_room_number_inventory', [ $this, 'ts_add_room_number_inventory' ] );
             //xsearch Load post hotel filter ajax location
             add_action('wp_ajax_ts_filter_hotel_ajax_location', [$this, 'ts_filter_hotel_ajax_location']);
             add_action('wp_ajax_nopriv_ts_filter_hotel_ajax_location', [$this, 'ts_filter_hotel_ajax_location']);
+        }
+
+        function _top_ajax_search() {
+            //Small security
+            check_ajax_referer('ts_search_security', 'security');
+            //$search_header_onof = st()->get_option('search_header_onoff', 'on');
+            $search_header_orderby = 'none';
+            $search_header_list    = 'post';
+            $search_header_order   = 'ASC';
+            $s                     = get('s');
+            $arg = [
+                'post_type'        => $search_header_list,
+                'posts_per_page'   => 10,
+                's'                => $s,
+                'suppress_filters' => false,
+                'orderby'          => $search_header_orderby,
+                'order'            => $search_header_order,
+                'author'           => false,
+                'post_status'      => 'publish'
+            ];
+            global $sitepress;
+            if (class_exists('SitePress') and get('lang')) {
+                $sitepress->switch_lang(get('lang'));
+            }
+            add_filter('pre_get_posts', [$this, '_change_top_search']);
+            $query = new WP_Query();
+            $query->is_admin = false;
+            $query->query($arg);
+            $r = [];
+            $r['x'] = $arg;
+            remove_filter('pre_get_posts', [$this, '_change_top_search']);
+            while ($query->have_posts()) {
+                $query->the_post();
+                $post_type = get_post_type(get_the_ID());
+                $obj = get_post_type_object($post_type);
+                $item = [
+                    'title' => html_entity_decode(get_the_title()),
+                    'id' => get_the_ID(),
+                    'type' => $obj->labels->singular_name,
+                    'url' => get_permalink(),
+                    'obj' => $obj
+                ];
+                if ($post_type == 'location') {
+                    $item['url'] = home_url(esc_url_raw('?s=&post_type=ts_hotel&location_id=' . get_the_ID()));
+                }
+                $r['data'][] = $item;
+            }
+            wp_reset_query();
+            echo json_encode($r);
+            die();
         }
 
         public function ts_add_room_number_inventory() {
@@ -185,7 +238,28 @@ if ( !class_exists( 'TSHotel' ) ) {
         }
 
         public function setQueryHotelSearch(){
-            $page_number = get('page');
+            $page_number   = get( 'page' );
+            $list_id_hotel = get( 'list-wishlist' );
+            $list_id_hotel = explode(',', $list_id_hotel);
+            global $wp_query, $ts_search_query;
+            $posts_per_page = 12;
+            $hotel = TSHotel::inst();
+            $hotel->alter_search_query();
+            set_query_var( 'paged', $page_number );
+            $paged = $page_number;
+            $args  = [
+                'post_type'      => 'ts_hotel',
+                's'              => '',
+                'post_status'    => [ 'publish' ],
+                'post__in'       => $list_id_hotel,
+                'paged'          => $paged,
+                'posts_per_page' => $posts_per_page,
+            ];
+            query_posts( $args );
+            $ts_search_query = $wp_query;
+            $hotel->remove_alter_search_query();
+
+            /*$page_number = get('page');
             global $wp_query, $ts_search_query;
             $hotel = $this;
             $hotel->alter_search_query();
@@ -199,7 +273,7 @@ if ( !class_exists( 'TSHotel' ) ) {
             ];
             query_posts($args);
             $ts_search_query = $wp_query;
-            $hotel->remove_alter_search_query();
+            $hotel->remove_alter_search_query();*/
         }
 
         public function ts_filter_hotel_ajax_location() {
@@ -218,11 +292,11 @@ if ( !class_exists( 'TSHotel' ) ) {
                 <?php if ($query_service->have_posts()) {
                     while ($query_service->have_posts()) {
                         $query_service->the_post();
-                        echo TRIZEN_HELPER_PATH . 'inc/hotel/search/loop-room-item.php';
+                        require_once TRIZEN_HELPER_PATH . 'inc/hotel/search/loop-room-item.php';
                     }
                 } else {
                     echo '<div class="col-xs-12">';
-                    echo TRIZEN_HELPER_PATH . 'inc/hotel/search/loop-room-none.php';
+                    require_once TRIZEN_HELPER_PATH . 'inc/hotel/search/loop-room-none.php';
                     echo '</div>';
                 }
                 wp_reset_postdata(); ?>
@@ -312,7 +386,7 @@ if ( !class_exists( 'TSHotel' ) ) {
 //                        echo 'I am FullWidth Loop';
 //                        echo st()->load_template('layouts/modern/hotel/elements/loop/' . esc_attr($format), $style, ['show_map' => $half_map_show, 'fullwidth' => true]);
 //                    } else {
-                        echo TRIZEN_HELPER_PATH .'inc/hotel/search/loop-room-item.php';
+                    require_once TRIZEN_HELPER_PATH .'inc/hotel/search/loop-room-item.php';
 //                        echo st()->load_template('layouts/modern/hotel/elements/loop/' . esc_attr($format), $style, ['show_map' => $half_map_show]);
 //                    }
 //                    if ($is_popup_map)
@@ -341,7 +415,7 @@ if ( !class_exists( 'TSHotel' ) ) {
                 if ($is_popup_map)
                     $popup_map .= '<div class="col-xs-12">' . esc_html__('Hotel None', 'trizen-helper') . '</div>';
                 echo ($style == 'grid') ? '<div class="col-xs-12">' : '';
-                echo TRIZEN_HELPER_PATH .'inc/hotel/search/loop-room-none.php';
+                require_once TRIZEN_HELPER_PATH .'inc/hotel/search/loop-room-none.php';
                 echo '</div>';
             }
             echo '</div>';
@@ -359,7 +433,7 @@ if ( !class_exists( 'TSHotel' ) ) {
                         $wp_query = $ts_search_query;
                     }
                     if ($wp_query->found_posts):
-                        $page = get_query_var('paged');
+                        $page           = get_query_var('paged');
                         $posts_per_page = get_query_var('posts_per_page');
                         if (!$page) $page = 1;
                         $last = $posts_per_page * ($page);
@@ -1225,7 +1299,8 @@ if ( !class_exists( 'TSHotel' ) ) {
             $check_in       = convertDateFormat($post['start']);
             $check_out      = convertDateFormat($post['end']);
             $date_diff      = dateDiff($check_in, $check_out);
-            $booking_period = intval(get_post_meta($hotel_id, 'hotel_booking_period', true));
+//            $booking_period = intval(get_post_meta($hotel_id, 'hotel_booking_period', true));
+            $booking_period = 0;
             $period         = dateDiff($today, $check_in);
             if ($booking_period && $period < $booking_period) {
                 $result = [
@@ -1238,9 +1313,9 @@ if ( !class_exists( 'TSHotel' ) ) {
             }
             if ($date_diff < 1) {
                 $result = [
-                    'status' => 0,
-                    'html' => TRIZEN_HELPER_PATH . 'inc/hotel/search/loop-room-none.php',
-                    'message' => __('Make sure your check-out date is at least 1 day after check-in.', 'trizen-helper'),
+                    'status'    => 0,
+                    'html'      => TRIZEN_HELPER_PATH . 'inc/hotel/search/loop-room-none.php',
+                    'message'   => __('Make sure your check-out date is at least 1 day after check-in.', 'trizen-helper'),
                     'more-data' => $date_diff
                 ];
                 echo json_encode($result);
@@ -1253,8 +1328,8 @@ if ( !class_exists( 'TSHotel' ) ) {
             if ($query->have_posts()) {
                 while ($query->have_posts()) {
                     $query->the_post();
-//                    $result['html'] .= preg_replace('/^\s+|\n|\r|\s+$/m', '', TRIZEN_HELPER_PATH . 'inc/hotel/search/loop-room-item.php');
-                    $result['html'] .= TRIZEN_HELPER_PATH . 'inc/hotel/search/loop-room-item.php';
+                    $result['html'] .= preg_replace('/^\s+|\n|\r|\s+$/m', '', TRIZEN_HELPER_PATH . 'inc/hotel/search/loop-room-item.php');
+//                    $result['html'] .= TRIZEN_HELPER_PATH . 'inc/hotel/search/loop-room-item.php';
                 }
             } else {
                 $result['html'] .= TRIZEN_HELPER_PATH . 'inc/hotel/search/loop-room-none.php';
@@ -1904,7 +1979,7 @@ if ( !class_exists( 'TSHotel' ) ) {
 ////                $meta_key = st()->get_option('hotel_show_min_price', 'avg_price');
 ////                if ($meta_key == 'avg_price') $meta_key = "price_avg";
 ////
-////                $price = STInput::get('price_range', '0;0');
+////                $price = get('price_range', '0;0');
 ////                $priceobj = explode(';', $price);
 //
 ////                // convert to default money

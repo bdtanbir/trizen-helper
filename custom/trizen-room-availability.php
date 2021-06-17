@@ -4,7 +4,7 @@ global $post;
 if( is_admin() ){
     $post_id = get_the_ID();
 }else{
-    $post_id = STInput::get('id','');
+    $post_id = get('id','');
 }
 ?>
 
@@ -128,7 +128,7 @@ if( is_admin() ){
                                             echo '<div>';
                                         }
                                         ?>
-                                            <label for="">
+                                            <label>
                                                 <input type="checkbox" name="day-of-month[]" value="<?php echo esc_attr($i); ?>"><?php echo esc_html($i); ?>
                                             </label>
                                         <?php
@@ -166,7 +166,7 @@ if( is_admin() ){
                                     if( $i == 0 ) {
                                         echo '<div>';
                                     } ?>
-                                    <label for="">
+                                    <label>
                                         <input type="checkbox" name="months[]" value="<?php echo esc_attr($key); ?>"><?php echo esc_html($month); ?>
                                     </label>
                                 <?php
@@ -193,7 +193,7 @@ if( is_admin() ){
                                             echo '<div>';
                                         }
                                         ?>
-                                        <label for="">
+                                        <label>
                                             <input type="checkbox" name="years[]" value="<?php echo esc_attr($i); ?>"><?php echo esc_html($i); ?>
                                         </label>
                                         <?php

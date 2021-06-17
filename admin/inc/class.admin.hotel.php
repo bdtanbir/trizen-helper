@@ -250,15 +250,10 @@ if ( !class_exists( 'TSAdminHotel' ) ) {
                     JOIN {$wpdb->postmeta} as mt1 ON mt1.post_id = {$wpdb->postmeta}.post_id and mt1.meta_key = 'multi_location'
                     WHERE
                     {$wpdb->postmeta}.meta_key = 'room_parent'
-
                     AND
-
                     {$wpdb->postmeta}.meta_value = '{$post_id}'
-
                     GROUP BY {$wpdb->postmeta}.post_id";
-
             $list_room = $wpdb->get_results( $sql );
-
             return $list_room;
         }
 

@@ -38,6 +38,7 @@ function trizen_helper_load() {
     require_once TRIZEN_HELPER_PATH.'core/database/tables/hotel_room_availability.php';
     require_once TRIZEN_HELPER_PATH.'core/database/tables/order_item.php';
     require_once TRIZEN_HELPER_PATH.'admin/inc/class.user.php';
+    require_once TRIZEN_HELPER_PATH.'admin/inc/class.admin.room.php';
 }
 require_once TRIZEN_HELPER_PATH.'custom/trizen-availability-model.php';
 require_once TRIZEN_HELPER_PATH.'inc/trizen-hook-function.php';
@@ -48,13 +49,13 @@ if(is_admin()) {
 }
 require_once TRIZEN_HELPER_PATH.'admin/inc/class.tsadmin.php';
 require_once TRIZEN_HELPER_PATH.'admin/inc/helper/nested_sets_model.helper.php';
-require_once TRIZEN_HELPER_PATH.'admin/inc/class.admin.room.php';
 require_once TRIZEN_HELPER_PATH.'admin/inc/helper/availability.helper.php';
 require_once TRIZEN_HELPER_PATH.'admin/inc/class.admin.neworder.data.php';
 require_once TRIZEN_HELPER_PATH.'admin/inc/class.woocommerce.php';
 require_once TRIZEN_HELPER_PATH.'core/database/tables/posts.php';
 require_once TRIZEN_HELPER_PATH.'admin/inc/class.admin.hotel.php';
 require_once TRIZEN_HELPER_PATH.'admin/inc/class.admin.upgrade.data.php';
+require_once TRIZEN_HELPER_PATH.'admin/inc/class.admin.duplicate.data.php';
 require_once TRIZEN_HELPER_PATH.'admin/inc/class.admin.location.relationships.php';
 require_once TRIZEN_HELPER_PATH.'admin/inc/helper/travel-helper.php';
 require_once TRIZEN_HELPER_PATH.'admin/inc/helper/hotel.helper.php';
@@ -66,74 +67,6 @@ require_once TRIZEN_HELPER_PATH.'inc/hotel-alone-helper.php';
 require_once TRIZEN_HELPER_PATH.'inc/class.single_hotel.php';
 
 
-add_action( 'wp_ajax_ts_get_availability_hotel', '_get_availability_hotel' );
-function _get_availability_hotel()
-{
-    $results       = [];
-    $post_id       = request('post_id', '');
-    $post_id       = post_origin($post_id);
-    $check_in      = request('start', '');
-    $check_out     = request('end', '');
-    $price_ori     = floatval(get_post_meta($post_id, 'price', true));
-    $default_state = get_post_meta($post_id, 'default_state', true);
-    $number_room   = intval(get_post_meta($post_id, 'number_room', true));
-    if (get_post_type($post_id) == 'hotel_room') {
-        $data = _getdataHotel($post_id, $check_in, $check_out);
-        for ($i = intval($check_in); $i <= intval($check_out); $i = strtotime('+1 day', $i)) {
-            $in_date = false;
-            if (is_array($data) && count($data)) {
-                foreach ($data as $key => $val) {
-                    if ($i >= intval($val->check_in) && $i <= intval($val->check_out)) {
-                        $status = $val->status;
-                        if ($status != 'unavailable') {
-                            $item = [
-                                'price'   => floatval($val->price),
-                                'start'   => date('Y-m-d', $i),
-                                'title'   => get_the_title($post_id),
-                                'item_id' => $val->id,
-                                'status'  => $val->status,
-                            ];
-                        } else {
-                            unset($item);
-                        }
-                        if (!$in_date)
-                            $in_date = true;
-                    }
-                }
-            }
-            if (isset($item)) {
-                $results[] = $item;
-                unset($item);
-            }
-            if (!$in_date && ($default_state == 'available' || !$default_state)) {
-                $item_ori = [
-                    'price'  => $price_ori,
-                    'start'  => date('Y-m-d', $i),
-                    'title'  => get_the_title($post_id),
-                    'number' => $number_room,
-                    'status' => 'available',
-                ];
-                $results[] = $item_ori;
-                unset($item_ori);
-            }
-            if (!$in_date) {
-                $parent_id = get_post_meta($post_id, 'room_parent', true);
-                TS_Hotel_Room_Availability::inst()->insertOrUpdate([
-                    'post_id'   => $post_id,
-                    'check_in'  => $i,
-                    'check_out' => $i,
-                    'status'    => (!$default_state or $default_state == 'available') ? 'available' : 'unavailable',
-                    'is_base'   => 1,
-                    'price'     => $price_ori,
-                    'post_type' => 'hotel_room',
-                    'parent_id' => $parent_id,
-                ]);
-            }
-        }
-    }
-    echo json_encode($results);
-    die();
-}
 
 
 function trizen_helper_admin_script()
@@ -340,6 +273,7 @@ function trizen_helper_scripts() {
         '1.0.0',
         true
     );
+	wp_enqueue_script('ts-duplicate-js', TRIZEN_HELPER_URI .'assets/admin/js/ts-duplicate.js', array('jquery', 'trizen-js'), _S_VERSION, true);
 	wp_enqueue_script('trizen-helper-js', TRIZEN_HELPER_URI .'assets/js/trizen-helper.js', array('jquery', 'trizen-js'), _S_VERSION, true);
 
 	wp_localize_script('jquery', 'ts_params', [

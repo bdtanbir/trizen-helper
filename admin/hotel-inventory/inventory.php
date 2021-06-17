@@ -289,15 +289,10 @@ function trizen_get_availability( $post_id = '', $check_in = '', $check_out = ''
 	if(empty($table))
 		$table = 'ts_availability';
 	global $wpdb;
-
 	$table = $wpdb->prefix . $table;
-
 	$sql = "SELECT * FROM {$table} WHERE post_id = {$post_id} AND ( ( CAST( check_in AS UNSIGNED ) >= CAST( {$check_in} AS UNSIGNED) AND CAST( check_in AS UNSIGNED ) <= CAST( {$check_out} AS UNSIGNED ) ) OR ( CAST( check_out AS UNSIGNED ) >= CAST( {$check_in} AS UNSIGNED ) AND ( CAST( check_out AS UNSIGNED ) <= CAST( {$check_out} AS UNSIGNED ) ) ) )";
-
 	$result = $wpdb->get_results( $sql, ARRAY_A );
-
 	$return = [];
-
 	if ( !empty( $result ) ) {
 		foreach ( $result as $item ) {
 			$return[] = [
@@ -319,9 +314,9 @@ function trizen_get_availability( $post_id = '', $check_in = '', $check_out = ''
 
 	return $return;
 }
+
 function trizen_split_availability( $result = [], $check_in = '', $check_out = '' ) {
 	$return = [];
-
 	if ( !empty( $result ) ) {
 		foreach ( $result as $item ) {
 			$check_in  = (int)$check_in;
@@ -361,7 +356,7 @@ function trizen_split_availability( $result = [], $check_in = '', $check_out = '
 	}
 	return $return;
 }
-function traveler_delete_availability( $id = '', $table = null ) {
+function trizen_delete_availability( $id = '', $table = null ) {
 	if(empty($table))
 		$table = 'ts_availability';
 	global $wpdb;
@@ -466,8 +461,7 @@ function trizen_insert_availability( $post_id = '', $check_in = '', $check_out =
 	}
 	return (int)$wpdb->insert_id;
 }
-function insert_calendar_bulk( $data, $posts_per_page, $total, $current_page, $all_days, $post_id )
-{
+function insert_calendar_bulk( $data, $posts_per_page, $total, $current_page, $all_days, $post_id ) {
 	$post_type = get_post_type($post_id);
 	$table     = '';
 	switch ($post_type){
@@ -484,25 +478,19 @@ function insert_calendar_bulk( $data, $posts_per_page, $total, $current_page, $a
 			$table = 'ts_rental_availability';
 			break;
 	}
-
 	$start = ( $current_page - 1 ) * $posts_per_page;
-
-	$end = ( $current_page - 1 ) * $posts_per_page + $posts_per_page - 1;
-
+	$end   = ( $current_page - 1 ) * $posts_per_page + $posts_per_page - 1;
 	if ( $end > $total - 1 ) $end = $total - 1;
-
 	if ( $data[ 'groupday' ] == 0 ) {
 		for ( $i = $start; $i <= $end; $i++ ) {
-
 			$data[ 'start' ] = $all_days[ $i ];
 			$data[ 'end' ]   = $all_days[ $i ];
-
 			/*  Delete old item */
 			$result = trizen_get_availability( $post_id, $all_days[ $i ], $all_days[ $i ], $table );
 			$split  = trizen_split_availability( $result, $all_days[ $i ], $all_days[ $i ] );
 			if ( isset( $split[ 'delete' ] ) && !empty( $split[ 'delete' ] ) ) {
 				foreach ( $split[ 'delete' ] as $item ) {
-					traveler_delete_availability( $item[ 'id' ], $table );
+					trizen_delete_availability( $item[ 'id' ], $table );
 				}
 			}
 			/*  .End */
@@ -521,7 +509,7 @@ function insert_calendar_bulk( $data, $posts_per_page, $total, $current_page, $a
 			$split  = trizen_split_availability( $result, $all_days[ $i ][ 'min' ], $all_days[ $i ][ 'max' ] );
 			if ( isset( $split[ 'delete' ] ) && !empty( $split[ 'delete' ] ) ) {
 				foreach ( $split[ 'delete' ] as $item ) {
-					traveler_delete_availability( $item[ 'id' ], $table );
+					trizen_delete_availability( $item[ 'id' ], $table );
 				}
 			}
 			/*  .End */

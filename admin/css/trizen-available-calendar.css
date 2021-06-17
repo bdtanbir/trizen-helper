@@ -29,7 +29,7 @@ textarea:focus {
 }
 .calendar-wrapper .overlay.open {
     z-index: 999;
-    background: #00000014;
+    background: rgba(255, 255, 255, 0.64);
 }
 .calendar-wrapper .overlay .spinner {
     position: absolute;

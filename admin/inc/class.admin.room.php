@@ -2,9 +2,7 @@
 
 if ( !class_exists( 'TSAdminRoom' ) ) {
 
-    class TSAdminRoom
-    {
-
+    class TSAdminRoom extends TSAdmin {
         protected static $_inst;
         static $_table_version = "1.0";
         static $booking_page;
@@ -16,13 +14,9 @@ if ( !class_exists( 'TSAdminRoom' ) ) {
         protected $order_id=false;
 
         /**
-         *
-         *
-         * @update 1.1.3
+         * @since 1.0.0
          * */
-        function __construct()
-        {
-            global $wpdb;
+        function __construct() {
             add_action('plugins_loaded', [$this, '_check_table_hotel_room']);
 
             add_filter('ts_change_column_ts_hotel_room', [$this, 'ts_change_column_ts_hotel_room_fnc']);
@@ -37,6 +31,20 @@ if ( !class_exists( 'TSAdminRoom' ) ) {
             add_action( 'parse_query', [ $this, 'parse_query_hotel_room' ] );
             add_action( 'save_post', [ $this, '_update_list_location' ], 999999, 2 );
             add_action( 'added_post_meta', [ $this, 'hotel_update_min_price' ], 10, 4 );
+            add_filter( 'posts_where', [__CLASS__, '_alter_search_query'] );
+
+            add_action('before_delete_post', [$this, '_delete_data'], 50);
+        }
+
+        public function _delete_data($post_id){
+            if (get_post_type($post_id) == 'hotel_room') {
+                global $wpdb;
+                $table = $wpdb->prefix . 'hotel_room';
+                $rs = TravelHelper::deleteDuplicateData($post_id, $table);
+                if (!$rs)
+                    return false;
+                return true;
+            }
         }
 
         public function _upgradeRoomTable135() {
@@ -64,10 +72,8 @@ if ( !class_exists( 'TSAdminRoom' ) ) {
             return $new_column;
         }
 
-        static function check_ver_working()
-        {
+        static function check_ver_working() {
             $dbhelper = new DatabaseHelper(self::$_table_version);
-
             return $dbhelper->check_ver_working('ts_hotel_room_table_version');
         }
 
@@ -178,8 +184,8 @@ if ( !class_exists( 'TSAdminRoom' ) ) {
                 /*$check_out_field = get_checkout_fields();
                 if ( !empty( $check_out_field ) ) {
                     foreach ( $check_out_field as $field_name => $field_desc ) {
-                        if($field_name != 'st_note'){
-                            update_post_meta( $order_id, $field_name, STInput::post( $field_name ) );
+                        if($field_name != 'ts_note'){
+                            update_post_meta( $order_id, $field_name, post( $field_name ) );
                         }
                     }
                 }*/
@@ -267,6 +273,25 @@ if ( !class_exists( 'TSAdminRoom' ) ) {
                 update_post_meta( $id, 'id_location', '' );
             }
 
+        }
+
+        static function _alter_search_query($where) {
+            global $wp_query;
+            if (!is_admin()) return $where;
+            if ($wp_query->get('post_type') != 'hotel_room') return $where;
+            global $wpdb;
+            if ($wp_query->get('s')) {
+                $_GET['s'] = isset($_GET['s']) ? sanitize_title_for_query($_GET['s']) : '';
+                $add_where = " OR $wpdb->posts.ID IN (SELECT post_id FROM
+                     $wpdb->postmeta
+                    WHERE $wpdb->postmeta.meta_key ='room_parent'
+                    AND $wpdb->postmeta.meta_value IN (SELECT $wpdb->posts.ID
+                        FROM $wpdb->posts WHERE $wpdb->posts.post_title LIKE '%{$_GET['s']}%'
+                    )
+             )  ";
+                $where .= $add_where;
+            }
+            return $where;
         }
 
         public function getMeta($key)
@@ -873,7 +898,7 @@ if ( !class_exists( 'TSAdminRoom' ) ) {
 //                }
 //                if ( $select_account == 'your_paypal' ) {
 //
-//                    $paypal_email = STInput::request( 'paypal_email', '' );
+//                    $paypal_email = request( 'paypal_email', '' );
 //
 //                    $cancel_data = [
 //                        'order_id'             => $order_id,
@@ -930,7 +955,7 @@ if ( !class_exists( 'TSAdminRoom' ) ) {
 //                }
 //                if ( $select_account == 'your_stripe' ) {
 //
-//                    $transaction_id = STInput::request( 'transaction_id', '' );
+//                    $transaction_id = request( 'transaction_id', '' );
 //
 //                    $cancel_data = [
 //                        'order_id'             => $order_id,
@@ -1063,8 +1088,8 @@ if ( !class_exists( 'TSAdminRoom' ) ) {
             $check_out = request('calendar_check_out', '');
             if (empty($check_in) || empty($check_out)) {
                 echo json_encode([
-                    'type'    => 'error',
-                    'status'  => 0,
+                    'type' => 'error',
+                    'status' => 0,
                     'message' => __('The check in or check out field is not empty.', 'trizen-helper')
                 ]);
                 die();
@@ -1073,8 +1098,8 @@ if ( !class_exists( 'TSAdminRoom' ) ) {
             $check_out = strtotime($check_out);
             if ($check_in > $check_out) {
                 echo json_encode([
-                    'type'    => 'error',
-                    'status'  => 0,
+                    'type' => 'error',
+                    'status' => 0,
                     'message' => __('The check out is later than the check in field.', 'trizen-helper')
                 ]);
                 die();
@@ -1101,8 +1126,8 @@ if ( !class_exists( 'TSAdminRoom' ) ) {
                 } else {
                     if (filter_var($_POST['calendar_price'], FILTER_VALIDATE_FLOAT) === false) {
                         echo json_encode([
-                            'type'    => 'error',
-                            'status'  => 0,
+                            'type' => 'error',
+                            'status' => 0,
                             'message' => __('The price field is not a number.', 'trizen-helper')
                         ]);
                         die();
@@ -1139,8 +1164,7 @@ if ( !class_exists( 'TSAdminRoom' ) ) {
         }
 
         /**
-         * @since  1.1.8
-         * @update 1.2.0
+         * @since  1.0
          * */
         static function checkTableDuplicate($post_types = []) {
             global $wpdb;

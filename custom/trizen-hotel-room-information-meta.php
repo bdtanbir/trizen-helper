@@ -1,20 +1,20 @@
 <?php
 
-$room_price       = get_post_meta(get_the_ID(), 'price', true);
-$number_of_room   = get_post_meta(get_the_ID(), 'number_room', true);
-$number_of_adults = get_post_meta(get_the_ID(), 'trizen_room_facility_num_of_adults', true);
-$number_of_beds   = get_post_meta(get_the_ID(), 'trizen_room_facility_num_of_beds', true);
-$room_footage     = get_post_meta(get_the_ID(), 'trizen_hotel_room_footage', true);
-$room_badge_title = get_post_meta(get_the_ID(), 'room_badge_title', true);
-$room_address     = get_post_meta(get_the_ID(), 'address', true);
+$room_price       = get_post_meta( get_the_ID(), 'price', true );
+$number_of_room   = get_post_meta( get_the_ID(), 'number_room', true );
+$number_of_adults = get_post_meta( get_the_ID(), 'trizen_room_facility_num_of_adults', true );
+$number_of_beds   = get_post_meta( get_the_ID(), 'trizen_room_facility_num_of_beds', true );
+$room_footage     = get_post_meta( get_the_ID(), 'trizen_hotel_room_footage', true );
+$room_badge_title = get_post_meta( get_the_ID(), 'room_badge_title', true );
+$room_address     = get_post_meta( get_the_ID(), 'address', true );
 
 // Hotel Room Extra Services
-$trizen_hotel_room_extra_services_data = get_post_meta(get_the_ID(), 'trizen_hotel_extra_services_data_group', true);
+$trizen_hotel_room_extra_services_data = get_post_meta( get_the_ID(), 'trizen_hotel_extra_services_data_group', true );
 
-$trizen_room_other_facility_data = get_post_meta(get_the_ID(), 'trizen_room_other_facility_data_group', true);
-$trizen_room_rules_data          = get_post_meta(get_the_ID(), 'trizen_room_rules_data_group', true);
-$discount_rate                   = get_post_meta(get_the_ID(), 'discount_rate', true);
-$discount_type                   = get_post_meta(get_the_ID(), 'discount_type_no_day', true );
+$trizen_room_other_facility_data = get_post_meta( get_the_ID(), 'trizen_room_other_facility_data_group', true );
+$trizen_room_rules_data          = get_post_meta( get_the_ID(), 'trizen_room_rules_data_group', true );
+$discount_rate                   = get_post_meta( get_the_ID(), 'discount_rate', true );
+$discount_type                   = get_post_meta( get_the_ID(), 'discount_type_no_day', true );
 $hotel_rooms_select              = get_post_meta( get_the_ID(), 'room_parent', true );
 
 $default = array(
@@ -136,7 +136,7 @@ $hotel_rooms = new WP_Query($default);
                                 $hidden[]  = $image->ID;
                                 $image_src = wp_get_attachment_image_src( $image->ID, array( 80, 80 ) );
                                 $image_src = str_replace( '-150x150', '', $image_src );
-                                echo      '<li data-id="' . $image->ID . '">
+                                echo      '<li data-id="' . esc_attr($image->ID) . '">
                                 <img src="' . $image_src[0] . '" alt="' . esc_attr__( "Image", "trizen-helper" ) . '"><a href="#" class="trizen_hotel_room_img_gallery_remove">' . esc_html__( "+", "trizen-helper" ) . '</a></li>';
                             }
                         }
@@ -162,7 +162,6 @@ $hotel_rooms = new WP_Query($default);
                         <?php while ($hotel_rooms->have_posts()) { $hotel_rooms->the_post();
 	                        $title_one  = get_the_title();
 	                        $postid_one = get_the_ID();
-
 	                        echo '
 	                        <option value="'.esc_attr($postid_one).'" '.selected( $postid_one, $hotel_rooms_select, false ).'>
 	                            '.esc_html($title_one).'

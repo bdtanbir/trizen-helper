@@ -1594,6 +1594,12 @@ button {
     font-weight: 500;
 }
 
+#adminmenu .menu-icon-location .wp-menu-image:before,
+#adminmenu .menu-icon-hotel_room .wp-menu-image:before,
+#adminmenu .menu-icon-ts_hotel .wp-menu-image:before {
+    color: #ff76e1;
+}
+
 
 
 

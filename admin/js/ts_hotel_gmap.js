@@ -7,28 +7,29 @@ function in_array(el, arr) {
 jQuery(function ($) {
     "use strict";
 
+    if($("#ts_gmap").length) {
         var ts_gmap_input_zoom = $(this).find('#zoom_level');
-        var ts_gmap_input_lat  = $(this).find('#latitude');
-        var ts_gmap_input_lng  = $(this).find('#longitude');
+        var ts_gmap_input_lat = $(this).find('#latitude');
+        var ts_gmap_input_lng = $(this).find('#longitude');
         // var ts_gmap_searchbox  = $(this).find('#pac-input');
 
-        var current_marker,old_lat=37,old_lng=2,old_zoom=17;
+        var current_marker, old_lat = 37, old_lng = 2, old_zoom = 17;
 
-        if(ts_gmap_input_lat.val()){
+        if (ts_gmap_input_lat.val()) {
             old_lat = ts_gmap_input_lat.val();
             old_lat = parseFloat(old_lat);
         }
-        if(ts_gmap_input_lng.val()){
+        if (ts_gmap_input_lng.val()) {
             old_lng = ts_gmap_input_lng.val();
             old_lng = parseFloat(old_lng);
         }
-        if(ts_gmap_input_zoom.val()){
+        if (ts_gmap_input_zoom.val()) {
             old_zoom = ts_gmap_input_zoom.val();
             old_zoom = parseFloat(old_zoom);
         }
 
         var map = new google.maps.Map(document.getElementById("ts_gmap"), {
-            center: { lat: old_lat, lng: old_lng },
+            center: {lat: old_lat, lng: old_lng},
             zoom: old_zoom,
             mapTypeId: "roadmap",
             scrollwheel: true,
@@ -101,10 +102,10 @@ jQuery(function ($) {
             map.fitBounds(bounds);
         });
 
-        current_marker=new google.maps.Marker({
-            position:new google.maps.LatLng(old_lat,old_lng),
+        current_marker = new google.maps.Marker({
+            position: new google.maps.LatLng(old_lat, old_lng),
             zoom: old_zoom,
-            center: [old_lat,old_lng],
+            center: [old_lat, old_lng],
             map: map
         });
         map.addListener('click', (mapsMouseEnter) => {
@@ -116,6 +117,7 @@ jQuery(function ($) {
         map.addListener("zoom_changed", (event) => {
             ts_gmap_input_zoom.val(map.getZoom());
         });
+    }
 
 });
 

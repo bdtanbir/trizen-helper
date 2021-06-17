@@ -116,8 +116,8 @@
     $('.form-check-availability-hotel', body).submit(function (ev) {
         ev.preventDefault();
         var form = $(this),
-            parent = form.parent(),
-            message = $('.message-wrapper', form);
+            parent    = form.parent(),
+            message   = $('.message-wrapper', form);
         var has_fixed = form.closest('.fixed-on-mobile');
         if (has_fixed.hasClass('open')) {
             has_fixed.removeClass('open').hide();
@@ -127,7 +127,7 @@
             name: 'security',
             value: ts_params._s
         });
-        message.html('failed post');
+        message.html('');
         // loader.show();
         // $('.ts-list-rooms .loader-wrapper').show();
         $.post(ts_params.ajax_url, data, function (respon) {
@@ -135,8 +135,7 @@
                 if (respon.message) {
                     message.html(respon.message);
                 }
-                console.log('I am Log: '+respon)
-                // $('.ts-list-rooms .fetch').html(respon.html);
+                $('.ts-list-rooms .fetch').html(respon.html);
                 $('html, body').animate({
                     scrollTop: $('.ts-list-rooms', body).offset().top - 150
                 }, 500);
@@ -146,8 +145,6 @@
             // loader.hide();
         }, 'json');
     });
-
-
 
 
     var top_ajax_search = $('.ts-top-ajax-search');

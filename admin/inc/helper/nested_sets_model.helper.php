@@ -40,6 +40,15 @@ class Nested_set {
         $this->text_column_name        = $text_column_name;
     }
 
+    /**
+     * Returns the number of descendents that a node has
+     * @param array $node The node to query
+     * @return integer The number of descendents
+     */
+    public function getNumberOfChildren($node) {
+        return (($node[$this->right_column_name] - $node[$this->left_column_name] - 1) / 2);
+    }
+
     public function getNodeLevel($node) {
         $leftcol	=	   $this->left_column_name;
         $rightcol   =	   $this->right_column_name;
