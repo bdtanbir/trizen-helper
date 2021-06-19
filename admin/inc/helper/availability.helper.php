@@ -9,7 +9,7 @@ if ( !class_exists( 'AvailabilityHelper' ) ) {
             }
 
             // Update Status
-            add_action('st_booking_change_status',array(__CLASS__,'_st_booking_change_status'),10,3);
+            add_action('ts_booking_change_status',array(__CLASS__,'_ts_booking_change_status'),10,3);
 
             add_action('woocommerce_order_status_changed',array(__CLASS__,'_woocommerce_order_status_changed'),10,3);
         }

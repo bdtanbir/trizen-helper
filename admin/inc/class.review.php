@@ -16,37 +16,32 @@ if ( !class_exists( 'TSReview' ) ) {
         }
 
 
-        static function get_review_stats( $post_id = false )
-        {
+        static function get_review_stars( $post_id = false ) {
             if ( !$post_id ) $post_id = get_the_ID();
             $post_type = get_post_type( $post_id );
             $key       = '';
             switch ( $post_type ) {
                 case "ts_hotel":
-                    $key = 'hotel_review_stats';
-                    break;
-                case "hotel_room":
-                    $key = 'hotel_room_review_stats';
+                    $key = 'hotel_review_stars';
                     break;
                 case "ts_rental":
-                    $key = 'rental_review_stats';
+                    $key = 'rental_review_stars';
                     break;
                 case "ts_cars":
-                    $key = 'car_review_stats';
+                    $key = 'car_review_stars';
                     break;
                 case "ts_tours":
-                    $key = 'tour_review_stats';
+                    $key = 'tour_review_stars';
                     break;
                 case "ts_activity":
-                    $key = 'activity_review_stats';
+                    $key = 'activity_review_stars';
                     break;
             }
-            $list_star = trizen_get_option($key);
+            $list_star = get_option($key);
             return $list_star;
         }
 
-        static function get_avg_rate( $post_id = false )
-        {
+        static function get_avg_rate( $post_id = false ) {
             if ( !$post_id ) {
                 $post_id = get_the_ID();
             }
@@ -75,8 +70,10 @@ if ( !class_exists( 'TSReview' ) ) {
                 $string = esc_html__('Average', 'trizen-helper');
             } elseif ($review > 1) {
                 $string = esc_html__('Poor', 'trizen-helper');
-            } else {
+            } elseif ($review == 1) {
                 $string = esc_html__('Terrible', 'trizen-helper');
+            } else {
+                $string = esc_html__('Not Rated', 'trizen-helper');
             }
             if ($count !== null) {
                 if ($count <= 0) {
@@ -87,17 +84,16 @@ if ( !class_exists( 'TSReview' ) ) {
         }
 
 
-        static function get_review_summary( $post_id = false )
-        {
+        static function get_review_summary( $post_id = false ) {
             if ( !$post_id ) $post_id = get_the_ID();
-            $stats = self::get_review_stats( $post_id );
+            $stats = self::get_review_stars( $post_id );
             $results = [];
             if ( !empty( $stats ) ) {
                 global $wpdb;
                 foreach ( $stats as $stat ) {
-                    $name = strtolower( $stat[ 'title' ] );
-                    if ( isset( $stat[ 'name' ] ) && !empty( $stat[ 'name' ] ) ) {
-                        $name = $stat[ 'name' ];
+                    $name = strtolower( $stat );
+                    if ( isset( $stat ) && !empty( $stat ) ) {
+                        $name = $stat;
                         $name = trim( $name );
                     }
                     $name = sanitize_title($name);
@@ -107,14 +103,14 @@ if ( !class_exists( 'TSReview' ) ) {
                                 {$wpdb->prefix}commentmeta AS mt
                             INNER JOIN {$wpdb->prefix}comments AS cm ON (
                                 cm.comment_ID = mt.comment_id
-                                AND mt.meta_key = 'ts_stat_{$name}'
+                                AND mt.meta_key = 'ts_star_{$name}'
                             )
                             WHERE
                                 1 = 1
                             AND cm.comment_post_ID = {$post_id}";
                     $count     = $wpdb->get_var( $sql );
                     $results[] = [
-                        'name'    => $stat[ 'title' ],
+                        'name'    => $stat,
                         'summary' => round($count, 1),
                         'percent' => $count / 5 * 100
                     ];

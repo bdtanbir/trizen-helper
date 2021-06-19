@@ -1,10 +1,10 @@
 
 
 #trizen-hotel-badge-meta input,
-.trizen-hotel-infos-content .form-settings textarea,
-.trizen-hotel-infos-content .form-settings select,
-.trizen-hotel-infos-content .form-settings input[type="text"],
-.trizen-hotel-infos-content .form-settings input[type="range"],
+.form-settings textarea,
+.form-settings select,
+.form-settings input[type="text"],
+.form-settings input[type="range"],
 .trizen-rpwt-fields select,
 .trizen-rpwt-fields input {
     height: auto;
@@ -135,15 +135,15 @@
     border: 1px solid #d6d6d6;
     width: 87%;
 }
-.trizen-hotel-infos-content .form-settings {
+.form-settings {
     padding: 20px 20px 25px 20px;
     border-bottom: 2px solid #f2f2f2;
 }
-.trizen-hotel-infos-content .form-settings:last-child {
+.form-settings:last-child {
     border-bottom: none;
 }
-.trizen-hotel-infos-content .form-settings .title,
-.trizen-hotel-infos-content .form-settings label {
+.form-settings .title,
+.form-settings label {
     display: inline-block;
     font-size: 20px;
     font-weight: 500;
@@ -156,13 +156,13 @@
 .trizen-hotel-infos-content .calendar-wrapper .form-settings .field-group {
     margin-bottom: 15px;
 }
-.trizen-hotel-infos-content .form-settings .description {
+.form-settings .description {
     display: block;
     margin-bottom: 6px;
 }
-.trizen-hotel-infos-content .form-settings select,
-.trizen-hotel-infos-content .form-settings input[type="text"],
-.trizen-hotel-infos-content .form-settings input[type="range"] {
+.form-settings select,
+.form-settings input[type="text"],
+.form-settings input[type="range"] {
     border-color: #d4d4d4;
     padding-top: 10px;
     padding-bottom: 10px;
@@ -172,7 +172,7 @@
 .trizen-hotel-infos-content .calendar-wrapper .form-settings .field-group select {
     width: auto;
 }
-.trizen-hotel-infos-content .form-settings .trizen-btn {
+.form-settings .trizen-btn {
     font-size: 15px;
     color: #fff;
     padding: 4px 18px;
@@ -1589,7 +1589,7 @@ button {
     content: 'ON';
     color: #fff;
     left: 6px;
-    top: 4px;
+    top: 3px;
     font-size: 11px;
     font-weight: 500;
 }
@@ -1599,7 +1599,6 @@ button {
 #adminmenu .menu-icon-ts_hotel .wp-menu-image:before {
     color: #ff76e1;
 }
-
 
 
 

@@ -27,14 +27,14 @@
         <div class="col-xs-12 col-md-4 col-md-push-8">
             <div class="form-group review-items has-matchHeight">
                 <?php
-                $stats = TSReview::get_review_stats( get_the_ID() );
+                $stats = TSReview::get_review_stars( get_the_ID() );
                 if ( !empty( $stats ) ) {
                     foreach ( $stats as $stat ) {
                         ?>
                         <div class="item">
-                            <label><?php echo esc_html($stat[ 'title' ]); ?></label>
-                            <input class="ts_review_stats" type="hidden"
-                                   name="ts_review_stats[<?php echo trim( $stat[ 'title' ] ); ?>]">
+                            <label><?php echo esc_html($stat); ?></label>
+                            <input class="ts_review_stars" type="hidden"
+                                   name="ts_review_stars[<?php echo trim( $stat ); ?>]">
                             <div class="rates">
                                 <?php
                                 for ( $i = 1; $i <= 5; $i++ ) {

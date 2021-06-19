@@ -67,10 +67,10 @@ if ( !class_exists( 'TSHotel' ) ) {
             add_filter( 'ts_hotel_wp_review_form_args', [ $this, 'comment_args' ], 10, 2 );
 
             //Save Hotel Review Stats
-            add_action( 'comment_post', [ $this, 'save_review_stats' ] );
+            add_action( 'comment_post', [ $this, 'save_review_stars' ] );
 
             //Reduce total stats of posts after comment_delete
-            add_action( 'delete_comment', [ $this, 'save_post_review_stats' ] );
+            add_action( 'delete_comment', [ $this, 'save_post_review_stars' ] );
 
             //Filter change layout of hotel detail if choose in metabox
             add_filter( 'ts_hotel_detail_layout', [ $this, 'custom_hotel_layout' ] );
@@ -1084,25 +1084,25 @@ if ( !class_exists( 'TSHotel' ) ) {
             return $old_layout_id;
         }
 
-        function save_review_stats( $comment_id ) {
+        function save_review_stars( $comment_id ) {
             $comemntObj = get_comment( $comment_id );
             $post_id    = $comemntObj->comment_post_ID;
 
             if ( get_post_type( $post_id ) == 'ts_hotel' ) {
-                $all_stats       = $this->get_review_stats();
-                $ts_review_stats = post( 'ts_review_stats' );
+                $all_stars       = $this->get_review_stars();
+                $ts_review_stars = post( 'ts_review_stars' );
 
-                if ( !empty( $all_stats ) && is_array( $all_stats ) ) {
+                if ( !empty( $all_stars ) && is_array( $all_stars ) ) {
                     $total_point = 0;
-                    foreach ( $all_stats as $key => $value ) {
-                        if ( isset( $ts_review_stats[ $value[ 'title' ] ] ) ) {
-                            $total_point += $ts_review_stats[ $value[ 'title' ] ];
+                    foreach ( $all_stars as $key => $value ) {
+                        if ( isset( $ts_review_stars[ $value ] ) ) {
+                            $total_point += $ts_review_stars[ $value ];
                             //Now Update the Each Stat Value
-                            update_comment_meta( $comment_id, 'ts_stat_' . sanitize_title( $value[ 'title' ] ), $ts_review_stats[ $value[ 'title' ] ] );
+                            update_comment_meta( $comment_id, 'ts_star_' . sanitize_title( $value ), $ts_review_stars[ $value ] );
                         }
                     }
 
-                    $avg = round( $total_point / count( $all_stats ), 1 );
+                    $avg = round( $total_point / count( $all_stars ), 1 );
 
                     //Update comment rate with avg point
                     $rate = wp_filter_nohtml_kses( $avg );
@@ -1112,7 +1112,7 @@ if ( !class_exists( 'TSHotel' ) ) {
                     }
                     update_comment_meta( $comment_id, 'comment_rate', $rate );
                     //Now Update the Stats Value
-                    update_comment_meta( $comment_id, 'ts_review_stats', $ts_review_stats );
+                    update_comment_meta( $comment_id, 'ts_review_stars', $ts_review_stars );
                 }
             }
 
@@ -1120,12 +1120,12 @@ if ( !class_exists( 'TSHotel' ) ) {
                 update_comment_meta( $comment_id, 'comment_rate', post( 'comment_rate' ) );
 
             }
-            //review_stats
+            //review_stars
             $avg = TSReview::get_avg_rate( $post_id );
             update_post_meta( $post_id, 'rate_review', $avg );
         }
 
-        function save_post_review_stats( $comment_id ) {
+        function save_post_review_stars( $comment_id ) {
             $comemntObj = get_comment( $comment_id );
             $post_id    = $comemntObj->comment_post_ID;
             $avg = TSReview::get_avg_rate( $post_id );
@@ -1133,40 +1133,36 @@ if ( !class_exists( 'TSHotel' ) ) {
         }
 
 
-        function get_review_stats() {
-            /*$review_stat = st()->get_option( 'hotel_review_stats' );
-
-            return $review_stat;*/
+        function get_review_stars() {
+            $review_star = get_option( 'hotel_review_stars' );
+            return $review_star;
         }
 
-        function get_review_stats_metabox() {
-            /*$review_stat = st()->get_option( 'hotel_review_stats' );
-
+        function get_review_stars_metabox() {
+            $review_star = get_option( 'hotel_review_stars' );
             $result = [];
-
-            if ( !empty( $review_stat ) ) {
-                foreach ( $review_stat as $key => $value ) {
+            if ( !empty( $review_star ) ) {
+                foreach ( $review_star as $key => $value ) {
                     $result[] = [
-                        'label' => $value[ 'title' ],
-                        'value' => sanitize_title( $value[ 'title' ] )
+                        'label' => $value,
+                        'value' => sanitize_title( $value )
                     ];
                 }
 
             }
-
-            return $result;*/
+            return $result;
         }
 
         function comment_args( $comment_form, $post_id = false ) {
             if ( !$post_id ) $post_id = get_the_ID();
             if ( get_post_type( $post_id ) == 'ts_hotel' ) {
-                $stats = $this->get_review_stats();
+                $stats = $this->get_review_stars();
 
                 if ( $stats and is_array( $stats ) ) {
                     $stat_html = '<ul class="list booking-item-raiting-summary-list stats-list-select">';
 
                     foreach ( $stats as $key => $value ) {
-                        $stat_html .= '<li class=""><div class="booking-item-raiting-list-title">' . esc_html($value[ 'title' ]) . '</div>
+                        $stat_html .= '<li class=""><div class="booking-item-raiting-list-title">' . esc_html($value) . '</div>
                                 <ul class="icon-group booking-item-rating-stars">
                                 <li class=""><i class="fa fa-smile-o"></i>
                                 </li>
@@ -1179,7 +1175,7 @@ if ( !class_exists( 'TSHotel' ) ) {
                                 <li><i class="fa fa-smile-o"></i>
                                 </li>
                             </ul>
-                            <input type="hidden" class="ts_review_stats" value="0" name="ts_review_stats[' . esc_attr($value[ 'title' ]) . ']">
+                            <input type="hidden" class="ts_review_stars" value="0" name="ts_review_stars[' . esc_attr($value) . ']">
                                 </li>';
                     }
                     $stat_html .= '</ul>';

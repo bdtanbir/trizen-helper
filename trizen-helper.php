@@ -17,6 +17,7 @@ define( 'TRIZEN_HELPER_PATH', plugin_dir_path( __FILE__ ) );
 define( 'TRIZEN_HELPER_VERSION', '1.0' );
 
 
+require_once TRIZEN_HELPER_PATH.'admin/inc/setting/trizen-option-setting.php';
 add_action('plugins_loaded', 'trizen_helper_load');
 function trizen_helper_load() {
 	require_once TRIZEN_HELPER_PATH.'widgets/trizen-social-profile.php';
@@ -88,6 +89,16 @@ function trizen_helper_admin_script()
 		'',
 		TRIZEN_HELPER_VERSION
 	);
+	wp_enqueue_style(
+		'trizen-setting-panel-admin-css',
+		TRIZEN_HELPER_URI.('admin/css/trizen-admin-setting-panel.css'),
+		'',
+		TRIZEN_HELPER_VERSION
+	);
+    wp_enqueue_style(
+        'sweetalert2-min-css',
+        TRIZEN_HELPER_URI.( 'admin/css/sweetalert2.min.css' )
+    );
 	wp_enqueue_style(
 		'trizen-admin-global-css',
 		TRIZEN_HELPER_URI.('admin/css/trizen-admin.css'),
@@ -197,6 +208,35 @@ function trizen_helper_admin_script()
 		TRIZEN_HELPER_VERSION,
 		true
 	);
+	wp_register_script(
+		'trizen-setting-panel-js',
+		TRIZEN_HELPER_URI . ('admin/js/trizen-setting-panel-tab.js'),
+		'',
+		TRIZEN_HELPER_VERSION,
+		true
+	);
+
+    wp_enqueue_script(
+        'trizen-admin-setting-panel-js',
+        TRIZEN_HELPER_URI.( 'admin/js/trizen-admin-setting-panel.js' ),
+        array('jquery'),
+        TRIZEN_HELPER_VERSION,
+        true
+    );
+    wp_enqueue_script(
+        'sweetalert2-core-js',
+        TRIZEN_HELPER_URI.( 'admin/js/core.js' ),
+        array('jquery'),
+        '1.0',
+        true
+    );
+    wp_enqueue_script(
+        'sweetalert2-min-js',
+        TRIZEN_HELPER_URI.( 'admin/js/sweetalert2.min.js' ),
+        array('jquery', 'sweetalert2-core-js'),
+        '1.0',
+        true
+    );
 
 	$locale = get_locale();
 	$locale_fullcalendar = $locale;

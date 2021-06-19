@@ -1,0 +1,259 @@
+
+
+
+/* Trizen Setting Panel */
+#toplevel_page_ts_trizen_option .wp-menu-image img {
+    padding: 4px 0 0 0;
+    width: 25px;
+    opacity: 0.8 !important;
+}
+#toplevel_page_ts_trizen_option > a[aria-current="page"] .wp-menu-image img {
+    opacity: 1 !important;
+}
+#trizen_settings_app {
+    padding-right: 20px;
+    padding-top: 20px;
+}
+#trizen_settings_app .trizen-setting-header {
+    background: #fff;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+#trizen_settings_app .trizen-setting-header .left {
+    display: flex;
+    align-items: center;
+}
+#trizen_settings_app .trizen-setting-header .left h1 {
+    font-weight: 700;
+    margin-left: 10px;
+    font-size: 24px;
+}
+#trizen_settings_app .trizen-setting-header .submit {
+    margin: 0;
+    padding: 0;
+}
+#trizen_settings_app .trizen-setting-header .submit input,
+.trizen-setting-save {
+    background: #287df9;
+    color: #ffffff;
+    border: none;
+    padding: 10px 20px 12px 20px;
+    border-radius: 4px;
+    font-weight: 400;
+    font-size: 14px;
+    box-shadow: 3px 3px 0 #d8edff;
+    transition: .3s;
+    -webkit-transition: .3s;
+    -ms-transition: .3s;
+    -moz-transition: .3s;
+    display: flex;
+    align-items: center;
+    line-height: 20px;
+}
+#trizen_settings_app .trizen-setting-header .submit input:hover,
+.trizen-setting-save:hover {
+    background: #1563a2;
+}
+.trizen-setting-save svg {
+    margin-right: 3px;
+}
+.trizen-setting-tabs {
+    display: flex;
+    align-items: flex-start;
+    width: 100%;
+    margin-top: 20px;
+}
+.trizen-setting-tabs .trizen-setting-tabs-nav {
+    width: 200px;
+    margin: 0 20px 0 0;
+}
+.trizen-setting-tabs .trizen-setting-tabs-nav li {
+    margin-bottom: 10px;
+}
+.trizen-setting-tabs .trizen-setting-tabs-nav li:last-child {
+    margin-bottom: 0;
+}
+.trizen-setting-tabs .trizen-setting-tabs-nav li a {
+    background: #ffffff;
+    display: block;
+    text-decoration: none;
+    padding: 0 14px;
+    border-radius: 4px;
+    color: #1c2540;
+    border: 1px solid #ddd;
+    font-size: 14px;
+    position: relative;
+    height: 46px;
+    line-height: 43px;
+}
+.trizen-setting-tabs .trizen-setting-tabs-nav li a.active {
+    background: #287df9;
+    border-color: #287df9;
+    color: #ffffff;
+}
+.trizen-setting-tabs .trizen-setting-tabs-nav li a:before {
+    content: '';
+    width: 16px;
+    height: 16px;
+    background: #287df9;
+    position: absolute;
+    right: -7px;
+    top: 50%;
+    margin-top: -8px;
+    transform: rotate(45deg);
+    transition: .3s;
+    opacity: 0;
+    visibility: hidden;
+}
+.trizen-setting-tabs .trizen-setting-tabs-nav li a.active:before {
+    opacity: 1;
+    visibility: visible;
+}
+.trizen-setting-tabs .trizen-setting-tabs-nav li a:focus {
+    outline: none;
+    box-shadow: none;
+}
+.trizen-setting-tabs .trizen-setting-tabs-nav li a i {
+    font-size: 10px;
+    transition: none;
+    vertical-align: middle;
+}
+.trizen-setting-tabs .trizen-setting-tabs-nav li a i:before {
+    font-size: 19px;
+}
+.trizen-setting-tabs .trizen-setting-tabs-content {
+    flex: 1;
+    background: #ffffff;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+}
+.trizen-setting-tab .form-settings .description {
+    margin: 7px 0 0 0;
+}
+
+
+/* Repeater */
+.form-settings input:focus,
+.form-settings select:focus,
+.form-settings textarea:focus {
+    box-shadow: none !important;
+    outline: none !important;
+    border-color: #287df9 !important;
+}
+#hotel_review_star_group p .title {
+    margin: 0;
+    max-width: 400px;
+    width: 100%;
+    font-size: 18px;
+    font-weight: 400;
+    line-height: 18px;
+}
+#hotel_review_star_group p .title input {
+    margin-top: 5px;
+    height: 41px;
+}
+.hotel-review-wrap #add_hotel_review_star,
+#hotel_review_star_group p #remove_hotel_review_star {
+    vertical-align: bottom;
+    text-decoration: none;
+    background: red;
+    color: #fff;
+    padding: 10px 20px;
+    display: inline-block;
+    border-radius: 4px;
+    transition: .3s;
+    -webkit-transition: .3s;
+    -ms-transition: .3s;
+    -moz-transition: .3s;
+}
+#hotel_review_star_group p #remove_hotel_review_star:hover {
+    background: #dc0606;
+}
+#hotel_review_star_group p {
+    margin-bottom: 15px;
+    margin-top: 0;
+}
+
+.hotel-review-wrap #add_hotel_review_star {
+    background: #10d010;
+}
+.hotel-review-wrap #add_hotel_review_star:hover {
+    background: #0da50d;
+}
+
+
+
+.trizen-setting-tabs-content input[type="checkbox"] {
+    display: inline-block;
+    width: 60px;
+    background: #eee;
+    border-radius: 30px;
+    height: 27px;
+    cursor: pointer;
+    position: relative;
+    transition: .3s;
+    -webkit-transition: .3s;
+    -moz-transition: .3s;
+    -ms-transition: .3s;
+    border: none;
+}
+.trizen-setting-tabs-content input[type="checkbox"]:before {
+    content: '';
+    width: 19px;
+    height: 19px;
+    background: #fff;
+    position: absolute;
+    left: 5px;
+    border-radius: 50%;
+    top: 4px;
+    transition: .3s;
+    -webkit-transition: .3s;
+    -moz-transition: .3s;
+    -ms-transition: .3s;
+    z-index: 9;
+}
+.trizen-setting-tabs-content input[type="checkbox"]:after {
+    content: 'OFF';
+    position: absolute;
+    font-size: 13px;
+    font-weight: 500;
+    top: 13px;
+    right: 7px;
+    transition: .3s;
+    -webkit-transition: .3s;
+    -moz-transition: .3s;
+    -ms-transition: .3s;
+}
+.trizen-setting-tabs-content input[type="checkbox"]:checked:before {
+    top: 7px;
+    left: 40px;
+}
+.trizen-setting-tabs-content input[type="checkbox"]:checked:after {
+    content: 'ON';
+    right: 33px;
+    color: #fff;
+}
+.trizen-setting-tabs-content input[type="checkbox"]:checked {
+    background: #287df9;
+}
+.trizen-setting-tabs-content .trizen-setting-tabs-content-control {
+    border-bottom: 1px solid #ddd;
+}
+.trizen-setting-tabs-content .trizen-setting-tabs-content-control:last-child {
+    border: none;
+}
+.trizen-setting-tabs-content .trizen-setting-tabs-content-control th,
+.trizen-setting-tabs-content .trizen-setting-tabs-content-control td {
+    padding-bottom: 24px;
+}
+.trizen-setting-tabs-content .trizen-setting-tabs-content-control:last-child th,
+.trizen-setting-tabs-content .trizen-setting-tabs-content-control:last-child td {
+    padding-bottom: 0;
+}
+
+
+

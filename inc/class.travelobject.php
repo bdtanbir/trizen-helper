@@ -27,9 +27,9 @@ class TravelerObject {
         }
         //Add Stats display for posted review
         add_action('admin_init', [$this, 'do_init_metabox']);
-        add_action('ts_review_stats_' . $this->post_type . '_content', [
+        add_action('ts_review_stars_' . $this->post_type . '_content', [
             $this,
-            'display_posted_review_stats'
+            'display_posted_review_stars'
         ]);
 
         /**
@@ -480,18 +480,18 @@ sin( radians( mt1.meta_value ) ) ) ) AS distance
     }
 
 
-    function get_review_stats() {
+    function get_review_stars() {
         return [];
     }
 
-    function display_posted_review_stats($comment_id) {
+    function display_posted_review_stars($comment_id) {
         if (get_post_type() == $this->post_type) {
-            $data     = $this->get_review_stats();
+            $data     = $this->get_review_stars();
             $output[] = '<ul class="list booking-item-raiting-summary-list mt20">';
             if (!empty($data) and is_array($data)) {
                 foreach ($data as $value) {
-                    $key        = $value['title'];
-                    $stat_value = get_comment_meta($comment_id, 'ts_stat_' . sanitize_title($value['title']), true);
+                    $key        = $value;
+                    $stat_value = get_comment_meta($comment_id, 'ts_star_' . sanitize_title($value), true);
                     $output[]   = '
                     <li>
                         <div class="booking-item-raiting-list-title">' . $key . '</div>
@@ -952,7 +952,7 @@ sin( radians( mt1.meta_value ) ) ) ) AS distance
                                 (
                                     {$wpdb->posts}.post_status = 'publish'
                                 )
-                            ) as st_{$post_type}_price
+                            ) as ts_{$post_type}_price
 
                         ";
                         $results = $wpdb->get_results($sql, OBJECT);
