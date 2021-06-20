@@ -47,7 +47,7 @@ $price_by_per_person = get_post_meta( $room_id, 'price_by_per_person', true );
                         <div class="item_booking_detail">
                             <strong><?php esc_html_e("Booking Status",'trizen-helper') ?>:  </strong>
                             <?php
-                            $data_status =  STUser_f::_get_all_order_statuses();
+                            $data_status =  TSUser_f::_get_all_order_statuses();
                             $status = $order_data['status'];
                             $status_string = $data_status[$status];
                             if( isset( $order_data['cancel_refund_status'] ) && $order_data['cancel_refund_status'] == 'pending'){

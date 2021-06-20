@@ -1,8 +1,7 @@
 <?php
 if ( !class_exists( 'TSReview' ) ) {
-    class TSReview
-    {
-        protected static $reviewStatsData = [];
+    class TSReview {
+        protected static $reviewStarsData = [];
         protected static $reviewData = [];
         protected static $rateData = [];
         protected static $countComments = [];
@@ -11,10 +10,41 @@ if ( !class_exists( 'TSReview' ) ) {
         }
 
         function init() {
+            add_action( 'comment_post', [ $this, 'save_comment_meta_data' ] );
+
             add_action( 'wp_ajax_like_review', [ $this, 'like_review'] );
             add_action( 'wp_ajax_nopriv_like_review', [ $this, 'like_review'] );
         }
 
+        function save_comment_meta_data( $comment_id ) {
+            $array = get_comment( $comment_id, ARRAY_A );
+            if ( ( isset( $_POST[ 'comment_title' ] ) ) && ( $_POST[ 'comment_title' ] != '' ) ) {
+                $title = wp_filter_nohtml_kses( $_POST[ 'comment_title' ] );
+                add_comment_meta( $comment_id, 'comment_title', $title );
+            }
+            if ( ( isset( $_POST[ 'comment_rate' ] ) ) && ( $_POST[ 'comment_rate' ] != '' ) ) {
+                $rate = wp_filter_nohtml_kses( $_POST[ 'comment_rate' ] );
+                if ( $rate > 5 ) {
+                    //Max rate is 5
+                    $rate = 5;
+                }
+                add_comment_meta( $comment_id, ' q', $rate );
+            }
+            $all_postype       = TravelHelper::booking_post_type();
+            $current_post_type = get_post_type( get_comment( $comment_id )->comment_post_ID );
+            global $wpdb;
+            $array['comment_type']       = 'ts_reviews';
+            $array['comment_approved']   = 1;
+            $array[ 'comment_approved' ] = 0;
+            if ( is_super_admin() ) {
+                $array[ 'comment_approved' ] = 1;
+            }
+            wp_update_comment($array);
+            $comemntObj = get_comment( $comment_id );
+            $post_id    = $comemntObj->comment_post_ID;
+            $avg        = TSReview::get_avg_rate( $post_id );
+            update_post_meta( $post_id, 'rate_review', $avg );
+        }
 
         static function get_review_stars( $post_id = false ) {
             if ( !$post_id ) $post_id = get_the_ID();
@@ -24,20 +54,8 @@ if ( !class_exists( 'TSReview' ) ) {
                 case "ts_hotel":
                     $key = 'hotel_review_stars';
                     break;
-                case "ts_rental":
-                    $key = 'rental_review_stars';
-                    break;
-                case "ts_cars":
-                    $key = 'car_review_stars';
-                    break;
-                case "ts_tours":
-                    $key = 'tour_review_stars';
-                    break;
-                case "ts_activity":
-                    $key = 'activity_review_stars';
-                    break;
             }
-            $list_star = get_option($key);
+            $list_star = get_option( $key );
             return $list_star;
         }
 
@@ -58,6 +76,63 @@ if ( !class_exists( 'TSReview' ) ) {
                 return $rate;
             }
             return 0;
+        }
+
+        static function count_review_by_rate( $post_id = false, $rate = '' ){
+            if ( !$post_id ) {
+                $post_id = get_the_ID();
+            }
+            if ( array_key_exists( $post_id . '_' . $rate, self::$reviewData ) ) return self::$reviewData[ $post_id . '_' . $rate ];
+            if ( $post_id ) {
+                global $wpdb;
+                $query = "SELECT count({$wpdb->comments}.comment_ID) as total from {$wpdb->comments} join {$wpdb->commentmeta} on {$wpdb->comments}.comment_ID={$wpdb->commentmeta}.comment_ID where 1=1";
+                $query .= " and `comment_type`='ts_reviews'";
+                $query .= " and comment_post_ID='" . sanitize_title_for_query( $post_id ) . "'";
+                $query .= " and meta_value>='" . sanitize_title_for_query( $rate ) . "'";
+                $query .= " and meta_value<'" . sanitize_title_for_query( $rate + 1 ) . "'";
+                $query .= " and `comment_approved`=1 ";
+                $query .= "  and meta_key='comment_rate' ";
+                $count = $wpdb->get_var( $query );
+                self::$reviewData[ $post_id ] = $count;
+                return $count;
+            }
+        }
+
+        /**
+         * @since  1.0.0
+         * @update count all guest comment  and user comment
+         */
+        static function count_all_comment( $post_id = false ) {
+            if ( !$post_id ) $post_id = get_the_ID();
+            if ( array_key_exists( $post_id, self::$countComments ) ) return self::$countComments[ $post_id ];
+            global $wpdb;
+            $query = "SELECT count({$wpdb->comments}.comment_ID) as total from {$wpdb->comments}  where 1=1";
+            $query .= " and `comment_type`='ts_reviews'";
+            $query .= " and comment_post_ID='" . sanitize_title_for_query( $post_id ) . "'";
+            $query .= " and comment_approved=1";
+            $count                           = $wpdb->get_var( $query );
+            self::$countComments[ $post_id ] = $count;
+            return $count;
+        }
+
+        static function get_avg_star( $post_id = false, $star = false ) {
+            if ( !$post_id ) {
+                $post_id = get_the_ID();
+            }
+            $key = $post_id . '_' . $star;
+            if ( array_key_exists( $key, self::$reviewStarsData ) ) return self::$reviewStarsData[ $key ];
+            if ( $post_id and $star ) {
+                $star = sanitize_title( $star );
+                global $wpdb;
+                $query = "SELECT avg({$wpdb->commentmeta}.meta_value) as avg_rate from {$wpdb->comments} join {$wpdb->commentmeta} on {$wpdb->comments}.comment_ID={$wpdb->commentmeta}.comment_ID where 1=1";
+                $query .= " and `comment_type`='ts_reviews'";
+                $query .= " and comment_post_ID='" . sanitize_title_for_query( $post_id ) . "'";
+                $query .= " and `comment_approved`=1 ";
+                $query .= " and meta_key='ts_star_$star' ";
+                $count = $wpdb->get_var( $query );
+                self::$reviewStarsData[ $key ] = $count;
+                return $count;
+            }
         }
 
         static function get_rate_review_text($review, $count = null) {
@@ -86,16 +161,16 @@ if ( !class_exists( 'TSReview' ) ) {
 
         static function get_review_summary( $post_id = false ) {
             if ( !$post_id ) $post_id = get_the_ID();
-            $stats = self::get_review_stars( $post_id );
+            $stars = self::get_review_stars( $post_id );
             $results = [];
-            if ( !empty( $stats ) ) {
+            if ( !empty( $stars ) ) {
                 global $wpdb;
-                foreach ( $stats as $stat ) {
-                    $name = strtolower( $stat );
-                    if ( isset( $stat ) && !empty( $stat ) ) {
-                        $name = $stat;
+                foreach ( $stars as $star ) {
+                    $name = strtolower( $star );
+                    /*if ( isset( $star ) && !empty( $star ) ) {
+                        $name = $star;
                         $name = trim( $name );
-                    }
+                    }*/
                     $name = sanitize_title($name);
                     $sql  = "SELECT
                                 avg(mt.meta_value) AS total
@@ -110,7 +185,7 @@ if ( !class_exists( 'TSReview' ) ) {
                             AND cm.comment_post_ID = {$post_id}";
                     $count     = $wpdb->get_var( $sql );
                     $results[] = [
-                        'name'    => $stat,
+                        'name'    => $star,
                         'summary' => round($count, 1),
                         'percent' => $count / 5 * 100
                     ];
@@ -150,8 +225,6 @@ if ( !class_exists( 'TSReview' ) ) {
                 return false;
             }
         }
-
-
 
         function find_by( $comment_id = false, $key = 'comment_ID' ){
             if ( $comment_id and $key ) {

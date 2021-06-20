@@ -65,7 +65,19 @@ if ( !class_exists( 'TSUser_f' ) ) {
             die();
         }
 
-
+        static function _get_all_order_statuses() {
+            $order_statuses = [
+                'pending'    => __( 'Pending', 'trizen-helper' ),
+                'complete'   => __( 'Completed', 'trizen-helper' ),
+                'incomplete' => __( 'Incomplete', 'trizen-helper' ),
+                'canceled'   => __( 'Cancelled', 'trizen-helper' ),
+            ];
+            if ( function_exists( 'wc_get_order_statuses' ) ) {
+                $order_statuses_woo = wc_get_order_statuses();
+                $order_statuses     = array_merge( $order_statuses, $order_statuses_woo );
+            }
+            return apply_filters( 'ts_order_statuses', $order_statuses );
+        }
 
         static function get_icon_wishlist() {
             $current_user = wp_get_current_user();

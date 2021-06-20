@@ -62,7 +62,6 @@ require_once TRIZEN_HELPER_PATH.'admin/inc/helper/travel-helper.php';
 require_once TRIZEN_HELPER_PATH.'admin/inc/helper/hotel.helper.php';
 require_once TRIZEN_HELPER_PATH.'inc/class.hotel-helper.php';
 require_once TRIZEN_HELPER_PATH.'inc/class.hotel.php';
-//require_once TRIZEN_HELPER_PATH.'inc/class.travelobject.php';
 require_once TRIZEN_HELPER_PATH.'inc/helper/price.helper.php';
 require_once TRIZEN_HELPER_PATH.'inc/hotel-alone-helper.php';
 require_once TRIZEN_HELPER_PATH.'inc/class.single_hotel.php';

@@ -66,10 +66,10 @@ if ( !class_exists( 'TSHotel' ) ) {
             // Change hotel review arg
             add_filter( 'ts_hotel_wp_review_form_args', [ $this, 'comment_args' ], 10, 2 );
 
-            //Save Hotel Review Stats
+            //Save Hotel Review Stars
             add_action( 'comment_post', [ $this, 'save_review_stars' ] );
 
-            //Reduce total stats of posts after comment_delete
+            //Reduce total stars of posts after comment_delete
             add_action( 'delete_comment', [ $this, 'save_post_review_stars' ] );
 
             //Filter change layout of hotel detail if choose in metabox
@@ -105,6 +105,11 @@ if ( !class_exists( 'TSHotel' ) ) {
             //xsearch Load post hotel filter ajax location
             add_action('wp_ajax_ts_filter_hotel_ajax_location', [$this, 'ts_filter_hotel_ajax_location']);
             add_action('wp_ajax_nopriv_ts_filter_hotel_ajax_location', [$this, 'ts_filter_hotel_ajax_location']);
+
+            add_action('ts_review_stars_' . $this->post_type . '_content', [
+                $this,
+                'display_posted_review_stars'
+            ]);
         }
 
         function _top_ajax_search() {
@@ -887,6 +892,34 @@ if ( !class_exists( 'TSHotel' ) ) {
             }
         }
 
+        function display_posted_review_stars($comment_id) {
+            if (get_post_type() == $this->post_type) {
+                $data     = $this->get_review_stars();
+                $output[] = '<ul class="list booking-item-raiting-summary-list mt20">';
+                if (!empty($data) and is_array($data)) {
+                    foreach ($data as $value) {
+                        $key        = $value;
+                        $star_value = get_comment_meta($comment_id, 'ts_star_' . sanitize_title($value), true);
+                        $output[]   = '
+                    <li>
+                        <div class="booking-item-raiting-list-title">' . $key . '</div>
+                        <ul class="icon-group booking-item-rating-stars">';
+                        for ($i = 1; $i <= 5; $i++) {
+                            $class = '';
+                            if ($i > $star_value)
+                                $class = 'text-gray';
+                            $output[] = '<li><i class="la la-star ' . $class . '"></i>';
+                        }
+                        $output[] = '
+                        </ul>
+                    </li>';
+                    }
+                }
+                $output[] = '</ul>';
+                echo implode("\n", $output);
+            }
+        }
+
 
         /**
          * @since 1.0
@@ -1084,51 +1117,53 @@ if ( !class_exists( 'TSHotel' ) ) {
             return $old_layout_id;
         }
 
-        function save_review_stars( $comment_id ) {
-            $comemntObj = get_comment( $comment_id );
+        function save_review_stars($comment_id) {
+            $comemntObj = get_comment($comment_id);
             $post_id    = $comemntObj->comment_post_ID;
 
-            if ( get_post_type( $post_id ) == 'ts_hotel' ) {
-                $all_stars       = $this->get_review_stars();
-                $ts_review_stars = post( 'ts_review_stars' );
+            if (get_post_type($post_id) == 'ts_hotel') {
+                $all_stars = $this->get_review_stars();
+                $ts_review_stars = post('ts_review_stars');
 
-                if ( !empty( $all_stars ) && is_array( $all_stars ) ) {
+                if (!empty($all_stars) and is_array($all_stars)) {
                     $total_point = 0;
                     foreach ( $all_stars as $key => $value ) {
-                        if ( isset( $ts_review_stars[ $value ] ) ) {
-                            $total_point += $ts_review_stars[ $value ];
-                            //Now Update the Each Stat Value
-                            update_comment_meta( $comment_id, 'ts_star_' . sanitize_title( $value ), $ts_review_stars[ $value ] );
+                        if ( isset( $ts_review_stars[$value] ) ) {
+                            //Now Update the Each Star Value
+                            if( is_numeric( $ts_review_stars[$value] ) ) {
+                                $ts_review_stars[$value] = intval( $ts_review_stars[$value] );
+                            } else {
+                                $ts_review_stars[$value] = 5;
+                            }
+                            $total_point += $ts_review_stars[$value];
+                            update_comment_meta($comment_id, 'ts_star_' . sanitize_title($value), $ts_review_stars[$value]);
                         }
                     }
-
-                    $avg = round( $total_point / count( $all_stars ), 1 );
-
+                    $avg = round($total_point / count($all_stars), 1);
                     //Update comment rate with avg point
-                    $rate = wp_filter_nohtml_kses( $avg );
-                    if ( $rate > 5 ) {
+                    $rate = wp_filter_nohtml_kses($avg);
+                    if ($rate > 5) {
                         //Max rate is 5
                         $rate = 5;
                     }
-                    update_comment_meta( $comment_id, 'comment_rate', $rate );
-                    //Now Update the Stats Value
-                    update_comment_meta( $comment_id, 'ts_review_stars', $ts_review_stars );
+
+                    update_comment_meta($comment_id, 'comment_rate', $rate);
+                    //Now Update the Stars Value
+                    update_comment_meta($comment_id, 'ts_review_stars', $ts_review_stars);
                 }
             }
-
-            if ( post( 'comment_rate' ) ) {
-                update_comment_meta( $comment_id, 'comment_rate', post( 'comment_rate' ) );
-
+            if (post('comment_rate')) {
+                update_comment_meta($comment_id, 'comment_rate', post('comment_rate'));
             }
             //review_stars
-            $avg = TSReview::get_avg_rate( $post_id );
-            update_post_meta( $post_id, 'rate_review', $avg );
+            $avg = TSReview::get_avg_rate($post_id);
+            update_post_meta($post_id, 'rate_review', $avg);
         }
 
         function save_post_review_stars( $comment_id ) {
             $comemntObj = get_comment( $comment_id );
             $post_id    = $comemntObj->comment_post_ID;
-            $avg = TSReview::get_avg_rate( $post_id );
+            $avg        = TSReview::get_avg_rate( $post_id );
             update_post_meta( $post_id, 'rate_review', $avg );
         }
 
@@ -1140,7 +1175,7 @@ if ( !class_exists( 'TSHotel' ) ) {
 
         function get_review_stars_metabox() {
             $review_star = get_option( 'hotel_review_stars' );
-            $result = [];
+            $result      = [];
             if ( !empty( $review_star ) ) {
                 foreach ( $review_star as $key => $value ) {
                     $result[] = [
@@ -1148,7 +1183,6 @@ if ( !class_exists( 'TSHotel' ) ) {
                         'value' => sanitize_title( $value )
                     ];
                 }
-
             }
             return $result;
         }
@@ -1156,46 +1190,45 @@ if ( !class_exists( 'TSHotel' ) ) {
         function comment_args( $comment_form, $post_id = false ) {
             if ( !$post_id ) $post_id = get_the_ID();
             if ( get_post_type( $post_id ) == 'ts_hotel' ) {
-                $stats = $this->get_review_stars();
+                $stars = $this->get_review_stars();
 
-                if ( $stats and is_array( $stats ) ) {
-                    $stat_html = '<ul class="list booking-item-raiting-summary-list stats-list-select">';
+                if ( $stars and is_array( $stars ) ) {
+                    $star_html = '<ul class="list booking-item-raiting-summary-list stars-list-select">';
 
-                    foreach ( $stats as $key => $value ) {
-                        $stat_html .= '<li class=""><div class="booking-item-raiting-list-title">' . esc_html($value) . '</div>
+                    foreach ( $stars as $key => $value ) {
+                        $star_html .= '<li class=""><div class="booking-item-raiting-list-title">' . esc_html($value) . '</div>
                                 <ul class="icon-group booking-item-rating-stars">
-                                <li class=""><i class="fa fa-smile-o"></i>
+                                <li class=""><i class="la la-star"></i>
                                 </li>
-                                <li class=""><i class="fa fa-smile-o"></i>
+                                <li class=""><i class="la la-star"></i>
                                 </li>
-                                <li class=""><i class="fa fa-smile-o"></i>
+                                <li class=""><i class="la la-star"></i>
                                 </li>
-                                <li class=""><i class="fa fa-smile-o"></i>
+                                <li class=""><i class="la la-star"></i>
                                 </li>
-                                <li><i class="fa fa-smile-o"></i>
+                                <li><i class="la la-star"></i>
                                 </li>
                             </ul>
                             <input type="hidden" class="ts_review_stars" value="0" name="ts_review_stars[' . esc_attr($value) . ']">
                                 </li>';
                     }
-                    $stat_html .= '</ul>';
+                    $star_html .= '</ul>';
                     $comment_form[ 'comment_field' ] = "
                         <div class='row'>
-                            <div class=\"col-sm-8\">
-                    ";
+                            <div class=\"col-sm-8\"> ";
                     $comment_form[ 'comment_field' ] .= '<div class="form-group">
-                                            <label>' . __( 'Review Title', 'trizen-helper' ) . '</label>
+                                            <label>' . esc_html__( 'Review Title', 'trizen-helper' ) . '</label>
                                             <input class="form-control" type="text" name="comment_title">
                                         </div>';
 
                     $comment_form[ 'comment_field' ] .= '<div class="form-group">
-                                            <label>' . __( 'Review Text', 'trizen-helper' ) . '</label>
+                                            <label>' . esc_html__( 'Review Text', 'trizen-helper' ) . '</label>
                                             <textarea name="comment" id="comment" class="form-control" rows="6"></textarea>
                                         </div>
                                         </div><!--End col-sm-8-->
                                         ';
 
-                    $comment_form[ 'comment_field' ] .= '<div class="col-sm-4">' . $stat_html . '</div></div><!--End Row-->';
+                    $comment_form[ 'comment_field' ] .= '<div class="col-sm-4">' . $star_html . '</div></div><!--End Row-->';
                 }
             }
             return $comment_form;

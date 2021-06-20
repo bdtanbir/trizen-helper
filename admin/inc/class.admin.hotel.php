@@ -180,7 +180,7 @@ if ( !class_exists( 'TSAdminHotel' ) ) {
             if ( !TSAdminRoom::checkTableDuplicate( 'ts_hotel' ) ) return;
             if ( get_post_type( $id ) == 'ts_hotel' ) {
                 $num_rows       = TSAdminRoom::checkIssetPost( $id, 'ts_hotel' );
-                $location_str   = get_post_meta( $id, 'multi_location', true );
+                $location_str = maybe_unserialize(get_post_meta($id, 'multi_location', true));
                 $location_id    = ''; // location_id
                 $address        = get_post_meta( $id, 'address', true ); // address
                 $allow_full_day = get_post_meta( $id, 'allow_full_day', true ); // address
@@ -238,7 +238,6 @@ if ( !class_exists( 'TSAdminHotel' ) ) {
                 $rs    = TravelHelper::deleteDuplicateData( $post_id, $table );
                 if ( !$rs )
                     return false;
-
                 return true;
             }
         }
@@ -741,15 +740,14 @@ if ( !class_exists( 'TSAdminHotel' ) ) {
             }
         }
 
-        static function getRoomHotelInfo()
-        {
+        static function getRoomHotelInfo() {
             $room_id = intval( request( 'room_id', '' ) );
             $data    = [
-                'price'      => '',
-                'extras'     => 'None',
-                'adult_html' => '',
-                'child_html' => '',
-                'room_html'  => '',
+                'price'       => '',
+                'extras'      => 'None',
+                'adult_html'  => '',
+                'child_html'  => '',
+                'room_html'   => '',
                 'adult_price' => '',
                 'child_price' => '',
             ];
@@ -759,8 +757,8 @@ if ( !class_exists( 'TSAdminHotel' ) ) {
                 $html         = '';
                 $price        = floatval( get_post_meta( $room_id, 'price', true ) );
                 $adult_number = intval( get_post_meta( $room_id, 'adult_number', true ) );
-                $adult_price = floatval( get_post_meta( $room_id, 'adult_price', true ) );
-                $child_price = floatval( get_post_meta( $room_id, 'child_price', true ) );
+                $adult_price  = floatval( get_post_meta( $room_id, 'adult_price', true ) );
+                $child_price  = floatval( get_post_meta( $room_id, 'child_price', true ) );
                 if ( $adult_number <= 0 ) $adult_number = 1;
                 $adult_html = '<select name="adult_number" class="form-control" style="width: 100%">';
                 for ( $i = 1; $i <= $adult_number; $i++ ) {
@@ -810,20 +808,19 @@ if ( !class_exists( 'TSAdminHotel' ) ) {
                     endforeach;
                     $html .= '</table>';
                 endif;
-                $data[ 'price' ]      = $price;//format_money_from_db( $price, false );
+                $data[ 'price' ]      = TravelHelper::format_money_from_db( $price, false );
                 $data[ 'extras' ]     = $html;
                 $data[ 'adult_html' ] = $adult_html;
                 $data[ 'child_html' ] = $child_html;
                 $data[ 'room_html' ]  = $room_html;
-                $data[ 'adult_price' ]      = $adult_price; //TravelHelper::format_money_from_db( $adult_price, false );
-                $data[ 'child_price' ]      = $child_price; //TravelHelper::format_money_from_db( $child_price, false );
+                $data[ 'adult_price' ] = TravelHelper::format_money_from_db( $adult_price, false );
+                $data[ 'child_price' ] = TravelHelper::format_money_from_db( $child_price, false );
                 echo json_encode( $data );
             }
             die();
         }
 
-        static function getRoomHotel()
-        {
+        static function getRoomHotel() {
             $hotel_id = intval( request( 'hotel_id', '' ) );
             $room_id  = intval( request( 'room_id', '' ) );
             if ( $hotel_id <= 0 || get_post_type( $hotel_id ) != 'ts_hotel' ) {
@@ -831,7 +828,7 @@ if ( !class_exists( 'TSAdminHotel' ) ) {
                 die();
             } else {
                 $list_room = "<select name='room_id' id='room_id' class='form-control form-control-admin'>";
-                $list_room .= "<option value=''>" . __( '----Select a room----', 'trizen-helper' ) . "</option>";
+                $list_room .= "<option value=''>" . esc_html__( '----Select a room----', 'trizen-helper' ) . "</option>";
                 $query = [
                     'post_status'    => 'publish',
                     'post_type'      => 'hotel_room',
@@ -860,8 +857,8 @@ if ( !class_exists( 'TSAdminHotel' ) ) {
                 die();
             }
         }
-        public static function __cronjob_update_min_avg_price($offset, $limit = 2)
-        {
+
+        public static function __cronjob_update_min_avg_price($offset, $limit = 2) {
             global $wpdb;
             $list_hotel = new WP_Query(array(
                 'posts_per_page' => $limit,

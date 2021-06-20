@@ -270,8 +270,8 @@ function getGroupDay($start = '', $end = ''){
 }
 
 function getRoomPrice($room_id = '', $check_in = '', $check_out = '', $number_room = 1, $adult_number = '', $child_number = ''){
-    $number_room = !empty($number_room) ? $number_room : 1;
-	$room_id = intval($room_id);
+    $number_room   = !empty($number_room) ? $number_room : 1;
+	$room_id       = intval($room_id);
     $default_state = get_post_meta($room_id, 'default_state', true);
     if(!$default_state) $default_state = 'available';
     $total_price = 0;

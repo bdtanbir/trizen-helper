@@ -10,6 +10,8 @@ if ( !class_exists( 'TravelHelper' ) ) {
         protected static $listFullNameLocations = [];
         protected static $_cachedAlCurrency = [];
         private static $_booking_primary_currency;
+        static $booking_type = array();
+        static $_is_inited = false;
 
 
         static function init()
@@ -93,6 +95,13 @@ if ( !class_exists( 'TravelHelper' ) ) {
             return $results;
         }
 
+        static function booking_post_type() {
+            return self::$booking_type;
+        }
+
+        static function booking_type() {
+            return self::$booking_type;
+        }
 
         static function recursiveKeySort( &$by_ref_array ) {
             ksort( $by_ref_array );
@@ -809,8 +818,6 @@ if ( !class_exists( 'TravelHelper' ) ) {
         }
 
         static function format_money_from_db($money = '', $currency = false) {
-
-
             extract(wp_parse_args($currency, TravelHelper::get_current_currency()));
             if ($money == 0) {
                 return __("Free", 'trizen-helper');
@@ -1039,10 +1046,10 @@ if ( !class_exists( 'TravelHelper' ) ) {
             if (!isset($args['format']))
                 $args['format'] = current_theme_supports('html5', 'comment-form') ? 'html5' : 'xhtml';
 
-            $req = get_option('require_name_email');
+            $req      = get_option('require_name_email');
             $html_req = ($req ? " required='required'" : '');
-            $html5 = 'html5' === $args['format'];
-            $fields = [
+            $html5    = 'html5' === $args['format'];
+            $fields   = [
                 'author' => '<p class="comment-form-author">' . '<label for="author">' . __('Name', 'trizen-helper') . ($req ? ' <span class="required">*</span>' : '') . '</label> ' .
                     '<input id="author" name="author" type="text" value="' . esc_attr($commenter['comment_author']) . '" size="30" maxlength="245"' . $html_req . ' /></p>',
                 'email' => '<p class="comment-form-email"><label for="email">' . __('Email', 'trizen-helper') . ($req ? ' <span class="required">*</span>' : '') . '</label> ' .
@@ -1071,7 +1078,7 @@ if ( !class_exists( 'TravelHelper' ) ) {
              */
             $fields   = apply_filters('comment_form_default_fields', $fields);
             $defaults = [
-                'fields' => $fields,
+                'fields'        => $fields,
                 'comment_field' => '<p class="comment-form-comment"><label for="comment">' . _x('Comment', 'noun') . '</label> <textarea id="comment" name="comment" cols="45" rows="8" maxlength="65525" required="required"></textarea></p>',
                 /** This filter is documented in wp-includes/link-template.php */
                 'must_log_in' => '<p class="must-log-in">' . sprintf(
@@ -1086,23 +1093,23 @@ if ( !class_exists( 'TravelHelper' ) ) {
                     ) . '</p>',
                 'comment_notes_before' => '<p class="comment-notes"><span id="email-notes">' . __('Your email address will not be published.', 'trizen-helper') . '</span>' . ($req ? $required_text : '') . '</p>',
                 'comment_notes_after' => '',
-                'action' => site_url('/wp-comments-post.php'),
-                'id_form' => 'commentform',
-                'id_submit' => 'submit',
-                'class_form' => 'comment-form',
-                'class_submit' => 'submit',
-                'name_submit' => 'submit',
-                'title_reply' => '',
-                'title_reply_to' => __('Leave a Reply to %s', 'trizen-helper'),
-                'title_reply_before' => '<h3 id="reply-title" class="comment-reply-title">',
-                'title_reply_after' => '</h3>',
+                'action'              => site_url('/wp-comments-post.php'),
+                'id_form'             => 'commentform',
+                'id_submit'           => 'submit',
+                'class_form'          => 'comment-form',
+                'class_submit'        => 'submit',
+                'name_submit'         => 'submit',
+                'title_reply'         => '',
+                'title_reply_to'      => __('Leave a Reply to %s', 'trizen-helper'),
+                'title_reply_before'  => '<h3 id="reply-title" class="comment-reply-title">',
+                'title_reply_after'   => '</h3>',
                 'cancel_reply_before' => ' <small>',
-                'cancel_reply_after' => '</small>',
-                'cancel_reply_link' => __('Cancel reply', 'trizen-helper'),
-                'label_submit' => __('Post Comment'),
-                'submit_button' => '<input name="%1$s" type="submit" id="%2$s" class="%3$s" value="%4$s" />',
-                'submit_field' => '<p class="form-submit">%1$s %2$s</p>',
-                'format' => 'xhtml',
+                'cancel_reply_after'  => '</small>',
+                'cancel_reply_link'   => __('Cancel reply', 'trizen-helper'),
+                'label_submit'        => __('Post Comment'),
+                'submit_button'       => '<input name="%1$s" type="submit" id="%2$s" class="%3$s" value="%4$s" />',
+                'submit_field'        => '<p class="form-submit">%1$s %2$s</p>',
+                'format'              => 'xhtml',
             ];
 
             /**
@@ -1119,7 +1126,7 @@ if ( !class_exists( 'TravelHelper' ) ) {
             /**
              * Fires before the comment form.
              *
-             * @since 3.0.0
+             * @since 1.0.0
              */
             //do_action( 'comment_form_before' );
             ?>
@@ -1156,13 +1163,13 @@ if ( !class_exists( 'TravelHelper' ) ) {
                             require_once TRIZEN_HELPER_PATH . 'admin/inc/hotel/hotel_review_form.php';
                         }
                         ?>
-                        <div class="text-center">
+                        <div class="text-left review-comment-btn-wrap">
                             <input type="hidden" id="comment_post_ID" name="comment_post_ID"
                                    value="<?php echo esc_attr($post_id); ?>">
                             <input type="hidden" id="comment_parent" name="comment_parent" value="0">
                             <input id="submit" type="submit" name="submit"
-                                   class="btn btn-green upper font-medium"
-                                   value="<?php echo __('Leave a Review', 'trizen-helper') ?>">
+                                   class="btn btn-green upper font-medium review-comment-btn"
+                                   value="<?php esc_attr_e('Leave a Review', 'trizen-helper') ?>">
                         </div>
                         <?php
                         do_action('comment_form', $post_id);
@@ -1177,30 +1184,22 @@ if ( !class_exists( 'TravelHelper' ) ) {
 
         static function rate_to_string($star, $max = 5) {
             $html = '';
-
             if ($star > $max)
                 $star = $max;
-
             $moc1 = (int) $star;
-
             for ($i = 1; $i <= $moc1; $i++) {
                 $html .= '<li><i class="fa  fa-star"></i></li>';
             }
-
             $new = $max - $star;
-
             $du = round((float) $star - $moc1, 1);
-
             if ($du >= 0.2 and $du <= 0.9) {
                 $html .= '<li><i class="fa  fa-star-half-o"></i></li>';
             } elseif ($du) {
                 $html .= '<li><i class="fa  fa-star-o"></i></li>';
             }
-
             for ($i = 1; $i <= $new; $i++) {
                 $html .= '<li><i class="fa  fa-star-o"></i></li>';
             }
-
             return apply_filters('ts_rate_to_string', $html);
         }
 

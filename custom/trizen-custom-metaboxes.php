@@ -56,11 +56,11 @@ if(!function_exists('trizen_register_meta_boxes')) {
 
         // If the checkbox was not empty, save it as array in post meta
         if ( ! empty( $_POST['multi_location'] ) ) {
-            update_post_meta( $post_id, 'elements', $_POST['multi_location'] );
+            update_post_meta( $post_id, 'multi_location', $_POST['multi_location'] );
 
             // Otherwise just delete it if its blank value.
         } else {
-            delete_post_meta( $post_id, 'elements' );
+            delete_post_meta( $post_id, 'multi_location' );
         }
 
         // If the checkbox was not empty, save it as array in post meta

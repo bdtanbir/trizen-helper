@@ -1,37 +1,8 @@
 <?php
 
 class TS_Admin_Settings {
-
     public static $_inst;
     private static $_allSettings = [];
-
-    /**
-     * Contains Default Component keys
-     * @var array
-     * @since 1.0
-     */
-    public $trizen_setting_default_keys = [ 'hotel_review', 'ts_breadcrumb_text' ];
-
-    /**
-     * Will Contain All Components Default Values
-     * @var array
-     * @since 1.0
-     */
-    private $trizen_default_settings_panel;
-
-    /**
-     * Will Contain User End Settings Value
-     * @var array
-     * @since 1.0
-     */
-    private $trizen_settings_panel;
-
-    /**
-     * Will Contains Settings Values Fetched From DB
-     * @var array
-     * @since 1.0
-     */
-    private $trizen_get_settings_panel;
 
     public function __construct() {
         add_action('admin_menu', [$this, '__registerPage'], 9);
@@ -45,7 +16,7 @@ class TS_Admin_Settings {
             'Theme Settings',
             'Theme Settings ',
             'manage_options',
-            'ts_trizen_option',
+            'trizen_setting_panel_slug',
             [$this, '__showPage'],
             TRIZEN_HELPER_URI . '/admin/img/favicon.png',
             35 );
@@ -95,13 +66,15 @@ class TS_Admin_Settings {
             'trizen_settings_panel_main_section_id', // section ID
             '', // title (if needed)
             '', // callback function (if needed)
-            'ts_trizen_option' // page slug
+            'trizen_setting_panel_slug' // page slug
         );
+
+        /* Enable Hotel Review Switcher */
         add_settings_field(
             'hotel_review',
             'Enable Review',
             [$this, 'tsp_hotel_review_callback'], // function which prints the field
-            'ts_trizen_option', // page slug
+            'trizen_setting_panel_slug', // page slug
             'trizen_settings_panel_main_section_id', // section ID
             array(
                 'label_for' => 'hotel_review',
@@ -109,18 +82,18 @@ class TS_Admin_Settings {
             )
         );
 
-        /* Repeater Field Test */
+        /* Hotel Review Stars Repeater Field */
         $is_hotel_review = get_option( 'hotel_review' );
         if($is_hotel_review == 'on') {
             add_settings_field(
                 'hotel_review_stars',
                 'Review Criterias',
                 [$this, 'tsp_hotel_stars_callback'], // function which prints the field
-                'ts_trizen_option', // page slug
+                'trizen_setting_panel_slug', // page slug
                 'trizen_settings_panel_main_section_id', // section ID
                 array(
                     'label_for' => 'hotel_review_stars',
-                    'class' => 'trizen-setting-tabs-content-control', // for <tr> element
+                    'class'     => 'trizen-setting-tabs-content-control', // for <tr> element
                 )
             );
         }
@@ -179,6 +152,9 @@ class TS_Admin_Settings {
             <a href="#" id="add_hotel_review_star">
                 <?php esc_html_e('Add New Field', 'trizen-helper'); ?>
             </a>
+            <span class="description">
+                <?php esc_html_e('You can add, edit, delete and review criteria for hotel.', 'trizen-helper'); ?>
+            </span>
         </div>
 
 

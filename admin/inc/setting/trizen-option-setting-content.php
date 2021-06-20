@@ -32,7 +32,7 @@
             <div class="form-settings" id="hotel_review">
                 <?php
                     settings_fields( 'trizen_settings_panel_group_hotel_option' ); // settings group name
-                    do_settings_sections( 'ts_trizen_option' ); // just a page slug
+                    do_settings_sections( 'trizen_setting_panel_slug' ); // just a page slug
                 ?>
             </div>
 
