@@ -635,10 +635,10 @@ if ( !class_exists( 'TravelHelper' ) ) {
                             $node_childs = $ns->getNodesWhere( "left_key >= " . $leftval . " AND right_key <= " . $rightval );
                             if ( !empty( $node_childs ) ) {
                                 foreach ( $node_childs as $item ) {
-                                    $locations[] = (int)$item[ 'location_id' ];
+                                    $locations[] = (int) $item[ 'location_id' ];
                                 }
                             } else {
-                                $locations[] = (int)$node[ 'location_id' ];
+                                $locations[] = (int) $node[ 'location_id' ];
                             }
                         }
 
@@ -680,6 +680,17 @@ if ( !class_exists( 'TravelHelper' ) ) {
 
                 $where .= " AND {$wpdb->prefix}posts.ID IN (SELECT post_id FROM {$wpdb->prefix}ts_location_relationships WHERE " . $where_location . ")";
 
+            } else {
+                $post_type_in = "";
+                foreach ($post_type as $item) {
+                    $post_type_in .= "'" . $item . "',";
+                }
+                $post_type_in = substr($post_type_in, 0, -1);
+                $where_location = " AND location_from IN ('{$location_id}') ";
+                if (!empty($post_type_in)) {
+                    $where_location .= " AND post_type IN ({$post_type_in})";
+                }
+                $where .= " AND {$wpdb->prefix}posts.ID IN (SELECT post_id FROM {$wpdb->prefix}ts_location_relationships WHERE " . $where_location . ")";
             }
             return $where;
         }
@@ -1056,9 +1067,11 @@ if ( !class_exists( 'TravelHelper' ) ) {
 
         static function paging( $query = false, $wrapper = true ) {
             global $wp_query, $ts_search_query;
-            if ( $ts_search_query ) {
-                $query = $ts_search_query;
-            } else $query = $wp_query;
+            if (!$query) {
+                if ($ts_search_query) {
+                    $query = $ts_search_query;
+                } else $query = $wp_query;
+            }
 
             // Don't print empty markup if there's only one page.
             if ( $query->max_num_pages < 2 ) {

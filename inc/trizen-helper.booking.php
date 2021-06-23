@@ -475,7 +475,7 @@ function get_discount_rate($post_id = '', $check_in = ''){
     $is_sale_schedule = get_post_meta($post_id, 'is_sale_schedule', true);
     if($is_sale_schedule == false || empty($is_sale_schedule)) $is_sale_schedule = 'off';
     if($is_sale_schedule == 'on'){
-        if($post_type == 'st_tours'){
+        if($post_type == 'ts_tours'){
             if($tour_price_by != 'fixed_depart'){
                 $sale_from = intval(strtotime(get_post_meta($post_id, 'sale_price_from',true)));
                 $sale_to = intval(strtotime(get_post_meta($post_id, 'sale_price_to',true)));
@@ -489,7 +489,7 @@ function get_discount_rate($post_id = '', $check_in = ''){
             }
         }else{
             $sale_from = intval(strtotime(get_post_meta($post_id, 'sale_price_from',true)));
-            $sale_to = intval(strtotime(get_post_meta($post_id, 'sale_price_to',true)));
+            $sale_to   = intval(strtotime(get_post_meta($post_id, 'sale_price_to',true)));
             if($sale_from > 0 && $sale_to > 0 && $sale_from < $sale_to){
                 if($check_in >= $sale_from && $check_in <= $sale_to){
                     return $discount_rate ;
@@ -620,19 +620,19 @@ function do_add_to_cart() {
 
 		return false;
 	}*/
-	/*if ( $period < $booking_period ) {
+	if ( $period < $booking_period ) {
 		set_message( sprintf( _n( 'This hotel allow minimum booking is %d day', 'This hotel allow minimum booking is %d day(s)', $booking_period, 'trizen-helper' ), $booking_period ), 'danger' );
 		$pass_validate = false;
 
 		return false;
-	}*/
+	}
 
-	/*if ( $booking_min_day and $booking_min_day > dateDiff( $check_in, $check_out ) ) {
+	if ( $booking_min_day and $booking_min_day > dateDiff( $check_in, $check_out ) ) {
 		set_message( sprintf( _n( 'Please book at least %d day in total', 'Please book at least %d days in total', $booking_min_day,'trizen-helper' ), $booking_min_day ), 'danger' );
 		$pass_validate = false;
 
 		return false;
-	}*/
+	}
 
 	/**
 	 * Validate Guest Name

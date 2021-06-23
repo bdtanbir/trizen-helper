@@ -1,13 +1,13 @@
 <?php
 
-$room_price       = get_post_meta( get_the_ID(), 'price', true );
-$number_of_room   = get_post_meta( get_the_ID(), 'number_room', true );
-$number_of_adults = get_post_meta( get_the_ID(), 'adult_number', true );
+$room_price         = get_post_meta( get_the_ID(), 'price', true );
+$number_of_room     = get_post_meta( get_the_ID(), 'number_room', true );
+$number_of_adults   = get_post_meta( get_the_ID(), 'adult_number', true );
 $number_of_children = get_post_meta( get_the_ID(), 'children_number', true );
-$number_of_beds   = get_post_meta( get_the_ID(), 'bed_number', true );
-$room_footage     = get_post_meta( get_the_ID(), 'trizen_hotel_room_footage', true );
-$room_badge_title = get_post_meta( get_the_ID(), 'room_badge_title', true );
-$room_address     = get_post_meta( get_the_ID(), 'address', true );
+$number_of_beds     = get_post_meta( get_the_ID(), 'bed_number', true );
+$room_footage       = get_post_meta( get_the_ID(), 'trizen_hotel_room_footage', true );
+$room_badge_title   = get_post_meta( get_the_ID(), 'room_badge_title', true );
+$room_address       = get_post_meta( get_the_ID(), 'address', true );
 
 // Hotel Room Extra Services
 $trizen_hotel_room_extra_services_data = get_post_meta( get_the_ID(), 'trizen_hotel_extra_services_data_group', true );
@@ -17,7 +17,7 @@ $trizen_room_rules_data          = get_post_meta( get_the_ID(), 'trizen_room_rul
 $discount_rate                   = get_post_meta( get_the_ID(), 'discount_rate', true );
 $discount_type                   = get_post_meta( get_the_ID(), 'discount_type_no_day', true );
 $hotel_rooms_select              = get_post_meta( get_the_ID(), 'room_parent', true );
-$allow_full_day_booking          = get_post_meta(get_the_ID(), 'allow_full_day', true);
+$allow_full_day_booking          = get_post_meta( get_the_ID(), 'allow_full_day', true );
 
 $default = array(
 	'post_type'      => 'ts_hotel',

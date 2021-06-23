@@ -80,10 +80,19 @@ if(!function_exists('trizen_register_meta_boxes')) {
         $visible = (int)$visible;
         update_post_meta( $post_id,  'enable_is_auto_calculate', $visible );
 
+        $allowed_fullday = isset( $_POST['allow_full_day'] ) && $_POST['allow_full_day'] == 1;
+        $allowed_fullday = (int)$allowed_fullday;
+        update_post_meta( $post_id,  'allow_full_day', $allowed_fullday );
+
 		$fields = [
 			'address',
 			'trizen_hotel_video_url',
 			'price_avg',
+			'check_in_time',
+			'check_out_time',
+			'hotel_booking_period',
+			'min_book_room',
+			'hotel_star',
 			'trizen_hotel_sale_price',
 			'trizen_hotel_features_title',
 			'trizen_hotel_features_stitle',
@@ -103,21 +112,19 @@ if(!function_exists('trizen_register_meta_boxes')) {
 		}
 
 
-
-
 		/* Hotel Features */
 		$oldfield = get_post_meta($post_id, 'trizen_hotel_features_data_group', true);
 		if($_POST['trizen_hotel_features_title']) {
 			$newfield      = array();
 			$trizen_hotel_features_title  = $_POST['trizen_hotel_features_title'];
-			$trizen_hotel_features_stitle =   $_POST['trizen_hotel_features_stitle'];
-			$trizen_hotel_features_icon   =     $_POST['trizen_hotel_features_icon'];
+			$trizen_hotel_features_stitle = $_POST['trizen_hotel_features_stitle'];
+			$trizen_hotel_features_icon   = $_POST['trizen_hotel_features_icon'];
 			$count = count( $trizen_hotel_features_title );
 			for ( $i = 0; $i < $count; $i ++ ) {
 				if ( $trizen_hotel_features_title[ $i ] != '' ) :
 					$newfield[ $i ]['trizen_hotel_features_title']  = stripslashes( strip_tags( $trizen_hotel_features_title[ $i ] ) );
-					$newfield[ $i ]['trizen_hotel_features_stitle'] =   stripslashes( $trizen_hotel_features_stitle[ $i ] ); // and however you want to sanitize
-					$newfield[ $i ]['trizen_hotel_features_icon']   =     stripslashes( $trizen_hotel_features_icon[ $i ] ); // and however you want to sanitize
+					$newfield[ $i ]['trizen_hotel_features_stitle'] = stripslashes( $trizen_hotel_features_stitle[ $i ] ); // and however you want to sanitize
+					$newfield[ $i ]['trizen_hotel_features_icon']   = stripslashes( $trizen_hotel_features_icon[ $i ] ); // and however you want to sanitize
 				endif;
 			}
 		}

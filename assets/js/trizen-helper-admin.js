@@ -382,54 +382,118 @@ document.addEventListener('click', function (event) {
 
 
 /* Range */
-if (jQuery('.adult_number').length) {
-    const range = document.querySelector(".adult_number");
-    const bubble = document.querySelector(".range-bubble");
-    range.addEventListener("input", () => {
+    if(jQuery(".adult_number").length) {
+        const range = document.querySelector(".adult_number");
+        const bubble = document.querySelector(".range-bubble");
+        range.addEventListener("input", () => {
+            setBubble(range, bubble);
+        });
         setBubble(range, bubble);
-    });
-    setBubble(range, bubble);
-    function setBubble(range, bubble) {
-        const val = range.value;
-        const min = range.min ? range.min : 0;
-        const max = range.max ? range.max : 100;
-        const newVal = Number(((val - min) * 100) / (max - min));
-        bubble.innerHTML = val;
-        // Sorta magic numbers based on size of the native UI thumb
-        bubble.style.left = `calc(${newVal}% + (${8 - newVal * 0.15}px))`;
+
+        function setBubble(range, bubble) {
+            const val = range.value;
+            const min = range.min ? range.min : 0;
+            const max = range.max ? range.max : 100;
+            const newVal = Number(((val - min) * 100) / (max - min));
+            bubble.innerHTML = val;
+            // Sorta magic numbers based on size of the native UI thumb
+            bubble.style.left = `calc(${newVal}% + (${8 - newVal * 0.15}px))`;
+        }
     }
 
-    const range2 = document.querySelector(".bed_number");
-    const bubble2 = document.querySelector(".range2-bubble");
-    range2.addEventListener("input", () => {
+    if(jQuery(".bed_number").length) {
+        const range2 = document.querySelector(".bed_number");
+        const bubble2 = document.querySelector(".range2-bubble");
+        range2.addEventListener("input", () => {
+            setBubble(range2, bubble2);
+        });
         setBubble(range2, bubble2);
-    });
-    setBubble(range2, bubble2);
-    function setBubble(range, bubble) {
-        const val = range.value;
-        const min = range.min ? range.min : 0;
-        const max = range.max ? range.max : 100;
-        const newVal = Number(((val - min) * 100) / (max - min));
-        bubble.innerHTML = val;
-        // Sorta magic numbers based on size of the native UI thumb
-        bubble.style.left = `calc(${newVal}% + (${11 - newVal * 0.15}px))`;
+
+        function setBubble(range, bubble) {
+            const val = range.value;
+            const min = range.min ? range.min : 0;
+            const max = range.max ? range.max : 100;
+            const newVal = Number(((val - min) * 100) / (max - min));
+            bubble.innerHTML = val;
+            // Sorta magic numbers based on size of the native UI thumb
+            bubble.style.left = `calc(${newVal}% + (${11 - newVal * 0.15}px))`;
+        }
     }
 
-    const range3 = document.querySelector(".children_number");
-    const bubble3 = document.querySelector(".range3-bubble");
-    range3.addEventListener("input", () => {
+    if(jQuery(".children_number").length) {
+        const range3 = document.querySelector(".children_number");
+        const bubble3 = document.querySelector(".range3-bubble");
+        range3.addEventListener("input", () => {
+            setBubble(range3, bubble3);
+        });
         setBubble(range3, bubble3);
-    });
-    setBubble(range3, bubble3);
-    function setBubble(range, bubble) {
-        const val = range.value;
-        const min = range.min ? range.min : 0;
-        const max = range.max ? range.max : 100;
-        const newVal = Number(((val - min) * 100) / (max - min));
-        bubble.innerHTML = val;
-        // Sorta magic numbers based on size of the native UI thumb
-        bubble.style.left = `calc(${newVal}% + (${11 - newVal * 0.15}px))`;
+
+        function setBubble(range, bubble) {
+            const val = range.value;
+            const min = range.min ? range.min : 0;
+            const max = range.max ? range.max : 100;
+            const newVal = Number(((val - min) * 100) / (max - min));
+            bubble.innerHTML = val;
+            // Sorta magic numbers based on size of the native UI thumb
+            bubble.style.left = `calc(${newVal}% + (${11 - newVal * 0.15}px))`;
+        }
     }
-}
+
+    if(jQuery(".hotel_booking_period").length) {
+        const range4 = document.querySelector(".hotel_booking_period");
+        const bubble4 = document.querySelector(".range4-bubble");
+        range4.addEventListener("input", () => {
+            setBubble(range4, bubble4);
+        });
+        setBubble(range4, bubble4);
+
+        function setBubble(range, bubble) {
+            const val = range.value;
+            const min = range.min ? range.min : 0;
+            const max = range.max ? range.max : 100;
+            const newVal = Number(((val - min) * 100) / (max - min));
+            bubble.innerHTML = val;
+            // Sorta magic numbers based on size of the native UI thumb
+            bubble.style.left = `calc(${newVal}% + (${11 - newVal * 0.15}px))`;
+        }
+    }
+
+    if(jQuery(".min_book_room").length) {
+        const range5 = document.querySelector(".min_book_room");
+        const bubble5 = document.querySelector(".range5-bubble");
+        range5.addEventListener("input", () => {
+            setBubble(range5, bubble5);
+        });
+        setBubble(range5, bubble5);
+
+        function setBubble(range, bubble) {
+            const val = range.value;
+            const min = range.min ? range.min : 0;
+            const max = range.max ? range.max : 100;
+            const newVal = Number(((val - min) * 100) / (max - min));
+            bubble.innerHTML = val;
+            // Sorta magic numbers based on size of the native UI thumb
+            bubble.style.left = `calc(${newVal}% + (${11 - newVal * 0.15}px))`;
+        }
+    }
+
+    if(jQuery(".hotel_star").length) {
+        const range6 = document.querySelector(".hotel_star");
+        const bubble6 = document.querySelector(".range6-bubble");
+        range6.addEventListener("input", () => {
+            setBubble(range6, bubble6);
+        });
+        setBubble(range6, bubble6);
+
+        function setBubble(range, bubble) {
+            const val = range.value;
+            const min = range.min ? range.min : 0;
+            const max = range.max ? range.max : 5;
+            const newVal = Number(((val - min) * 99) / (max - min));
+            bubble.innerHTML = val;
+            // Sorta magic numbers based on size of the native UI thumb
+            bubble.style.left = `calc(${newVal}% + (${12 - newVal * 0.15}px))`;
+        }
+    }
 
 

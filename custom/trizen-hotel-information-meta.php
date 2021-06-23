@@ -2,6 +2,8 @@
 $hotel_address_title = get_post_meta( get_the_ID(), 'address', true );
 $hotel_video         = get_post_meta( get_the_ID(), 'trizen_hotel_video_url', true );
 $hotel_regular_price = get_post_meta( get_the_ID(), 'price_avg', true );
+$hotel_check_in_time = get_post_meta( get_the_ID(), 'check_in_time', true );
+$hotel_check_out_time = get_post_meta( get_the_ID(), 'check_out_time', true );
 $hotel_sale_price    = get_post_meta( get_the_ID(), 'trizen_hotel_sale_price', true );
 if(empty($hotel_video)) {
     $hotel_video_src = 'https://www.youtube.com/watch?v=5u1WISBbo5I';
@@ -23,6 +25,10 @@ $trizen_hotel_faqs_content = get_post_meta(get_the_ID(), 'trizen_hotel_faqs_cont
 $google_api_key            = get_post_meta(get_the_ID(), 'gmap_apikey', true);
 $enable_gmap               = get_post_meta(get_the_ID(), 'enable_google_map', true);
 $enable_auto_calculate     = get_post_meta(get_the_ID(), 'enable_is_auto_calculate', true);
+$hotel_booking_period_d    = get_post_meta(get_the_ID(), 'hotel_booking_period', true);
+$min_book_room_d           = get_post_meta(get_the_ID(), 'min_book_room', true);
+$hotel_star                = get_post_meta(get_the_ID(), 'hotel_star', true);
+$allow_full_day_booking    = get_post_meta(get_the_ID(), 'allow_full_day', true);
 
 if($enable_gmap == 1) {
     $gmap_show = '';
@@ -45,6 +51,12 @@ $query = new WP_Query($args)
             </li>
             <li class="tab-link nav-pill" href="tab-price">
                 <?php esc_html_e('Price', 'trizen-helper'); ?>
+            </li>
+            <li class="tab-link nav-pill" href="tab-check-in-out">
+                <?php esc_html_e('Check in/out Time', 'trizen-helper'); ?>
+            </li>
+            <li class="tab-link nav-pill" href="tab-other-options">
+                <?php esc_html_e('Other Options', 'trizen-helper'); ?>
             </li>
             <li class="tab-link nav-pill" href="tab-hotel-features">
                 <?php esc_html_e('Hotel Features', 'trizen-helper'); ?>
@@ -261,7 +273,6 @@ $query = new WP_Query($args)
                         <?php esc_html_e("Add Images", "trizen-helper"); ?>
                     </a>
                 </div>
-
                 <div class="form-settings" id="hotel_details_video_setting">
                     <label for="trizen_hotel_video_url" class="title">
 		                <?php esc_html_e('Hotel Video', 'trizen-helper'); ?>
@@ -276,6 +287,26 @@ $query = new WP_Query($args)
                             type="text"
                             value="<?php echo esc_attr($hotel_video_src); ?>"
                             placeholder="<?php esc_attr_e('Video URL', 'trizen-helper'); ?>" />
+                    </div>
+                </div>
+
+                <div class="form-settings" id="hotel_star_setting">
+                    <label for="hotel_star" class="title">
+                        <?php esc_html_e('Hotel rating standard', 'trizen-helper'); ?>
+                    </label>
+                    <span class="description">
+                        <?php esc_html_e('Hotel rating standard', 'trizen-helper'); ?>
+                    </span>
+                    <div class="form-input w-600">
+                        <input
+                                id="hotel_star"
+                                name="hotel_star"
+                                class="hotel_star"
+                                type="range"
+                                min="0"
+                                max="5"
+                                value="<?php if(!empty($hotel_star)) { echo esc_attr($hotel_star); } else { esc_attr_e('0','trizen-helper');} ?>" />
+                        <output class="range6-bubble"></output>
                     </div>
                 </div>
             </div>
@@ -302,7 +333,6 @@ $query = new WP_Query($args)
                         </div>
                     </div>
                 </div>
-
                 <div class="form-settings" id="hotel_price_setting">
                     <label for="price_avg" class="title">
 			            <?php esc_html_e('Regular price', 'trizen-helper'); ?>
@@ -319,23 +349,102 @@ $query = new WP_Query($args)
                             placeholder="<?php echo get_woocommerce_currency_symbol(); ?>" />
                     </div>
                 </div>
-
-                <!--<div class="form-settings" id="hotel_sale_price_setting">
-                    <label for="trizen_hotel_sale_price" class="title">
-			            <?php /*esc_html_e('Sale price', 'trizen-helper'); */?>
+            </div>
+            <div class="tab-content" id="tab-check-in-out">
+                <div class="form-settings" id="allow_full_day_setting">
+                    <label for="allow_full_day" class="title">
+                        <?php esc_html_e('Allowed full day booking','trizen-helper'); ?>
                     </label>
                     <span class="description">
-                        <?php /*esc_html_e('Enter sale price here', 'trizen-helper'); */?>
+                        <?php
+                        esc_html_e('You can book room with full day', 'trizen-helper');
+                        echo '<br/>';
+                        esc_html_e('Eg. Booking from 22 - 23 then all days are 23 are full, other people cannot book', 'trizen-helper');
+                        ?>
+                    </span>
+                    <?php
+                    $allowed_fullday_bk = ($allow_full_day_booking == 1) ? 'checked' : '';
+                    ?>
+                    <div class="form-input">
+                        <div class="nice-checkbox">
+                            <input
+                                    type="checkbox"
+                                    name="allow_full_day"
+                                    id="allow_full_day"
+                                    value="<?php esc_attr_e('1', 'trizen-helper'); ?>"
+                                <?php echo esc_attr($allowed_fullday_bk); ?>/>
+                            <span></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-settings" id="hotel_check_in_time_setting">
+                    <label for="check_in_time" class="title">
+                        <?php esc_html_e('Time for check in', 'trizen-helper'); ?>
+                    </label>
+                    <span class="description">
+                        <?php esc_html_e('Enter time for check in at hotel. ', 'trizen-helper'); ?>
                     </span>
                     <div class="form-input">
                         <input
-                            id="trizen_hotel_sale_price"
-                            name="trizen_hotel_sale_price"
-                            type="text"
-                            value="<?php /*echo esc_attr($hotel_sale_price); */?>"
-                            placeholder="<?php /*echo get_woocommerce_currency_symbol(); */?>" />
+                                id="check_in_time"
+                                name="check_in_time"
+                                type="text"
+                                value="<?php echo esc_attr($hotel_check_in_time); ?>" />
                     </div>
-                </div>-->
+                </div>
+                <div class="form-settings" id="hotel_check_out_time_setting">
+                    <label for="check_out_time" class="title">
+                        <?php esc_html_e('Time for check Out', 'trizen-helper'); ?>
+                    </label>
+                    <span class="description">
+                        <?php esc_html_e('Enter time for check out at hotel. ', 'trizen-helper'); ?>
+                    </span>
+                    <div class="form-input">
+                        <input
+                                id="check_out_time"
+                                name="check_out_time"
+                                type="text"
+                                value="<?php echo esc_attr($hotel_check_out_time); ?>" />
+                    </div>
+                </div>
+            </div>
+            <div class="tab-content" id="tab-other-options">
+
+                <div class="form-settings" id="hotel_booking_period_setting">
+                    <label for="hotel_booking_period" class="title">
+                        <?php esc_html_e('Book before number of day', 'trizen-helper'); ?>
+                    </label>
+                    <span class="description">
+                        <?php esc_html_e('Input number of day can book before from check in date.', 'trizen-helper'); ?>
+                    </span>
+                    <div class="form-input w-600">
+                        <input
+                                id="hotel_booking_period"
+                                name="hotel_booking_period"
+                                class="hotel_booking_period"
+                                type="range"
+                                value="<?php if(!empty($hotel_booking_period_d)) { echo esc_attr($hotel_booking_period_d); } else { esc_attr_e('0','trizen-helper');} ?>" />
+                        <output class="range4-bubble"></output>
+                    </div>
+                </div>
+                <div class="form-settings" id="min_book_room_setting">
+                    <label for="min_book_room" class="title">
+                        <?php esc_html_e('Minimum number of days to book before arrival', 'trizen-helper'); ?>
+                    </label>
+                    <span class="description">
+                        <?php esc_html_e('Booking time period before arrival.', 'trizen-helper'); ?>
+                    </span>
+                    <div class="form-input w-600">
+                        <input
+                                id="min_book_room"
+                                name="min_book_room"
+                                class="min_book_room"
+                                type="range"
+                                value="<?php if(!empty($min_book_room_d)) { echo esc_attr($min_book_room_d); } else { esc_attr_e('0','trizen-helper');} ?>" />
+                        <output class="range5-bubble"></output>
+                    </div>
+                </div>
+
             </div>
             <div class="tab-content" id="tab-hotel-features">
                 <div class="form-settings" id="hotel_features_setting">

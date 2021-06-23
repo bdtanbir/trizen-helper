@@ -88,8 +88,7 @@
     align-items: start;
 }
 .trizen-hotel-information-wrap .tabs {
-    /*width: 150px;*/
-    width: 11%;
+    width: 12%;
     flex: none;
     margin: 0 20px 0 0;
 }
@@ -426,6 +425,9 @@
 .form-settings .form-input {
     position: relative;
 }
+.form-settings .range6-bubble,
+.form-settings .range5-bubble,
+.form-settings .range4-bubble,
 .form-settings .range3-bubble,
 .form-settings .range2-bubble,
 .form-settings .range-bubble {
@@ -436,8 +438,11 @@
     border-radius: 4px;
     left: 50%;
     transform: translateX(-50%);
-    top: -40px;
+    top: 19px;
 }
+.form-settings .range6-bubble::after,
+.form-settings .range5-bubble::after,
+.form-settings .range4-bubble::after,
 .form-settings .range3-bubble::after,
 .form-settings .range2-bubble::after,
 .form-settings .range-bubble::after {
@@ -446,8 +451,8 @@
     width: 6px;
     height: 6px;
     background: #287dfa;
-    bottom: -3px;
-    left: 43%;
+    top: -3px;
+    left: 42%;
     transform: rotate(45deg);
 }
 .form-settings .form-input input[type="range"] {
@@ -484,10 +489,14 @@
 .w-600 {
     max-width: 600px;
 }
+#hotel_star_setting .form-input,
+#min_book_room_setting .form-input,
+#hotel_booking_period_setting .form-input,
 #room_number_of_children_setting .form-input,
 #room_number_of_adults_setting .form-input,
 #room_number_of_beds_setting .form-input {
-    margin-top: 20px;
+    margin-top: 15px;
+    margin-bottom: 40px;
 }
 .room_other_facility_setting .field-group input {
     width: 500px;

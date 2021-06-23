@@ -66,6 +66,8 @@ if ( !class_exists( 'TSAdminHotel' ) ) {
             add_action('wp_ajax_ajax_search_room', [$this, 'ajax_search_room']);
             add_action('wp_ajax_nopriv_ajax_search_room', [$this, 'ajax_search_room']);
 
+            add_action( 'admin_menu',  [$this, 'trizen_hotel_booking_add_menu_page'] );
+
             /**
              *   @since 1.0
              *   auto create & update table st_hotel
@@ -176,8 +178,7 @@ if ( !class_exists( 'TSAdminHotel' ) ) {
             $check_in       = convertDateFormat($post['start']);
             $check_out      = convertDateFormat($post['end']);
             $date_diff      = dateDiff($check_in, $check_out);
-//            $booking_period = intval(get_post_meta($hotel_id, 'hotel_booking_period', true));
-            $booking_period = 0;
+            $booking_period = intval(get_post_meta($hotel_id, 'hotel_booking_period', true));
             $period         = dateDiff($today, $check_in);
             if ($booking_period && $period < $booking_period) {
                 $result = [
@@ -245,6 +246,11 @@ if ( !class_exists( 'TSAdminHotel' ) ) {
                 $location_id    = ''; // location_id
                 $address        = get_post_meta( $id, 'address', true ); // address
                 $allow_full_day = get_post_meta( $id, 'allow_full_day', true ); // address
+                if( $allow_full_day == 1 ) {
+                    $allowd_fullday = 'on';
+                } else {
+                    $allowd_fullday = 'off';
+                }
 
                 $rate_review          = TSReview::get_avg_rate( $id ); // rate review
                 $hotel_star           = get_post_meta( $id, 'hotel_star', true ); // hotel star
@@ -259,7 +265,7 @@ if ( !class_exists( 'TSAdminHotel' ) ) {
                         'multi_location'       => $location_str,
                         'id_location'          => $location_id,
                         'address'              => $address,
-                        'allow_full_day'       => $allow_full_day,
+                        'allow_full_day'       => $allowd_fullday,
                         'rate_review'          => $rate_review,
                         'hotel_star'           => $hotel_star,
                         'price_avg'            => $price_avg,
@@ -278,7 +284,7 @@ if ( !class_exists( 'TSAdminHotel' ) ) {
                         'multi_location'       => $location_str,
                         'id_location'          => $location_id,
                         'address'              => $address,
-                        'allow_full_day'       => $allow_full_day,
+                        'allow_full_day'       => $allowd_fullday,
                         'rate_review'          => $rate_review,
                         'hotel_star'           => $hotel_star,
                         'price_avg'            => $price_avg,
@@ -603,7 +609,7 @@ if ( !class_exists( 'TSAdminHotel' ) ) {
                 }
             }
 
-            $list_date_2 = TSAdminRoom::_getDisableCustomDate( $room_origin, $month, $month2, $year, $year2 );
+            $list_date_2 = AvailabilityHelper::_getDisableCustomDate( $room_origin, $month, $month2, $year, $year2 );
 
             $date1  = strtotime( $year . '-' . $month . '-01' );
             $date2  = strtotime( $year2 . '-' . $month2 . '-01' );
@@ -754,40 +760,16 @@ if ( !class_exists( 'TSAdminHotel' ) ) {
             return FALSE;
         }
 
-        /*function add_menu_page()
-        {
+        function trizen_hotel_booking_add_menu_page() {
             //Add booking page
 
-            add_submenu_page( 'edit.php?post_type=st_hotel', __( 'Hotel Bookings', ST_TEXTDOMAIN ), __( 'Hotel Bookings', ST_TEXTDOMAIN ), 'manage_options', 'st_hotel_booking', [ $this, '__hotel_booking_page' ] );
+            add_submenu_page( 'edit.php?post_type=ts_hotel', __( 'Hotel Bookings', 'trizen-helper' ), __( 'Hotel Bookings', 'trizen-helper' ), 'manage_options', 'ts_hotel_booking', [$this, '__hotel_booking_page'] );
         }
-        function __hotel_booking_page()
-        {
 
-            $section = isset( $_GET[ 'section' ] ) ? $_GET[ 'section' ] : FALSE;
-
-            if ( $section ) {
-                switch ( $section ) {
-                    case "edit_order_item":
-                        $this->edit_order_item();
-                        break;
-                }
-            } else {
-
-                $action = isset( $_POST[ 'st_action' ] ) ? $_POST[ 'st_action' ] : FALSE;
-                switch ( $action ) {
-                    case "delete":
-                        $this->_delete_items();
-                        break;
-                }
-                echo balanceTags( $this->load_view( 'hotel/booking_index', FALSE ) );
-            }
+        function __hotel_booking_page() {
+            include_once TRIZEN_HELPER_PATH.'inc/admin/views/hotel/booking_index.php';
 
         }
-        function add_booking()
-        {
-
-            echo balanceTags( $this->load_view( 'hotel/booking_edit', FALSE, [ 'page_title' => __( 'Add new Hotel Booking', ST_TEXTDOMAIN ) ] ) );
-        }*/
 
         function edit_order_item(){
             /*$item_id = isset( $_GET[ 'order_item_id' ] ) ? $_GET[ 'order_item_id' ] : FALSE;

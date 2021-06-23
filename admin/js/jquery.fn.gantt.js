@@ -2246,7 +2246,7 @@
 
                     '<div class="bar" data-price-per-person="'+ price_by_per_person +'"><div class="fn-label">' + label + '<div class="price">'+ ts_params.text_adult + adult_price + '</div><div class="price">'+ ts_params.text_child + child_price + '</div>' + '</div></div>'
 
-                    : '<div class="bar"><div class="fn-label">' + label + '<div class="price">' + price + '</div>' + '</div></div>';
+                    : '<div class="bar"><div class="fn-label">' + label + '<div class="price">' +ts_params.currency_smbl + price + '</div>' + '</div></div>';
 
                 var bar       = $(str_bar)
 

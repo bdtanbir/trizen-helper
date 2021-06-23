@@ -36,7 +36,7 @@ if (!class_exists('TSAdmin')) {
 
             if (isset($_GET['ts_date_end']) and $_GET['ts_date_end']) {
                 if ($type == 'ts_cars') {
-                    $date = ( date('m/d/Y', strtotime($_GET['ts_date_end'])) );
+                    $date   = ( date('m/d/Y', strtotime($_GET['ts_date_end'])) );
                     $where .= " AND {$wpdb->prefix}ts_order_item_meta.check_in <= '{$date}'";
                 } else {
                     $date = strtotime(date('Y-m-d', strtotime($_GET['ts_date_start'])));
