@@ -54,6 +54,11 @@ class TS_Admin_Settings {
     public function trizen_register_setting_panel(){
         register_setting(
             'trizen_settings_panel_group_hotel_option', // settings group name
+            'disable_availability_check', // option name
+            '' // sanitization function
+        );
+        register_setting(
+            'trizen_settings_panel_group_hotel_option', // settings group name
             'hotel_review', // option name
             '' // sanitization function
         );
@@ -67,6 +72,19 @@ class TS_Admin_Settings {
             '', // title (if needed)
             '', // callback function (if needed)
             'trizen_setting_panel_slug' // page slug
+        );
+
+        /* Disabled Availability Check */
+        add_settings_field(
+            'disable_availability_check',
+            'Disable Availability Check',
+            [$this, 'tsp_disable_availability_check_callback'], // function which prints the field
+            'trizen_setting_panel_slug', // page slug
+            'trizen_settings_panel_main_section_id', // section ID
+            array(
+                'label_for' => 'disable_availability_check',
+                'class'     => 'trizen-setting-tabs-content-control', // for <tr> element
+            )
         );
 
         /* Enable Hotel Review Switcher */
@@ -98,6 +116,21 @@ class TS_Admin_Settings {
             );
         }
 
+    }
+
+    public function tsp_disable_availability_check_callback(){
+        $is_disable_avl_check = get_option( 'disable_availability_check' );
+        if($is_disable_avl_check == 'on') {
+            $checked = 'checked';
+        } else {
+            $checked = '';
+        }
+        echo '<input type="checkbox" id="disable_availability_check" name="disable_availability_check" '.$checked.' />';
+        ?>
+        <span class="description">
+            <?php echo __('<strong>OFF: </strong>Dont Check availability in search results.', 'trizen-helper'); ?>
+        </span>
+        <?php
     }
 
     public function tsp_hotel_review_callback(){

@@ -52,7 +52,7 @@ class trizen_hrbf_widget extends WP_Widget {
         if ( $room_num_search <= 0 ) $room_num_search = 1;
 
 
-        $sale_price  = getRoomPrice( $room_id, strtotime( $start ), strtotime( $end ), $room_num_search, $adult_number, $child_number );
+        $sale_price  = TSPrice::getRoomPrice( $room_id, strtotime( $start ), strtotime( $end ), $room_num_search, $adult_number, $child_number );
             $numberday = dateDiff( $start, $end );
         ?>
         <form id="form-booking-inpage single-room-form" class="form single-room-form hotel-room-booking-form" method="post">

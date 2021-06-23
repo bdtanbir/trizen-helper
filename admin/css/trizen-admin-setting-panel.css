@@ -254,6 +254,13 @@
 .trizen-setting-tabs-content .trizen-setting-tabs-content-control:last-child td {
     padding-bottom: 0;
 }
+.form-settings .trizen-setting-tabs-content-control label,
+.trizen-setting-tabs-content-control label {
+    font-size: 16px;
+}
+.trizen-setting-tab table {
+    margin-top: 0;
+}
 
 
 

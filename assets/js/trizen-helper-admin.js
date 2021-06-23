@@ -382,8 +382,8 @@ document.addEventListener('click', function (event) {
 
 
 /* Range */
-if (jQuery('.trizen_room_facility_num_of_adults').length) {
-    const range = document.querySelector(".trizen_room_facility_num_of_adults");
+if (jQuery('.adult_number').length) {
+    const range = document.querySelector(".adult_number");
     const bubble = document.querySelector(".range-bubble");
     range.addEventListener("input", () => {
         setBubble(range, bubble);
@@ -399,12 +399,28 @@ if (jQuery('.trizen_room_facility_num_of_adults').length) {
         bubble.style.left = `calc(${newVal}% + (${8 - newVal * 0.15}px))`;
     }
 
-    const range2 = document.querySelector(".trizen_room_facility_num_of_beds");
+    const range2 = document.querySelector(".bed_number");
     const bubble2 = document.querySelector(".range2-bubble");
     range2.addEventListener("input", () => {
         setBubble(range2, bubble2);
     });
     setBubble(range2, bubble2);
+    function setBubble(range, bubble) {
+        const val = range.value;
+        const min = range.min ? range.min : 0;
+        const max = range.max ? range.max : 100;
+        const newVal = Number(((val - min) * 100) / (max - min));
+        bubble.innerHTML = val;
+        // Sorta magic numbers based on size of the native UI thumb
+        bubble.style.left = `calc(${newVal}% + (${11 - newVal * 0.15}px))`;
+    }
+
+    const range3 = document.querySelector(".children_number");
+    const bubble3 = document.querySelector(".range3-bubble");
+    range3.addEventListener("input", () => {
+        setBubble(range3, bubble3);
+    });
+    setBubble(range3, bubble3);
     function setBubble(range, bubble) {
         const val = range.value;
         const min = range.min ? range.min : 0;

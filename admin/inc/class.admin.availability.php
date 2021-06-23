@@ -174,7 +174,7 @@ if ( !class_exists( 'TSAvailability' ) ) {
         }
 
         public function _action_check_upgrade_availability(){
-            $this->st_upgrade_availability = 1;
+            $this->ts_upgrade_availability = 1;
             $this->allow_version           = true;
             $this->_check_table_availability();
             $this->_check_upgrade_availability();
@@ -286,7 +286,7 @@ if ( !class_exists( 'TSAvailability' ) ) {
 
         public function _check_upgrade_availability() {
             $complete = get_option( 'ts_upgrade_availability' );
-            if ( !$complete || $complete == 0 || $this->st_upgrade_availability == 1 || $this->allow_version ) {
+            if ( !$complete || $complete == 0 || $this->ts_upgrade_availability == 1 || $this->allow_version ) {
                 $this->_upgradeData();
             }
         }
@@ -643,7 +643,7 @@ if ( !class_exists( 'TSAvailability' ) ) {
 
             switch ($post_type){
                 case 'hotel_room':
-                    TSAdminRoom::__cronjob_update_min_avg_price($offset, $limit);
+                    TSAdminHotel::__cronjob_update_min_avg_price($offset, $limit);
                     break;
                 case 'ts_rental':
 

@@ -39,7 +39,6 @@ function trizen_helper_load() {
     require_once TRIZEN_HELPER_PATH.'core/database/tables/hotel_room_availability.php';
     require_once TRIZEN_HELPER_PATH.'core/database/tables/order_item.php';
     require_once TRIZEN_HELPER_PATH.'admin/inc/class.user.php';
-    require_once TRIZEN_HELPER_PATH.'admin/inc/class.admin.room.php';
 }
 require_once TRIZEN_HELPER_PATH.'custom/trizen-availability-model.php';
 require_once TRIZEN_HELPER_PATH.'inc/trizen-hook-function.php';
@@ -54,6 +53,8 @@ require_once TRIZEN_HELPER_PATH.'admin/inc/helper/availability.helper.php';
 require_once TRIZEN_HELPER_PATH.'admin/inc/class.admin.neworder.data.php';
 require_once TRIZEN_HELPER_PATH.'admin/inc/class.woocommerce.php';
 require_once TRIZEN_HELPER_PATH.'core/database/tables/posts.php';
+require_once TRIZEN_HELPER_PATH.'admin/inc/order.php';
+require_once TRIZEN_HELPER_PATH.'admin/inc/class.admin.room-2.php';
 require_once TRIZEN_HELPER_PATH.'admin/inc/class.admin.hotel.php';
 require_once TRIZEN_HELPER_PATH.'admin/inc/class.admin.upgrade.data.php';
 require_once TRIZEN_HELPER_PATH.'admin/inc/class.admin.duplicate.data.php';
@@ -114,62 +115,6 @@ function trizen_helper_admin_script()
 		TRIZEN_HELPER_VERSION,
 		true
 	);
-	wp_enqueue_script(
-		'lib-moment.js',
-		TRIZEN_HELPER_URI.('admin/js/moment.min.js'),
-		array('jquery'),
-		null,
-		true
-	);
-    wp_enqueue_script(
-        'lib-fullcalendar-js',
-        TRIZEN_HELPER_URI . ('admin/js/fullcalendar.min.js'),
-        array('jquery','lib-moment.js'),
-        null,
-        true
-    );
-    wp_enqueue_script(
-        'st-qtip',
-        TRIZEN_HELPER_URI . ('admin/js/jquery.qtip.js'),
-        array('jquery'),
-        null,
-        true
-    );
-	wp_enqueue_script(
-		'lib-gantt.js',
-		TRIZEN_HELPER_URI.('admin/js/jquery.fn.gantt.js'),
-		array('jquery', 'lib-moment.js'),
-		null,
-		true
-	);
-	/*wp_enqueue_script(
-		'lib-locales-all-js',
-		TRIZEN_HELPER_URI . ('admin/js/locales-all.js'),
-		array('jquery', 'lib-fullcalendar-js'),
-		null,
-		true
-	);*/
-	wp_enqueue_script(
-		'bulk-calendar',
-		TRIZEN_HELPER_URI . ('admin/js/bulk-calendar.js'),
-		array('jquery'),
-		null,
-		true
-	);
-    /*wp_enqueue_script(
-        'traveler-js',
-        TRIZEN_HELPER_URI . ('admin/js/traveler.js'),
-        null,
-        TRIZEN_HELPER_VERSION,
-        true
-    );*/
-    /*wp_enqueue_script(
-        'lib-gmap3-js',
-        TRIZEN_HELPER_URI . ('admin/js/gmap3.min.js'),
-        ['jquery'],
-        false,
-        true
-    );*/
     wp_enqueue_script(
         'trizen-hotel-gmap-js',
         TRIZEN_HELPER_URI . ('admin/js/ts_hotel_gmap.js'),
@@ -186,17 +131,78 @@ function trizen_helper_admin_script()
             true
         );
     }
+	/*wp_enqueue_script(
+		'lib-locales-all-js',
+		TRIZEN_HELPER_URI . ('admin/js/locales-all.js'),
+		array('jquery', 'fullcalendar'),
+		null,
+		true
+	);*/
+    /*wp_enqueue_script(
+        'lib-gmap3-js',
+        TRIZEN_HELPER_URI . ('admin/js/gmap3.min.js'),
+        ['jquery'],
+        false,
+        true
+    );*/
+    /*wp_enqueue_script(
+        'traveler-js',
+        TRIZEN_HELPER_URI . ('admin/js/traveler.js'),
+        ['jquery'],
+        null,
+        true
+    );*/
+
+
+    wp_enqueue_script(
+        'lib-moment.js',
+        TRIZEN_HELPER_URI.('admin/js/moment.min.js'),
+        array('jquery'),
+        null,
+        true
+    );
+    wp_enqueue_script(
+        'fullcalendar',
+        TRIZEN_HELPER_URI . ('admin/js/fullcalendar.js'),
+        array('jquery','lib-moment.js'),
+        '1.0',
+        true
+    );
+    /*wp_enqueue_script(
+        'ts-qtip',
+        TRIZEN_HELPER_URI . ('admin/js/jquery.qtip.js'),
+        array('jquery'),
+        null,
+        true
+    );*/
+    wp_enqueue_script(
+        'lib-jquery-gantt.js',
+        TRIZEN_HELPER_URI.('admin/js/jquery.fn.gantt.js'),
+        array('jquery', 'lib-moment.js'),
+        null,
+        true
+    );
+    wp_enqueue_script(
+        'bulk-calendar',
+        TRIZEN_HELPER_URI . ('admin/js/bulk-calendar.js'),
+        array('jquery'),
+        TRIZEN_HELPER_VERSION,
+        true
+    );
+
 	wp_register_script(
 		'trizen-hotel-inventory',
 		TRIZEN_HELPER_URI . ('admin/js/trizen-hotel-inventory.js'),
 		array('jquery'),
-		null,
+		TRIZEN_HELPER_VERSION,
 		true
 	);
+
+
 	wp_enqueue_script(
 		'trizen-hotel-calendar-js',
 		TRIZEN_HELPER_URI . ('admin/js/trizen-hotel-calendar.js'),
-		null,
+		['jquery'],
         TRIZEN_HELPER_VERSION,
 		true
 	);
@@ -222,7 +228,7 @@ function trizen_helper_admin_script()
         TRIZEN_HELPER_VERSION,
         true
     );
-    wp_enqueue_script(
+    /*wp_enqueue_script(
         'sweetalert2-core-js',
         TRIZEN_HELPER_URI.( 'admin/js/core.js' ),
         array('jquery'),
@@ -235,7 +241,7 @@ function trizen_helper_admin_script()
         array('jquery', 'sweetalert2-core-js'),
         '1.0',
         true
-    );
+    );*/
 
 	$locale = get_locale();
 	$locale_fullcalendar = $locale;
@@ -312,8 +318,8 @@ function trizen_helper_scripts() {
         '1.0.0',
         true
     );
-	wp_enqueue_script('ts-duplicate-js', TRIZEN_HELPER_URI .'assets/admin/js/ts-duplicate.js', array('jquery', 'trizen-js'), _S_VERSION, true);
-	wp_enqueue_script('trizen-helper-js', TRIZEN_HELPER_URI .'assets/js/trizen-helper.js', array('jquery', 'trizen-js'), _S_VERSION, true);
+	wp_enqueue_script('ts-duplicate-js', TRIZEN_HELPER_URI .'admin/js/ts-duplicate.js', array('jquery', 'trizen-js'), _S_VERSION, true);
+	wp_enqueue_script('trizen-helper-js', TRIZEN_HELPER_URI .'assets/js/trizen-helper.js', array('jquery', 'trizen-js'), TRIZEN_HELPER_VERSION, true);
 
 	wp_localize_script('jquery', 'ts_params', [
         'site_url'        => site_url(),
@@ -324,21 +330,6 @@ function trizen_helper_scripts() {
 
 }
 add_action('wp_enqueue_scripts', 'trizen_helper_scripts');
-
-
-function get_username($user_id) {
-	$userdata = get_userdata($user_id);
-	if (!$userdata) {
-		return esc_html__('Customer', 'trizen-helper');
-	}
-	if ($userdata->display_name) {
-		return $userdata->display_name;
-	} elseif ($userdata->first_name || $userdata->last_name) {
-		return $userdata->first_name . ' ' . $userdata->last_name;
-	} else {
-		return $userdata->user_login;
-	}
-}
 
 if (!function_exists('ts_check_service_available')) {
     function ts_check_service_available($post_type = false) {

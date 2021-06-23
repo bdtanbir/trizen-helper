@@ -51,10 +51,9 @@ if ( !class_exists( 'TSHotelHelper' ) ) {
         }
 
         function _room_get_join_query( $join ) {
-            //if (!TravelHelper::checkTableDuplicate('st_hotel')) return $join;
+            //if (!TravelHelper::checkTableDuplicate('ts_hotel')) return $join;
             global $wpdb;
             $table = $wpdb->prefix . 'ts_room_availability';
-            $table_st_hotel = $wpdb->prefix . 'st_hotel';
             $join .= " INNER JOIN {$table} as tb ON {$wpdb->prefix}posts.ID = tb.post_id";
             return $join;
         }
@@ -85,7 +84,7 @@ if ( !class_exists( 'TSHotelHelper' ) ) {
                 $allow_full_day = get_post_meta( $hotel_id, 'allow_full_day', true );
 
                 $whereNumber = " AND check_in <= %d AND (number  - IFNULL(number_booked, 0)) >= %d";
-                if ( $allow_full_day == 'off' ) {
+                if ( !$allow_full_day == 1 ) {
                     $whereNumber = "AND check_in < %d AND (number  - IFNULL(number_booked, 0) + IFNULL(number_end, 0)) >= %d";
                 }
 //                $subWhereByDate=[];
@@ -125,7 +124,7 @@ if ( !class_exists( 'TSHotelHelper' ) ) {
                 $check_out      = strtotime( convertDateFormat( request( 'end' ) ) );
                 $allow_full_day = get_post_meta( $post_id, 'allow_full_day', true );
                 $diff           = timestamp_diff_day( $check_in, $check_out );
-                $max_day        = $allow_full_day != 'off' ? $diff + 1 : $diff;
+                $max_day        = $allow_full_day == 1 ? $diff + 1 : $diff;
                 $groupby .= $wpdb->prepare( $wpdb->posts . '.ID HAVING total_available >=%d ', $max_day );
             }
             return $groupby;

@@ -44,7 +44,7 @@ class trizen_hob_widget extends WP_Widget {
                     <div class="author-bio">
                         <h4 class="author__title">
                             <a href="<?php echo get_author_posts_url($author_id); ?>" class="author-link">
-								<?php echo get_username( $author_id ); ?>
+								<?php echo TravelHelper::get_username( $author_id ); ?>
                             </a>
                         </h4>
                         <span class="author__meta">

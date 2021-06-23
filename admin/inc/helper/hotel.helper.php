@@ -118,7 +118,7 @@ if ( !class_exists( 'HotelHelper' ) ) {
         }
 
         static function _get_room_cant_book_by_id( $hotel_id = '', $check_in = '', $check_out = '', $number_room = 0 ) {
-            if ( !TSAdminRoom::checkTableDuplicate( 'ts_hotel' ) ) return "''";
+            if ( !TravelHelper::checkTableDuplicate( 'ts_hotel' ) ) return "''";
             global $wpdb;
 
             if ( empty( $check_in ) || empty( $check_out ) )
@@ -197,6 +197,65 @@ if ( !class_exists( 'HotelHelper' ) ) {
             return $results;
         }
 
+
+        static function _get_full_ordered_new($room_id, $start, $end){
+            if ( !TravelHelper::checkTableDuplicate( 'ts_hotel' ) ) return '';
+
+            $hotel_id = intval( get_post_meta( $room_id, 'room_parent', true ) );
+            if ( !empty( $hotel_id ) ) {
+                $key_post_type = "ts_hotel";
+            } else {
+                $key_post_type = "hotel_room";
+            }
+
+            global $wpdb;
+            $sql    = "
+				SELECT
+				room_origin,
+				check_in_timestamp,
+				check_out_timestamp,
+				room_num_search as number_room
+				FROM {$wpdb->prefix}ts_order_item_meta
+				WHERE room_origin = '{$room_id}'
+				AND ts_booking_post_type = '{$key_post_type}'
+				AND check_in_timestamp >= {$start}
+				AND check_out_timestamp <= {$end}
+				AND `status` NOT IN ('trash', 'canceled')";
+            $result = $wpdb->get_results( $sql, ARRAY_A );
+            if ( is_array( $result ) && count( $result ) ) {
+                return $result;
+            }
+
+            return '';
+        }
+
+        static function _get_min_max_date_ordered_new($room_id, $start, $end){
+            if ( !TravelHelper::checkTableDuplicate( 'ts_hotel' ) ) return '';
+            global $wpdb;
+            $hotel_id = intval( get_post_meta( $room_id, 'room_parent', true ) );
+            if ( !empty( $hotel_id ) ) {
+                $key_post_type = "ts_hotel";
+            } else {
+                $key_post_type = "hotel_room";
+            }
+            $sql = "SELECT
+				MIN(check_in_timestamp) as min_date,
+				MAX(check_out_timestamp) as max_date
+				FROM {$wpdb->prefix}ts_order_item_meta
+				WHERE room_origin = '{$room_id}'
+				AND ts_booking_post_type = '{$key_post_type}'
+				AND check_in_timestamp >= {$start}
+				AND check_out_timestamp <= {$end}
+				AND status NOT IN ('trash', 'canceled')";
+
+            $result = $wpdb->get_row( $sql, ARRAY_A );
+
+            if ( is_array( $result ) && count( $result ) )
+                return $result;
+
+            return '';
+        }
+
         static function get_minimum_price_hotel( $hotel_id ) {
             if ( empty( $hotel_id ) ) $hotel_id = get_the_ID();
             $hotel_id = post_origin( $hotel_id, 'ts_hotel' );
@@ -227,7 +286,7 @@ if ( !class_exists( 'HotelHelper' ) ) {
 //                    if ( is_array( $rooms ) && count( $rooms ) ) {
 //                        foreach ( $rooms as $room ) {
 //                            if ( !in_array( $room, $room_full_ordered ) ) {
-//                                $price = STPrice::getRoomPriceOnlyCustomPrice( $room, strtotime( $check_in ), strtotime( $check_out ), $room_num_search );
+//                                $price = TSPrice::getRoomPriceOnlyCustomPrice( $room, strtotime( $check_in ), strtotime( $check_out ), $room_num_search );
 //                                if ( $min_price == 0 && $price > 0 ) {
 //                                    $min_price = $price;
 //                                }
@@ -240,7 +299,7 @@ if ( !class_exists( 'HotelHelper' ) ) {
 //                    }
                 global $wpdb;
                 $whereNumber="AND (number  - COALESCE(number_booked, 0)) >= %d";
-                if(get_post_meta($hotel_id,'allow_full_day',true)=='off'){
+                if(!get_post_meta($hotel_id,'allow_full_day',true)==1){
                     $whereNumber="AND (number  - COALESCE(number_booked, 0) + COALESCE(number_end, 0)) >= %d";
                 }
                 if(!empty($check_out)) $whereNumber.=$wpdb->prepare(" AND check_out <= %s ",strtotime($check_out));

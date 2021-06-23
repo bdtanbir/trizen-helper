@@ -449,7 +449,7 @@ When it's NOT activated, the fc-button classes won't even be in the DOM.
     font-style: italic;
 }
 .fc .fc-highlight {
-    background: rgba(188, 232, 241, 0.3);
+    background: rgba(40, 125, 250, 0.15);
 }
 .fc .fc-cell-shaded,
 .fc .fc-day-disabled {
@@ -1286,7 +1286,7 @@ A VERTICAL event
     border-color: #AAA #AAA transparent #FFF !important;
     border-width: 1px !important;
     border-style: solid !important;
-    background-color: #dcdcdc !important;
+    background-color: #f3f3f3 !important;
     font-weight: 700;
 }
 .fc-unthemed .fc-divider,

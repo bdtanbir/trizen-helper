@@ -82,32 +82,38 @@ class trizen_hpa_widget extends WP_Widget {
                 </div>
                 <div class="sidebar-widget-item">
                     <div class="qty-box mb-2 d-flex align-items-center justify-content-between">
-                        <label class="font-size-16"><?php esc_html_e('Adults', 'trizen-helper'); ?> <span><?php esc_html_e('Age 18+', 'trizen-helper'); ?></span></label>
+                        <label class="font-size-16" for="adult_number">
+                            <?php esc_html_e('Adults', 'trizen-helper'); ?> <span><?php esc_html_e('Age 18+', 'trizen-helper'); ?></span>
+                        </label>
                         <div class="qtyBtn d-flex align-items-center">
                             <div class="qtyDec"><i class="la la-minus"></i></div>
-                            <input type="text" name="adult_number" value="<?php echo esc_attr($adult_number); ?>" autocomplete="off">
+                            <input type="text" id="adult_number" name="adult_number" value="<?php echo esc_attr($adult_number); ?>" autocomplete="off">
                             <div class="qtyInc"><i class="la la-plus"></i></div>
                         </div>
                     </div>
                     <div class="qty-box mb-2 d-flex align-items-center justify-content-between">
-                        <label class="font-size-16"><?php esc_html_e('Infants', 'trizen-helper'); ?> <span><?php esc_html_e('0-2 years old', 'trizen-helper'); ?></span></label>
+                        <label class="font-size-16" for="infant_number">
+                            <?php esc_html_e('Infants', 'trizen-helper'); ?> <span><?php esc_html_e('0-2 years old', 'trizen-helper'); ?></span>
+                        </label>
                         <div class="qtyBtn d-flex align-items-center">
                             <div class="qtyDec"><i class="la la-minus"></i></div>
-                            <input type="text" name="infant_number" value="<?php echo esc_attr($infant_number); ?>">
+                            <input type="text" id="infant_number" name="infant_number" value="<?php echo esc_attr($infant_number); ?>">
                             <div class="qtyInc"><i class="la la-plus"></i></div>
                         </div>
                     </div>
                     <div class="qty-box mb-2 d-flex align-items-center justify-content-between">
-                        <label class="font-size-16"><?php esc_html_e('Children', 'trizen-helper'); ?> <span><?php esc_html_e('2-12 years old', 'trizen-helper'); ?></span></label>
+                        <label class="font-size-16" for="child_number">
+                            <?php esc_html_e('Children', 'trizen-helper'); ?> <span><?php esc_html_e('2-12 years old', 'trizen-helper'); ?></span>
+                        </label>
                         <div class="qtyBtn d-flex align-items-center">
                             <div class="qtyDec"><i class="la la-minus"></i></div>
-                            <input type="text" name="child_number" value="<?php echo esc_attr($child_number); ?>" autocomplete="off">
+                            <input type="text" id="child_number" name="child_number" value="<?php echo esc_attr($child_number); ?>" autocomplete="off">
                             <div class="qtyInc"><i class="la la-plus"></i></div>
                         </div>
                     </div>
                 </div>
-                <div class="btn-box pt-2">
-                    <input class="theme-btn text-center w-100 mb-2 font-size-18"
+                <div class="btn-box pt-2 submit-group">
+                    <input class="theme-btn text-center w-100 font-size-18"
                            type="submit"
                            value="<?php esc_attr_e('Check Availability', 'trizen-helper'); ?>"
                            name="submit" />
@@ -120,7 +126,7 @@ class trizen_hpa_widget extends WP_Widget {
                         </p>
                     </div>
                 </div>
-                <div class="message-wrapper"></div>
+                <div class="message-wrapper alert-warning"></div>
             </form>
 
         <!--<div class="sidebar-widget-item">

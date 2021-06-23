@@ -204,7 +204,7 @@ if(!class_exists('TS_Woocommerce')) {
          * @since 1.1.1
          * */
         function _change_wc_order_cyrrency($paypal_arg) {
-            $paypal_arg['currency_code'] = TSAdminRoom::get_current_currency('name');
+            $paypal_arg['currency_code'] = TravelHelper::get_current_currency('name');
             return $paypal_arg;
         }
         /**

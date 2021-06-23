@@ -1,70 +1,50 @@
 <?php
 
 /* Room Booking Start */
-function trizen_room_booking_add_menu_page()
+/*function trizen_room_booking_add_menu_page()
 {
 	//Add booking page
 	add_submenu_page( 'edit.php?post_type=hotel_room', __( 'Room Bookings', 'trizen-helper' ), __( 'Room Bookings', 'trizen-helper' ), 'manage_options', 'ts_hotel_room_booking', '__hotel_room_booking_page' );
 }
-add_action( 'admin_menu', 'trizen_room_booking_add_menu_page');
+add_action( 'admin_menu', 'trizen_room_booking_add_menu_page');*/
 
 
 /**
  * @since 1.2.6
  **/
-function __hotel_room_booking_page()
-{
-	/*$section = isset( $_GET[ 'section' ] ) ? $_GET[ 'section' ] : FALSE;
-
-	if ( $section ) {
-		switch ( $section ) {
-			case "edit_order_item":
-				edit_order_item();
-				break;
-		}
-	} else {
-
-		$action = isset( $_POST[ 'ts_action' ] ) ? $_POST[ 'ts_action' ] : FALSE;
-		switch ( $action ) {
-			case "delete":
-				_delete_items();
-				break;
-		}
-	}*/
-	include_once TRIZEN_HELPER_PATH.'inc/admin/views/hotel_room/booking_index.php';
-
-}
+//function __hotel_room_booking_page()
+//{
+//	/*$section = isset( $_GET[ 'section' ] ) ? $_GET[ 'section' ] : FALSE;
+//
+//	if ( $section ) {
+//		switch ( $section ) {
+//			case "edit_order_item":
+//				edit_order_item();
+//				break;
+//		}
+//	} else {
+//
+//		$action = isset( $_POST[ 'ts_action' ] ) ? $_POST[ 'ts_action' ] : FALSE;
+//		switch ( $action ) {
+//			case "delete":
+//				_delete_items();
+//				break;
+//		}
+//	}*/
+//	include_once TRIZEN_HELPER_PATH.'inc/admin/views/hotel_room/booking_index.php';
+//
+//}
 /**
- * @since 1.2.6
+ * @since 1.0.0
  **/
-function edit_order_item(){
+/*function edit_order_item(){
 	$item_id = isset( $_GET[ 'order_item_id' ] ) ? $_GET[ 'order_item_id' ] : FALSE;
-	if ( !$item_id or get_post_type( $item_id ) != 'st_order' ) {
+	if ( !$item_id or get_post_type( $item_id ) != 'ts_order' ) {
 		//wp_safe_redirect(self::$booking_page); die;
 		return FALSE;
 	}
 	include_once TRIZEN_HELPER_PATH.'inc/admin/views/hotel_room/booking_edit.php';
-}
-
-/**
- * @since 1.2.6
- **/
-function _delete_items()
-{
-
-	if ( empty( $_POST ) or !check_admin_referer( 'shb_action', 'shb_field' ) ) {
-		//// process form data, e.g. update fields
-		return;
-	}
-	$ids = isset( $_POST[ 'post' ] ) ? $_POST[ 'post' ] : [];
-	if ( !empty( $ids ) ) {
-		foreach ( $ids as $id )
-			wp_delete_post( $id, TRUE );
-
-	}
-	esc_html__( "Delete item(s) success", 'trizen-helper' );
-
-}
+}*/
 
 function _get_currency_book_history( $post_id ) {
 	$st_is_woocommerce_checkout = apply_filters( 'ts_is_woocommerce_checkout', false );

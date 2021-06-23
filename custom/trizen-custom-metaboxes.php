@@ -177,6 +177,10 @@ if(!function_exists('trizen_register_meta_boxes')) {
 	function trizen_hotel_room_save_meta_box( $post_id ) {
 		if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) return;
 
+        $allowed_full_day_booking = isset( $_POST['allow_full_day'] ) && $_POST['allow_full_day'] == 1;
+        $allowed_full_day_booking = (int)$allowed_full_day_booking;
+        update_post_meta( $post_id,  'allow_full_day', $allowed_full_day_booking );
+
 		$room_gallery_meta_key = 'trizen_hotel_room_image_gallery';
 		update_post_meta( $post_id, $room_gallery_meta_key, $_POST[$room_gallery_meta_key] );
 
@@ -198,8 +202,9 @@ if(!function_exists('trizen_register_meta_boxes')) {
 			'trizen_hotel_room_extra_service_title',
 			'trizen_hotel_room_extra_service_price',
 			'trizen_hotel_room_extra_service_price_designation',
-			'trizen_room_facility_num_of_adults',
-			'trizen_room_facility_num_of_beds',
+			'adult_number',
+			'children_number',
+			'bed_number',
 			'trizen_hotel_room_footage',
 			'trizen_room_other_facility_title',
 			'trizen_room_rules_title',

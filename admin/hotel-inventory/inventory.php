@@ -64,7 +64,7 @@ function featch_dataroom($hotel_id, $post_id, $post_name, $start, $end)
 	$base_price          = (float)get_post_meta($post_id, 'price', true);
 	$adult_price         = floatval(get_post_meta($post_id, 'adult_price', true));
 	$child_price         = floatval(get_post_meta($post_id, 'child_price', true));
-	$price_by_per_person = (get_post_meta($post_id, 'price_by_per_person', true) == 'on') ? true : false;
+//	$price_by_per_person = (get_post_meta($post_id, 'price_by_per_person', true) == 'on') ? true : false;
 	global $wpdb;
 	$sql = "SELECT
                     *
@@ -124,7 +124,6 @@ function featch_dataroom($hotel_id, $post_id, $post_name, $start, $end)
 		'name'                => esc_html($post_name),
 		'values'              => [],
 		'id'                  => $post_id,
-		'price_by_per_person' => $price_by_per_person
 	];
 	for ($i = $start; $i <= $end; $i = strtotime('+1 day', $i)) {
 		$date      = $i * 1000;
@@ -134,12 +133,7 @@ function featch_dataroom($hotel_id, $post_id, $post_name, $start, $end)
 			foreach ($avai_rs as $key => $value) {
 				if ($i >= $value->check_in && $i <= $value->check_out) {
 					if ($value->status == 'available') {
-						if ($price_by_per_person) {
-							$adult_price = floatval($value->adult_price);
-							$child_price = floatval($value->child_price);
-						} else {
-							$price = (float)$value->price;
-						}
+                        $price = (float)$value->price;
 					} else {
 						$available = false;
 					}
@@ -151,7 +145,7 @@ function featch_dataroom($hotel_id, $post_id, $post_name, $start, $end)
 			$ordered = 0;
 			if (!empty($order_rs)) {
 				foreach ($order_rs as $key => $value) {
-					if ($allow_fullday == 'on') {
+					if ($allow_fullday == 1) {
 						if ($i >= $value->check_in_timestamp && $i <= $value->check_out_timestamp) {
 							$ordered += (int)$value->room_num_search;
 						}
@@ -172,7 +166,6 @@ function featch_dataroom($hotel_id, $post_id, $post_name, $start, $end)
 					'price'               => $price,
 					'adult_price'         => $adult_price,
 					'child_price'         => $child_price,
-					'price_by_per_person' => $price_by_per_person
 				];
 			} else {
 				$return['values'][] = [
@@ -184,7 +177,6 @@ function featch_dataroom($hotel_id, $post_id, $post_name, $start, $end)
 					'price'               => $price,
 					'adult_price'         => $adult_price,
 					'child_price'         => $child_price,
-					'price_by_per_person' => $price_by_per_person
 				];
 			}
 		} else {
@@ -197,7 +189,6 @@ function featch_dataroom($hotel_id, $post_id, $post_name, $start, $end)
 				'price'               => $price,
 				'adult_price'         => $adult_price,
 				'child_price'         => $child_price,
-				'price_by_per_person' => $price_by_per_person
 			];
 		}
 	}

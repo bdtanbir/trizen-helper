@@ -426,6 +426,7 @@
 .form-settings .form-input {
     position: relative;
 }
+.form-settings .range3-bubble,
 .form-settings .range2-bubble,
 .form-settings .range-bubble {
     background: #287dfa;
@@ -437,6 +438,7 @@
     transform: translateX(-50%);
     top: -40px;
 }
+.form-settings .range3-bubble::after,
 .form-settings .range2-bubble::after,
 .form-settings .range-bubble::after {
     content: "";
@@ -482,9 +484,8 @@
 .w-600 {
     max-width: 600px;
 }
-#room_number_of_adults_setting .form-input {
-    margin-top: 20px;
-}
+#room_number_of_children_setting .form-input,
+#room_number_of_adults_setting .form-input,
 #room_number_of_beds_setting .form-input {
     margin-top: 20px;
 }
@@ -1589,9 +1590,6 @@ button {
     content: 'ON';
     color: #fff;
     left: 6px;
-    top: 3px;
-    font-size: 11px;
-    font-weight: 500;
 }
 
 #adminmenu .menu-icon-location .wp-menu-image:before,

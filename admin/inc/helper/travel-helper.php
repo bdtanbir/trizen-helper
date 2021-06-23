@@ -12,6 +12,8 @@ if ( !class_exists( 'TravelHelper' ) ) {
         private static $_booking_primary_currency;
         static $booking_type = array();
         static $_is_inited = false;
+        private static $_check_table_duplicate = [];
+        protected $order_id=false;
 
 
         static function init()
@@ -25,14 +27,27 @@ if ( !class_exists( 'TravelHelper' ) ) {
                 $_SESSION[ 'change_currencyds' ] = '';
             }
 
-            if ( isset( $_GET[ 'currency' ] ) and $_GET[ 'currency' ] and $new_currency = TSAdminRoom::find_currency( $_GET[ 'currency' ] ) ) {
+            if ( isset( $_GET[ 'currency' ] ) and $_GET[ 'currency' ] and $new_currency = TravelHelper::find_currency( $_GET[ 'currency' ] ) ) {
                 $_SESSION[ 'currency' ]          = $new_currency;
                 $_SESSION[ 'change_currencyds' ] = 'ok';
             }
 
-            if ( $currency_name and $new_currency = TSAdminRoom::find_currency( $currency_name ) ) {
+            if ( $currency_name and $new_currency = TravelHelper::find_currency( $currency_name ) ) {
                 $_SESSION[ 'currency' ] = $new_currency;
             }
+        }
+
+        static function convert_money_to_default($money = false) {
+            if (!is_numeric($money))
+                $money = 0;
+            if (!$money)
+                $money = 0;
+            $current_rate = self::get_current_currency('rate');
+            $current      = self::get_current_currency('name');
+            $default      = self::get_default_currency('name');
+            if ($current != $default)
+                return $money / $current_rate;
+            return $money;
         }
 
         static function deleteDuplicateData( $post_id, $table ) {
@@ -728,6 +743,36 @@ if ( !class_exists( 'TravelHelper' ) ) {
         }
 
 
+
+        /**
+         * @since  1.0
+         * */
+        static function checkTableDuplicate($post_types = []) {
+            global $wpdb;
+
+            if (is_array($post_types) && count($post_types)) {
+                foreach ($post_types as $post_type) {
+                    $table = $wpdb->prefix . $post_type;
+                    if (empty(self::$_check_table_duplicate[$post_type])) {
+                        if ($wpdb->get_var("SHOW TABLES LIKE '{$table}'") !== $table) {
+                            return false;
+                        } else {
+                            self::$_check_table_duplicate[$post_type] = true;
+                        }
+                    }
+                }
+            } else {
+                if (empty(self::$_check_table_duplicate[$post_types])) {
+                    $table = $wpdb->prefix . $post_types;
+                    if ($wpdb->get_var("SHOW TABLES LIKE '{$table}'") !== $table) {
+                        return false;
+                    } else
+                        self::$_check_table_duplicate[$post_types] = true;
+                }
+            }
+            return true;
+        }
+
 //        function plugin_dir($url = false) {
 //            return ABSPATH . 'wp-content/plugins/' . $this->plugin_name . '/' . $url;
 //        }
@@ -765,6 +810,53 @@ if ( !class_exists( 'TravelHelper' ) ) {
 //            }
 //        }
 
+
+        static function checkIssetPost($post_id = '', $post_type = '') {
+            global $wpdb;
+            if (intval($post_id) && !empty($post_type)) {
+                $table = $wpdb->prefix . $post_type;
+                $sql = "SELECT post_id FROM {$table} WHERE post_id = '{$post_id}'";
+                $wpdb->query($sql);
+                $num_rows = $wpdb->num_rows;
+                return $num_rows;
+            } else {
+                return 0;
+            }
+        }
+
+        static function updateDuplicate( $post_type = 'ts_hotel', $data = [], $where = [] ){
+            global $wpdb;
+            $table = $wpdb->prefix . $post_type;
+            $wpdb->update( $table, $data, $where, $format = null, $where_format = null );
+        }
+
+        static function insertDuplicate( $post_type = 'ts_hotel', $data = [] ){
+            global $wpdb;
+            $table = $wpdb->prefix . $post_type;
+            $wpdb->insert( $table, $data );
+        }
+
+        static function get_username($user_id) {
+            $userdata = get_userdata($user_id);
+            if (!$userdata) {
+                return __('Customer', 'trizen-helper');
+            }
+            if ($userdata->display_name) {
+                return $userdata->display_name;
+            } elseif ($userdata->first_name || $userdata->last_name) {
+                return $userdata->first_name . ' ' . $userdata->last_name;
+            } else {
+                return $userdata->user_login;
+            }
+        }
+
+        static function get_alt_image($image_id = null) {
+            $alt = get_post_meta($image_id, '_wp_attachment_image_alt', true);
+            if (!$alt) {
+                $alt = get_bloginfo('description');
+            }
+            return $alt;
+        }
 
         static function find_currency( $currency_name, $compare_key = 'name' ) {
             $currency_name = esc_attr( $currency_name );
@@ -866,15 +958,15 @@ if ( !class_exists( 'TravelHelper' ) ) {
         }
         static function format_money( $money = false, $need_convert = true, $precision = 0 ) {
             $money              = (float)$money;
-            /*$symbol             = TSAdminRoom::get_current_currency( 'symbol' );
-            $precision          = TSAdminRoom::get_current_currency( 'booking_currency_precision', 2 );
-            $thousand_separator = TSAdminRoom::get_current_currency( 'thousand_separator', ',' );
-            $decimal_separator  = TSAdminRoom::get_current_currency( 'decimal_separator', '.' );*/
+            /*$symbol             = TravelHelper::get_current_currency( 'symbol' );
+            $precision          = TravelHelper::get_current_currency( 'booking_currency_precision', 2 );
+            $thousand_separator = TravelHelper::get_current_currency( 'thousand_separator', ',' );
+            $decimal_separator  = TravelHelper::get_current_currency( 'decimal_separator', '.' );*/
             $symbol             = get_woocommerce_currency_symbol();
 //            $symbol             = self::get_current_currency( 'symbol' );
-            $precision          = TSAdminRoom::get_current_currency( 'booking_currency_precision', 2 );
-            $thousand_separator = TSAdminRoom::get_current_currency( 'thousand_separator', ',' );
-            $decimal_separator  = TSAdminRoom::get_current_currency( 'decimal_separator', '.' );
+            $precision          = TravelHelper::get_current_currency( 'booking_currency_precision', 2 );
+            $thousand_separator = TravelHelper::get_current_currency( 'thousand_separator', ',' );
+            $decimal_separator  = TravelHelper::get_current_currency( 'decimal_separator', '.' );
             if ( $money == 0 ) {
                 return __( "Free", 'trizen-helper' );
             }
@@ -1188,17 +1280,17 @@ if ( !class_exists( 'TravelHelper' ) ) {
                 $star = $max;
             $moc1 = (int) $star;
             for ($i = 1; $i <= $moc1; $i++) {
-                $html .= '<li><i class="fa  fa-star"></i></li>';
+                $html .= '<li><i class="la  la-star"></i></li>';
             }
             $new = $max - $star;
             $du = round((float) $star - $moc1, 1);
             if ($du >= 0.2 and $du <= 0.9) {
-                $html .= '<li><i class="fa  fa-star-half-o"></i></li>';
+                $html .= '<li><i class="la  la-star-half-o"></i></li>';
             } elseif ($du) {
-                $html .= '<li><i class="fa  fa-star-o"></i></li>';
+                $html .= '<li><i class="la  la-star-o"></i></li>';
             }
             for ($i = 1; $i <= $new; $i++) {
-                $html .= '<li><i class="fa  fa-star-o"></i></li>';
+                $html .= '<li><i class="la  la-star-o"></i></li>';
             }
             return apply_filters('ts_rate_to_string', $html);
         }

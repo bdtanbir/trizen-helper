@@ -663,13 +663,13 @@ jQuery(function($){
                 },
                 eventClick: function(event, element, view){
                     setCheckInOut(event.start.format('MM/DD/YYYY'),event.start.format('MM/DD/YYYY'),self.form_container);
-                    let price_by_per_person = $('.calendar-content', self.container).data('price-by-per-person') == 'on' ? true : false || false;
-                    /*if ( price_by_per_person ) {
-                        $('#calendar_adult_price', self.form_container).val(event.adult_price);
-                        $('#calendar_child_price', self.form_container).val(event.child_price);
-                    } else {*/
-                        $('#calendar_price', self.form_container).val(event.price);
-                    // }
+                                        let price_by_per_person = $('.calendar-content', self.container).data('price-by-per-person') == 'on' ? true : false || false;
+                                        if ( price_by_per_person ) {
+                                            $('#calendar_adult_price', self.form_container).val(event.adult_price);
+                                            $('#calendar_child_price', self.form_container).val(event.child_price);
+                                        } else {
+                                            $('#calendar_price', self.form_container).val(event.price);
+                                        }
                     $('#calendar_number', self.form_container).val(event.number);
                     $('#calendar_status option[value='+event.status+']', self.form_container).prop('selected');
                 },
@@ -677,12 +677,12 @@ jQuery(function($){
                     var html = '';
                     if(event.status == 'available'){
                         let price_by_per_person = $('.calendar-content', self.container).data('price-by-per-person') == 'on' ? true : false || false;
-                        /*if ( price_by_per_person ) {
+                        if ( price_by_per_person ) {
                             html += `<div class="price">${ts_params.text_adult} ${event.adult_price}</div>`;
                             html += `<div class="price">${ts_params.text_child} ${event.child_price}</div>`;
-                        } else {*/
-                            html += '<div class="price-0-o-">'+ ts_params.text_price +' '+event.price+'</div>';
-                        // }
+                        } else {
+                            html += '<div class="price -0-o-">'+ ts_params.text_price +' '+event.price+'</div>';
+                        }
                     }
                     if(typeof event.status == 'undefined' || event.status != 'available'){
                         html += '<div class="not_available">'+ ts_params.text_unavailable +'</div>';

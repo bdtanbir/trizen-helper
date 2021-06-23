@@ -18,10 +18,10 @@ if ( !class_exists( 'TSReview' ) ) {
 
         function save_comment_meta_data( $comment_id ) {
             $array = get_comment( $comment_id, ARRAY_A );
-            if ( ( isset( $_POST[ 'comment_title' ] ) ) && ( $_POST[ 'comment_title' ] != '' ) ) {
+            /*if ( ( isset( $_POST[ 'comment_title' ] ) ) && ( $_POST[ 'comment_title' ] != '' ) ) {
                 $title = wp_filter_nohtml_kses( $_POST[ 'comment_title' ] );
                 add_comment_meta( $comment_id, 'comment_title', $title );
-            }
+            }*/
             if ( ( isset( $_POST[ 'comment_rate' ] ) ) && ( $_POST[ 'comment_rate' ] != '' ) ) {
                 $rate = wp_filter_nohtml_kses( $_POST[ 'comment_rate' ] );
                 if ( $rate > 5 ) {
@@ -35,7 +35,7 @@ if ( !class_exists( 'TSReview' ) ) {
             global $wpdb;
             $array['comment_type']       = 'ts_reviews';
             $array['comment_approved']   = 1;
-            $array[ 'comment_approved' ] = 0;
+//            $array[ 'comment_approved' ] = 0;
             if ( is_super_admin() ) {
                 $array[ 'comment_approved' ] = 1;
             }
@@ -46,17 +46,38 @@ if ( !class_exists( 'TSReview' ) ) {
             update_post_meta( $post_id, 'rate_review', $avg );
         }
 
-        static function get_review_stars( $post_id = false ) {
-            if ( !$post_id ) $post_id = get_the_ID();
-            $post_type = get_post_type( $post_id );
-            $key       = '';
-            switch ( $post_type ) {
-                case "ts_hotel":
-                    $key = 'hotel_review_stars';
-                    break;
+        static function count_comment( $post_id = false, $comment_type = false ) {
+            if ( $post_id ) {
+                global $wpdb;
+                $query = 'SELECT COUNT(comment_ID) FROM ' . $wpdb->comments . ' WHERE 1=1 ';
+                if ( $post_id ) {
+                    $query .= ' AND comment_post_ID="' . sanitize_title_for_query( $post_id ) . '"';
+                }
+                if ( $comment_type ) {
+                    $query .= ' AND comment_type="' . sanitize_title_for_query( $comment_type ) . '"';
+                }
+                $count = $wpdb->get_var( $query );
+                return $count;
             }
-            $list_star = get_option( $key );
-            return $list_star;
+        }
+
+        static function data_comment_author_page( $post_id = false, $comment_type = false ) {
+            if ( !empty( $post_id ) ) {
+                global $wpdb;
+                $query = 'SELECT comment_ID FROM ' . $wpdb->comments . ' WHERE 1=1 ';
+                if ( $post_id ) {
+                    $query .= ' AND comment_post_ID IN (' . implode( ',', $post_id ) . ')';
+                }
+                if ( $comment_type ) {
+                    $query .= ' AND comment_type="' . sanitize_title_for_query( $comment_type ) . '"';
+                }
+                $data = $wpdb->get_results( $query, ARRAY_A );
+                return $data;
+            }
+        }
+
+        static function count_review( $post_id = false ) {
+            return self::count_comment( $post_id, "st_reviews" );
         }
 
         static function get_avg_rate( $post_id = false ) {
@@ -78,6 +99,28 @@ if ( !class_exists( 'TSReview' ) ) {
             return 0;
         }
 
+        static function get_percent_recommend( $post_id = false, $min_rate = 3 ){
+            if ( !$post_id ) {
+                $post_id = get_the_ID();
+            }
+            if ( $post_id ) {
+                $total = get_comments_number( $post_id );
+                global $wpdb;
+                $query = "SELECT count({$wpdb->comments}.comment_ID) as total from {$wpdb->comments} join {$wpdb->commentmeta} on {$wpdb->comments}.comment_ID={$wpdb->commentmeta}.comment_ID where 1=1";
+                $query .= " and `comment_type`='ts_reviews' ";
+                $query .= " and comment_post_ID='" . sanitize_title_for_query( $post_id ) . "'";
+                $query .= " and `comment_approved`=1 ";
+                $query .= " and meta_value>='" . sanitize_title_for_query( $min_rate ) . "'";
+                $query .= "  and meta_key='comment_rate' ";
+                $count = $wpdb->get_var( $query );
+                if ( !$total ) return 0;
+                $percent = round( ( $count / $total ) * 100 );
+                if ( $percent > 100 )
+                    $percent = 100;
+                return $percent;
+            }
+        }
+
         static function count_review_by_rate( $post_id = false, $rate = '' ){
             if ( !$post_id ) {
                 $post_id = get_the_ID();
@@ -96,6 +139,31 @@ if ( !class_exists( 'TSReview' ) ) {
                 self::$reviewData[ $post_id ] = $count;
                 return $count;
             }
+        }
+
+        static function get_review_stars( $post_id = false ) {
+            if ( !$post_id ) $post_id = get_the_ID();
+            $post_type = get_post_type( $post_id );
+            $key       = '';
+            switch ( $post_type ) {
+                case "ts_hotel":
+                    $key = 'hotel_review_stars';
+                    break;
+                case "ts_rental":
+                    $key = 'rental_review_stars';
+                    break;
+                case "ts_cars":
+                    $key = 'car_review_stars';
+                    break;
+                case "ts_tours":
+                    $key = 'tour_review_stars';
+                    break;
+                case "ts_activity":
+                    $key = 'activity_review_stars';
+                    break;
+            }
+            $list_star = get_option( $key );
+            return $list_star;
         }
 
         /**
@@ -158,7 +226,6 @@ if ( !class_exists( 'TSReview' ) ) {
             return $string;
         }
 
-
         static function get_review_summary( $post_id = false ) {
             if ( !$post_id ) $post_id = get_the_ID();
             $stars = self::get_review_stars( $post_id );
@@ -194,7 +261,6 @@ if ( !class_exists( 'TSReview' ) ) {
             return $results;
 
         }
-
 
         function check_like( $comment_id ) { // test if user liked before
             if ( is_user_logged_in() ) { // user is logged in
