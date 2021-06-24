@@ -8,6 +8,7 @@ if ( !class_exists( 'AvailabilityHelper' ) ) {
                 add_action( 'wp_ajax_ts_get_availability_hotel', [&$this, '_get_availability_hotel'] );
             }
 
+            add_action( 'wp_ajax_trizen_calendar_bulk_edit_form', [$this, 'trizen_calendar_bulk_edit_form'] );
             // Update Status
             add_action('ts_booking_change_status', array(__CLASS__,'_ts_booking_change_status'),10,3);
 
@@ -130,7 +131,7 @@ if ( !class_exists( 'AvailabilityHelper' ) ) {
                             }
 
                             // Check allowed to set Number End
-                            if(get_post_meta($data['ts_booking_id'],'allow_full_day',true)!='off'){
+                            if(get_post_meta($data['ts_booking_id'],'allow_full_day',true) == 1){
                                 for ( $i = $data['check_in_timestamp']; $i <= $data['check_out_timestamp']; $i = strtotime( '+1 day', $i ) ) {
                                     $sql = $wpdb->prepare("UPDATE {$table} SET number_end = IFNULL(number_end, 0) + %d WHERE post_id = %d AND check_in = %s",$booked,$data['room_origin'],$i);
                                     $wpdb->query( $sql );
@@ -144,6 +145,255 @@ if ( !class_exists( 'AvailabilityHelper' ) ) {
 
             }
             //  update set number_booked=number_booked+2
+        }
+
+        public function insert_calendar_bulk($data, $posts_per_page, $total, $current_page, $all_days, $post_id) {
+            $post_type = get_post_type($post_id);
+            $table = '';
+            switch ($post_type) {
+                case 'ts_tours':
+                    $table = 'ts_tour_availability';
+                    break;
+                case 'ts_activity':
+                    $table = 'ts_activity_availability';
+                    break;
+                case 'hotel_room':
+                    $table = 'ts_room_availability';
+                    break;
+                case 'ts_rental':
+                    $table = 'ts_rental_availability';
+                    break;
+            }
+            $start = ($current_page - 1) * $posts_per_page;
+            $end   = ($current_page - 1) * $posts_per_page + $posts_per_page - 1;
+            if ($end > $total - 1) $end = $total - 1;
+            if ($data['groupday'] == 0) {
+                for ($i = $start; $i <= $end; $i++) {
+                    $data['start'] = $all_days[$i];
+                    $data['end']   = $all_days[$i];
+                    /*  Delete old item */
+                    $result = $this->trizen_get_availability($post_id, $all_days[$i], $all_days[$i], $table);
+                    $split = $this->trizen_split_availability($result, $all_days[$i], $all_days[$i]);
+                    if (isset($split['delete']) && !empty($split['delete'])) {
+                        foreach ($split['delete'] as $item) {
+                            $this->trizen_delete_availability($item['id'], $table);
+                        }
+                    }
+                    /*  .End */
+                    if (!isset($data['starttime']))
+                        $data['starttime'] = '';
+                    $this->trizen_insert_availability($data['post_id'], $data['start'], $data['end'], $data['price'], $data['adult_price'], $data['children_price'], $data['infant_price'], $data['starttime'], $data['status'], $data['groupday'], $table);
+                }
+            } else {
+                for ($i = $start; $i <= $end; $i++) {
+                    $data['start'] = $all_days[$i]['min'];
+                    $data['end'] = $all_days[$i]['max'];
+                    /*  Delete old item */
+                    $result = $this->trizen_get_availability($post_id, $all_days[$i]['min'], $all_days[$i]['max'], $table);
+                    $split = $this->trizen_split_availability($result, $all_days[$i]['min'], $all_days[$i]['max']);
+                    if (isset($split['delete']) && !empty($split['delete'])) {
+                        foreach ($split['delete'] as $item) {
+                            $this->trizen_delete_availability($item['id'], $table);
+                        }
+                    }
+                    /*  .End */
+                    if (!isset($data['starttime']))
+                        $data['starttime'] = '';
+                    $this->trizen_insert_availability($data['post_id'], $data['start'], $data['end'], $data['price'], $data['adult_price'], $data['children_price'], $data['infant_price'], $data['starttime'], $data['status'], $data['groupday'], $table);
+                }
+            }
+            $next_page = (int)$current_page + 1;
+            $progress = ($current_page / $total) * 100;
+            $return = [
+                'all_days' => $all_days,
+                'current_page' => $next_page,
+                'posts_per_page' => $posts_per_page,
+                'total' => $total,
+                'status' => 2,
+                'data' => $data,
+                'progress' => $progress,
+                'post_id' => $post_id,
+            ];
+            return $return;
+        }
+        public function trizen_delete_availability($id = '', $table = null)
+        {
+            if (empty($table))
+                $table = 'ts_availability';
+            global $wpdb;
+            $table = $wpdb->prefix . $table;
+            $wpdb->delete(
+                $table,
+                [
+                    'id' => $id
+                ]
+            );
+        }
+        public function trizen_insert_availability($post_id = '', $check_in = '', $check_out = '', $price = '', $adult_price = '', $children_price = '', $infant_price = '', $starttime = '', $status = '', $group_day = '', $table = null) {
+            if (empty($table))
+                $table = 'ts_availability';
+            global $wpdb;
+            if ($group_day == 1) {
+                $data_insert = [
+                    'post_id'      => $post_id,
+                    'check_in'     => $check_in,
+                    'check_out'    => $check_out,
+                    'price'        => $price,
+                    'adult_price'  => $adult_price,
+                    'child_price'  => $children_price,
+                    'infant_price' => $infant_price,
+                    'status'       => $status,
+                    'groupday'     => 1,
+                ];
+                if ($table == 'ts_rental_availability') {
+                    unset($data_insert['adult_price']);
+                    unset($data_insert['child_price']);
+                    unset($data_insert['infant_price']);
+                }
+                if ( $table=='ts_room_availability' ) {
+                    unset($data_insert['infant_price']);
+                }
+                if ($table == 'ts_room_availability') {
+                    $parent_id = get_post_meta($post_id, 'room_parent', true);
+                    if(get_post_meta($post_id, 'allow_full_day', true) == 1) {
+                        $allowed_fullday = 'on';
+                    } else {
+                        $allowed_fullday = 'off';
+                    }
+                    unset($data_insert['groupday']);
+                    $data_insert['post_type']      = 'hotel_room';
+                    $data_insert['number']         = get_post_meta($post_id, 'number_room', true);
+                    $data_insert['allow_full_day'] = $allowed_fullday;
+                    $data_insert['booking_period'] = get_post_meta($parent_id, 'hotel_booking_period', true);
+                    $data_insert['adult_number']   = get_post_meta($post_id, 'adult_number', true);
+                    $data_insert['child_number']   = get_post_meta($post_id, 'children_number', true);
+                    $data_insert['is_base']        = 0;
+                    $data_insert['parent_id']      = $parent_id;
+                }
+                if ($table == 'ts_tour_availability' or $table == 'ts_activity_availability') {
+                    $data_insert['starttime'] = $starttime;
+                    $data_insert['is_base']   = 0;
+                }
+                $wpdb->insert(
+                    $wpdb->prefix . $table,
+                    $data_insert
+                );
+            } else {
+                for ($i = $check_in; $i <= $check_out; $i = strtotime('+1 day', $i)) {
+                    $data_insert = [
+                        'post_id'      => $post_id,
+                        'check_in'     => $i,
+                        'check_out'    => $i,
+                        'price'        => $price,
+                        'adult_price'  => $adult_price,
+                        'child_price'  => $children_price,
+                        'infant_price' => $infant_price,
+                        'status'       => $status,
+                        'groupday'     => 0,
+                    ];
+                    if ($table == 'ts_rental_availability') {
+                        unset($data_insert['adult_price']);
+                        unset($data_insert['child_price']);
+                        unset($data_insert['infant_price']);
+                    }
+                    if ( $table=='ts_room_availability' ) {
+                        unset($data_insert['infant_price']);
+                    }
+                    if ($table == 'ts_room_availability') {
+                        $parent_id = get_post_meta($post_id, 'room_parent', true);
+                        if(get_post_meta($post_id, 'allow_full_day', true) == 1) {
+                            $allowed_fullday = 'on';
+                        } else {
+                            $allowed_fullday = 'off';
+                        }
+                        unset($data_insert['groupday']);
+                        $data_insert['post_type'] = 'hotel_room';
+                        $data_insert['number'] = get_post_meta($post_id, 'number_room', true);
+                        $data_insert['allow_full_day'] = $allowed_fullday;
+                        $data_insert['booking_period'] = get_post_meta($parent_id, 'hotel_booking_period', true);
+                        $data_insert['adult_number'] = get_post_meta($post_id, 'adult_number', true);
+                        $data_insert['child_number'] = get_post_meta($post_id, 'children_number', true);
+                        $data_insert['is_base'] = 0;
+                        $data_insert['parent_id'] = $parent_id;
+                    }
+                    if ($table == 'ts_tour_availability' or $table == 'ts_activity_availability') {
+                        $data_insert['starttime'] = $starttime;
+                        $data_insert['is_base'] = 0;
+                    }
+                    $wpdb->insert(
+                        $wpdb->prefix . $table,
+                        $data_insert
+                    );
+                }
+            }
+            return (int)$wpdb->insert_id;
+        }
+        public function trizen_split_availability($result = [], $check_in = '', $check_out = '')
+        {
+            $return = [];
+            if (!empty($result)) {
+                foreach ($result as $item) {
+                    $check_in = (int)$check_in;
+                    $check_out = (int)$check_out;
+                    if (isset($item['start']) && isset($item['start'])) {
+                        $start = strtotime($item['start']);
+                        $end = strtotime('-1 day', strtotime($item['end']));
+                        if ($start < $check_in && $end >= $check_in) {
+                            $return['insert'][] = [
+                                'post_id' => $item['post_id'],
+                                'check_in' => strtotime($item['check_in']),
+                                'check_out' => strtotime('-1 day', $check_in),
+                                'price' => (float)$item['price'],
+                                'status' => $item['status'],
+                                'groupday' => $item['groupday'],
+                            ];
+                        }
+                        if ($start <= $check_out && $end > $check_out) {
+                            $return['insert'][] = [
+                                'post_id' => $item['post_id'],
+                                'check_in' => strtotime('+1 day', $check_out),
+                                'check_out' => strtotime('-1 day', strtotime($item['check_out'])),
+                                'price' => (float)$item['price'],
+                                'status' => $item['status'],
+                                'groupday' => $item['groupday'],
+                            ];
+                        }
+                    }
+                    $return['delete'][] = [
+                        'id' => $item['id']
+                    ];
+                }
+            }
+            return $return;
+        }
+
+        public function trizen_get_availability($post_id = '', $check_in = '', $check_out = '', $table = null) {
+            if (empty($table))
+                $table = 'ts_availability';
+            global $wpdb;
+            $table = $wpdb->prefix . $table;
+            $sql   = "SELECT * FROM {$table} WHERE post_id = {$post_id} AND ( ( CAST( check_in AS UNSIGNED ) >= CAST( {$check_in} AS UNSIGNED) AND CAST( check_in AS UNSIGNED ) <= CAST( {$check_out} AS UNSIGNED ) ) OR ( CAST( check_out AS UNSIGNED ) >= CAST( {$check_in} AS UNSIGNED ) AND ( CAST( check_out AS UNSIGNED ) <= CAST( {$check_out} AS UNSIGNED ) ) ) )";
+            $result = $wpdb->get_results($sql, ARRAY_A);
+            $return = [];
+            if (!empty($result)) {
+                foreach ($result as $item) {
+                    $return[] = [
+                        'id'             => $item['id'],
+                        'post_id'        => $item['post_id'],
+                        'check_in'       => date('Y-m-d', $item['check_in']),
+                        'check_out'      => date('Y-m-d', strtotime('+1 day', $item['check_out'])),
+                        'price'          => (float)$item['price'],
+                        'adult_price'    => isset($item['adult_price']) ? (float)$item['adult_price'] : '',
+                        'children_price' => isset($item['child_price']) ? (float)$item['child_price'] : '',
+                        'infant_price'   => isset($item['infant_price']) ? (float)$item['infant_price'] : '',
+                        'status'         => $item['status'],
+                        'groupday'       => isset($item['groupday']) ? $item['groupday'] : '',
+                    ];
+                    if ($table == 'ts_tour_availability' or $table == 'ts_activity_availability')
+                        $return['starttime'] = $item['starttime'];
+                }
+            }
+            return $return;
         }
 
         function _get_availability_hotel() {
@@ -315,6 +565,201 @@ if ( !class_exists( 'AvailabilityHelper' ) ) {
                 'message' => __('Successfully', 'trizen-helper')
             ]);
             die();
+        }
+
+
+        public function trizen_calendar_bulk_edit_form() {
+            $post_id = (int)post('post_id', 0);
+            if ($post_id > 0) {
+                if (isset($_POST['all_days']) && !empty($_POST['all_days'])) {
+                    $data           = post('data', '');
+                    $all_days       = post('all_days', '');
+                    $posts_per_page = (int)post('posts_per_page', '');
+                    $current_page   = (int)post('current_page', '');
+                    $total          = (int)post('total', '');
+                    if ($current_page > ceil($total / $posts_per_page)) {
+                        echo json_encode([
+                            'status' => 1,
+                            'message' => '<div class="text-success">' . __('Added successful.', 'trizen-helper') . '</div>'
+                        ]);
+                        die;
+                    } else {
+                        $return = $this->insert_calendar_bulk($data, $posts_per_page, $total, $current_page, $all_days, $post_id);
+                        echo json_encode($return);
+                        die;
+                    }
+                }
+                $day_of_week  = post('day-of-week', '');
+                $day_of_month = post('day-of-month', '');
+                $array_month  = [
+                    'January'   => '1',
+                    'February'  => '2',
+                    'March'     => '3',
+                    'April'     => '4',
+                    'May'       => '5',
+                    'June'      => '6',
+                    'July'      => '7',
+                    'August'    => '8',
+                    'September' => '9',
+                    'October'   => '10',
+                    'November'  => '11',
+                    'December'  => '12',
+                ];
+                $months         = post('months', '');
+                $years          = post('years', '');
+                $price          = post('price_bulk', 0);
+                $adult_price    = post('adult-price_bulk', 0);
+                $children_price = post('children-price_bulk', 0);
+                $infant_price   = post('infant-price_bulk', 0);
+                if ($price == '')
+                    $price = 0;
+                if ($adult_price == '')
+                    $adult_price = 0;
+                if ($children_price == '')
+                    $children_price = 0;
+                if ($infant_price == '')
+                    $infant_price = 0;
+                $start_time_arr = request('starttime', '');
+                $start_time_str = '';
+                if (isset($start_time_arr) && !empty($start_time_arr))
+                    $start_time_str = implode(', ', $start_time_arr);
+                if (!is_numeric($price) || !is_numeric($adult_price) || !is_numeric($children_price) || !is_numeric($infant_price)) {
+                    echo json_encode([
+                        'status'  => 0,
+                        'message' => '<div class="text-error">' . __('The price field is not a number.', 'trizen-helper') . '</div>'
+                    ]);
+                    die;
+                }
+                $price          = (float)$price;
+                $adult_price    = (float)$adult_price;
+                $children_price = (float)$children_price;
+                $infant_price   = (float)$infant_price;
+                $status         = post('status', 'available');
+                $group_day      = post('calendar_groupday', 0);
+                /*  Start, End is a timestamp */
+                $all_years  = [];
+                $all_months = [];
+                $all_days   = [];
+                if (!empty($years)) {
+                    sort($years, 1);
+                    foreach ($years as $year) {
+                        $all_years[] = $year;
+                    }
+                    if (!empty($months)) {
+                        foreach ($months as $month) {
+                            foreach ($all_years as $year) {
+                                $all_months[] = $month . ' ' . $year;
+                            }
+                        }
+                        if (!empty($day_of_week) && !empty($day_of_month)) {
+                            // Each day in month
+                            foreach ($day_of_month as $day) {
+                                // Each day in week
+                                foreach ($day_of_week as $day_week) {
+                                    // Each month year
+                                    foreach ($all_months as $month) {
+                                        $time = strtotime($day . ' ' . $month);
+                                        if (date('l', $time) == $day_week) {
+                                            $all_days[] = $time;
+                                        }
+                                    }
+                                }
+                            }
+                        } elseif (empty($day_of_week) && empty($day_of_month)) {
+                            foreach ($all_months as $month) {
+                                for ($i = strtotime('first day of ' . $month); $i <= strtotime('last day of ' . $month); $i = strtotime('+1 day', $i)) {
+                                    $all_days[] = $i;
+                                }
+                            }
+                        } elseif (empty($day_of_week) && !empty($day_of_month)) {
+                            foreach ($day_of_month as $day) {
+                                foreach ($all_months as $month) {
+                                    $month_tmp = trim($month);
+                                    $month_tmp = explode(' ', $month);
+                                    //$num_day = date('t', mktime(0, 0, 0, $array_month[ $month_tmp[ 0 ] ], 1, $month_tmp[ 1 ]));
+                                    $num_day = cal_days_in_month(CAL_GREGORIAN, $array_month[$month_tmp[0]], $month_tmp[1]);
+                                    if ($day <= $num_day) {
+                                        $all_days[] = strtotime($day . ' ' . $month);
+                                    }
+                                }
+                            }
+                        } elseif (!empty($day_of_week) && empty($day_of_month)) {
+                            foreach ($day_of_week as $day) {
+                                foreach ($all_months as $month) {
+                                    for ($i = strtotime('first ' . $day . ' of ' . $month); $i <= strtotime('last ' . $day . ' of ' . $month); $i = strtotime('+1 week', $i)) {
+                                        $all_days[] = $i;
+                                    }
+                                }
+                            }
+                        }
+                        if (!empty($all_days)) {
+                            $posts_per_page = 10;
+                            if ($group_day == 1) {
+                                $all_days = $this->change_allday_to_group($all_days);
+                            }
+                            $total        = count($all_days);
+                            $current_page = 1;
+                            $data = [
+                                'post_id'        => $post_id,
+                                'status'         => $status,
+                                'groupday'       => $group_day,
+                                'price'          => $price,
+                                'adult_price'    => $adult_price,
+                                'children_price' => $children_price,
+                                'infant_price'   => $infant_price,
+                            ];
+                            if ($start_time_str != '')
+                                $data['starttime'] = $start_time_str;
+                            $return = $this->insert_calendar_bulk($data, $posts_per_page, $total, $current_page, $all_days, $post_id);
+                            echo json_encode($return);
+                            die;
+                        }
+                    } else {
+                        echo json_encode([
+                            'status'  => 0,
+                            'message' => '<div class="text-error">' . __('The months field is required.', 'trizen-helper') . '</div>'
+                        ]);
+                        die;
+                    }
+                } else {
+                    echo json_encode([
+                        'status'  => 0,
+                        'message' => '<div class="text-error">' . __('The years field is required.', 'trizen-helper') . '</div>'
+                    ]);
+                    die;
+                }
+            } else {
+                echo json_encode([
+                    'status'  => 0,
+                    'message' => '<div class="text-error">' . __('The room field is required.', 'trizen-helper') . '</div>'
+                ]);
+                die;
+            }
+        }
+        public function change_allday_to_group($all_days = []) {
+            $return_tmp = [];
+            $return     = [];
+            foreach ($all_days as $item) {
+                $month = date('m', $item);
+                if (!isset($return_tmp[$month])) {
+                    $return_tmp[$month]['min'] = $item;
+                    $return_tmp[$month]['max'] = $item;
+                } else {
+                    if ($return_tmp[$month]['min'] > $item) {
+                        $return_tmp[$month]['min'] = $item;
+                    }
+                    if ($return_tmp[$month]['max'] < $item) {
+                        $return_tmp[$month]['max'] = $item;
+                    }
+                }
+            }
+            foreach ($return_tmp as $key => $val) {
+                $return[] = [
+                    'min' => $val['min'],
+                    'max' => $val['max'],
+                ];
+            }
+            return $return;
         }
 
         /* Available activity by month */

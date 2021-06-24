@@ -124,6 +124,38 @@ if ( ! class_exists( 'TSCart' ) ) {
             return $checkout_form_fields;
         }
 
+        static function use_coupon() {
+            if (isset($_COOKIE['ts_cart_coupon']) and $_COOKIE['ts_cart_coupon']) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        static function get_coupon_amount() {
+            $coupon = (isset($_COOKIE['ts_cart_coupon'])) ? unserialize(stripslashes(gzuncompress(base64_decode($_COOKIE['ts_cart_coupon'])))) : [];
+            //$coupon = ( isset( $_COOKIE['ts_cart_coupon'] ) ) ? unserialize( stripslashes( $_COOKIE['ts_cart_coupon'] ) ) : [];
+            return isset($coupon['amount']) ? $coupon['amount'] : 0;
+        }
+
+        static function get_cart_link() {
+            $cart_link                  = get_permalink(  );
+            $ts_is_woocommerce_checkout = apply_filters( 'ts_is_woocommerce_checkout', false );
+
+            if ( $ts_is_woocommerce_checkout ) {
+                $url = wc_get_cart_url();
+                if ( $url ) {
+                    $cart_link = $url;
+                }
+            }
+
+            return apply_filters( 'ts_cart_link', $cart_link );
+        }
+
+        static function get_items() {
+            return isset( $_COOKIE['ts_cart'] ) ? unserialize(stripslashes(gzuncompress(base64_decode($_COOKIE['ts_cart'])))) : [];
+        }
+
     }
     TSCart::init();
 }

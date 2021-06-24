@@ -31,7 +31,6 @@ function trizen_helper_load() {
 	require_once TRIZEN_HELPER_PATH.'widgets/trizen-hotel-room-booking-fields.php';
 	require_once TRIZEN_HELPER_PATH.'inc/trizen-helper.booking.php';
 	require_once TRIZEN_HELPER_PATH.'custom/trizen-helper.class-admin-room.php';
-	require_once TRIZEN_HELPER_PATH.'admin/hotel-inventory/inventory.php';
     require_once TRIZEN_HELPER_PATH.'admin/inc/database.helper.php';
     require_once TRIZEN_HELPER_PATH.'admin/inc/class.review.php';
     require_once TRIZEN_HELPER_PATH.'core/database/tables/availability.php';
@@ -61,7 +60,7 @@ require_once TRIZEN_HELPER_PATH.'admin/inc/class.admin.location.relationships.ph
 require_once TRIZEN_HELPER_PATH.'admin/inc/helper/travel-helper.php';
 require_once TRIZEN_HELPER_PATH.'admin/inc/helper/hotel.helper.php';
 require_once TRIZEN_HELPER_PATH.'inc/class.hotel-helper.php';
-require_once TRIZEN_HELPER_PATH.'inc/class.hotel.php';
+require_once TRIZEN_HELPER_PATH.'inc/class.hotel-2.php';
 require_once TRIZEN_HELPER_PATH.'inc/helper/price.helper.php';
 require_once TRIZEN_HELPER_PATH.'inc/hotel-alone-helper.php';
 require_once TRIZEN_HELPER_PATH.'inc/class.single_hotel.php';

@@ -848,7 +848,11 @@ if ( !class_exists( 'TSAdminRoom' ) ) {
                 $child_number   = intval( get_post_meta( get_the_ID(), 'children_number', true ) );
                 $booking_period = intval(get_post_meta($parent, 'hotel_booking_period', true));
                 if(empty($booking_period)) $booking_period = 0;
-                if(!$allow_full_day) $allow_full_day='on';
+                if($allow_full_day == 1) {
+                    $allow_full_day = 'on';
+                } else {
+                    $allow_full_day = 'off';
+                }
                 $adult_price = get_post_meta( get_the_ID(), 'adult_price', true );
                 $child_price = get_post_meta( get_the_ID(), 'child_price', true );
 
@@ -877,7 +881,11 @@ if ( !class_exists( 'TSAdminRoom' ) ) {
             $status         = get_post_meta($post_id,'default_state',true);
             $number         = get_post_meta($post_id,'number_room',true);
             $allow_full_day = get_post_meta($post_id,'allow_full_day',true);
-            if(!$allow_full_day) $allow_full_day='on';
+            if($allow_full_day == 1) {
+                $allow_full_day = 'on';
+            } else {
+                $allow_full_day = 'off';
+            }
             $rs = TS_Order_Item_Model::inst()
                 ->select('count(room_num_search) as number_booked')
                 ->where('room_origin',$post_id)
@@ -1149,7 +1157,12 @@ if ( !class_exists( 'TSAdminRoom' ) ) {
                 $location_str   = get_post_meta($id, 'multi_location', true);
                 $location_id    = ''; // location_id
                 $address        = get_post_meta($id, 'address', true); // address
-                $allow_full_day = get_post_meta($id, 'allow_full_day', true); // address
+                $allow_full_day = get_post_meta($id, 'allow_full_day', true); // allow full day booking
+                if ($allow_full_day == 1) {
+                    $allow_full_day = 'on';
+                } else {
+                    $allow_full_day = 'off';
+                }
 
                 $rate_review          = TSReview::get_avg_rate($id); // rate review
                 $hotel_star           = get_post_meta($id, 'hotel_star', true); // hotel star
@@ -1199,7 +1212,11 @@ if ( !class_exists( 'TSAdminRoom' ) ) {
             // for room
             if ( get_post_type( $id ) == 'hotel_room' ) {
                 $num_rows       = TravelHelper::checkIssetPost( $id, 'hotel_room' );
-                $allow_full_day = get_post_meta( $id, 'allow_full_day', true ); // address
+                if( get_post_meta( $id, 'allow_full_day', true ) == 1 ) {
+                    $allow_full_day = 'on';
+                } else {
+                    $allow_full_day = 'off';
+                }
                 $data           = [
                     'room_parent'    => get_post_meta( $id, 'room_parent', true ),
                     'multi_location' => get_post_meta( $id, 'multi_location', true ),

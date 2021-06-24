@@ -984,11 +984,11 @@
 
                             if (price_by_per_person)
 
-                                var str_price_wrap = '<div class="panel-price-wrapper"><div class="panel-price"><input class="input-price" type="text" name="input-adult-price" autofocus value="" placeholder="'+ ts_params.text_adult_price +'"><input class="input-price" type="text" name="input-child-price" value="" placeholder="'+ ts_params.text_child_price +'"><select class="input-status" name="input-status"><option value="available">'+ ts_params.text_available +'</option><option value="unavailable">'+ ts_params.text_unavailable +'</option></select><a href="javascript: void(0);" class="button wb-btn-add-price" style="margin-left: 10px;">'+ ts_params.text_update +'<i class="fa fa-spin fa-spinner loading-icon"></i></a><span class="close"><i class="fa fa-times"></i></span></div></div>';
+                                var str_price_wrap = '<div class="panel-price-wrapper"><div class="panel-price"><input class="input-price" type="text" name="input-adult-price" autofocus value="" placeholder="'+ ts_params.text_adult_price +'"><input class="input-price" type="text" name="input-child-price" value="" placeholder="'+ ts_params.text_child_price +'"><select class="input-status" name="input-status"><option value="available">'+ ts_params.text_available +'</option><option value="unavailable">'+ ts_params.text_unavailable +'</option></select><a href="javascript: void(0);" class="button wb-btn-add-price" style="margin-left: 10px;">'+ ts_params.text_update +'<i class="fas fa-spin fa-spinner loading-icon"></i></a><span class="close"><i class="fas fa-times"></i></span></div></div>';
 
                             else
 
-                                var str_price_wrap = '<div class="panel-price-wrapper"><div class="panel-price"><input class="input-price" type="text" name="input-price" value="" placeholder="'+ ts_params.text_price +'"><select class="input-status" name="input-status"><option value="available">'+ ts_params.text_available +'</option><option value="unavailable">'+ ts_params.text_unavailable +'</option></select><a href="javascript: void(0);" class="button wb-btn-add-price" style="margin-left: 10px;">'+ ts_params.text_update +'<i class="fa fa-spin fa-spinner loading-icon"></i></a><span class="close"><i class="fa fa-times"></i></span></div></div>';
+                                var str_price_wrap = '<div class="panel-price-wrapper"><div class="panel-price"><input class="input-price" type="text" name="input-price" value="" placeholder="'+ ts_params.text_price +'"><select class="input-status" name="input-status"><option value="available">'+ ts_params.text_available +'</option><option value="unavailable">'+ ts_params.text_unavailable +'</option></select><a href="javascript: void(0);" class="button wb-btn-add-price" style="margin-left: 10px;">'+ ts_params.text_update +'<i class="fas fa-spin fa-spinner loading-icon"></i></a><span class="close"><i class="fas fa-times"></i></span></div></div>';
 
                             $(element).append(str_price_wrap);
 
@@ -2246,7 +2246,7 @@
 
                     '<div class="bar" data-price-per-person="'+ price_by_per_person +'"><div class="fn-label">' + label + '<div class="price">'+ ts_params.text_adult + adult_price + '</div><div class="price">'+ ts_params.text_child + child_price + '</div>' + '</div></div>'
 
-                    : '<div class="bar"><div class="fn-label">' + label + '<div class="price">' +ts_params.currency_smbl + price + '</div>' + '</div></div>';
+                    : '<div class="bar"><div class="fn-label">' + label + '<div class="price">' + price + '</div>' + '</div></div>';
 
                 var bar       = $(str_bar)
 

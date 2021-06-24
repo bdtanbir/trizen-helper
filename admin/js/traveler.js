@@ -11882,7 +11882,7 @@ jQuery(document).ready(function ($) {
 
         if (!me.hasClass('loading')) {
             var comment_id = me.data('id');
-            var loading    = $('<i class="loading_icon fa fa-spinner fa-spin"></i>');
+            var loading    = $('<i class="loading_icon fas fa-spinner fa-spin"></i>');
 
             me.addClass('loading');
             me.before(loading);
@@ -12270,7 +12270,7 @@ jQuery(document).ready(function ($) {
             me.removeClass('loading');
             me.find('i').remove();
             me.append(html.icon);
-            me.append('<i class="fa fa-spinner loading""></i>');
+            me.append('<i class="fas fa-spin fa-spinner loading""></i>');
             me.attr("data-original-title", html.title);
         });
     });
@@ -13664,7 +13664,7 @@ jQuery(document).ready(function ($) {
             e.preventDefault();
 
             var form = $(this).closest('form');
-            $(this).append('<i class="fa fa-spinner fa-spin"></i>');
+            $(this).append('<i class="fas fa-spin fa-spinner fa-spin"></i>');
             var data = {
                 'action': 'apply_mdcoupon_function',
                 'code': $('#field-coupon_code', form).val()

@@ -197,7 +197,6 @@ if ( !class_exists( 'HotelHelper' ) ) {
             return $results;
         }
 
-
         static function _get_full_ordered_new($room_id, $start, $end){
             if ( !TravelHelper::checkTableDuplicate( 'ts_hotel' ) ) return '';
 
@@ -326,6 +325,133 @@ if ( !class_exists( 'HotelHelper' ) ) {
             }
             self::$priceData[$hotel_id]=$min_price;
             return $min_price;
+        }
+
+        static function _check_room_only_available( $room_id = '', $check_in = '', $check_out = '', $number_r = 0, $order_item_id = '' ) {
+            $hotel_id = intval( get_post_meta( $room_id, 'room_parent', true ) );
+            if ( empty( $hotel_id ) )
+                $hotel_id = $room_id;
+            $allow_full_day = get_post_meta( $hotel_id, 'allow_full_day', true );
+            if ( !$allow_full_day || $allow_full_day == '' ) $allow_full_day = 'on';
+            $result                  = HotelHelper::_get_full_ordered_new( $room_id, strtotime( $check_in ), strtotime( $check_out ) );
+            $number_room             = get_post_meta( $room_id, 'number_room', true );
+            $list_date               = [];
+            $list_date_fist_half_day = [];
+            $list_date_last_half_day = [];
+            if ( is_array( $result ) && count( $result ) ) {
+                $disable             = [];
+                $array_fist_half_day = [];
+                $array_last_half_day = [];
+                for ( $i = intval( strtotime( $check_in ) ); $i <= intval( strtotime( $check_out ) ); $i = strtotime( '+1 day', $i ) ) {
+                    $num_room           = 0;
+                    $num_first_half_day = 0;
+                    $num_last_half_day  = 0;
+                    foreach ( $result as $key => $date ) {
+                        if ( $allow_full_day == 'on' ) {
+                            if ( $i >= intval( $date[ 'check_in_timestamp' ] ) && $i <= intval( $date[ 'check_out_timestamp' ] ) ) {
+                                $num_room += $date[ 'number_room' ];
+                            }
+                        } else {
+                            if ( $i > intval( $date[ 'check_in_timestamp' ] ) && $i < intval( $date[ 'check_out_timestamp' ] ) ) {
+                                $num_room += $date[ 'number_room' ];
+                            }
+                            if ( $i == intval( $date[ 'check_in_timestamp' ] ) ) {
+                                $num_first_half_day += $date[ 'number_room' ];
+                            }
+                            if ( $i == intval( $date[ 'check_out_timestamp' ] ) ) {
+                                $num_last_half_day += $date[ 'number_room' ];
+                            }
+                        }
+                    }
+                    $disable[ $i ]             = $num_room;
+                    $array_fist_half_day[ $i ] = $num_first_half_day;
+                    $array_last_half_day[ $i ] = $num_last_half_day;
+                }
+                if ( count( $disable ) ) {
+                    foreach ( $disable as $key => $num_room ) {
+                        if ( intval( $num_room + $number_r ) > $number_room )
+                            $list_date[] = date( 'd_m_Y', $key );
+                    }
+                }
+                if ( count( $array_fist_half_day ) ) {
+                    foreach ( $array_fist_half_day as $key => $num_room ) {
+                        if ( intval( $num_room + $number_r ) > $number_room )
+                            $list_date_fist_half_day[] = date( 'd_m_Y', $key );
+                    }
+                }
+                if ( count( $array_last_half_day ) ) {
+                    foreach ( $array_last_half_day as $key => $num_room ) {
+                        if ( intval( $num_room + $number_r ) > $number_room )
+                            $list_date_last_half_day[] = date( 'd_m_Y', $key );
+                    }
+                }
+                if ( ( is_array( $list_date ) and count( $list_date ) ) or ( ( is_array( $list_date_fist_half_day ) and count( $list_date_fist_half_day ) ) and ( is_array( $list_date_last_half_day ) and count( $list_date_last_half_day ) ) ) ) {
+                    return false;
+                }
+            }
+            return true;
+        }
+        static function check_day_cant_order( $room_id, $check_in, $check_out, $number_room, $adult_number = '', $child_number = '' ) {
+            global $wpdb;
+            $default_state = get_post_meta( $room_id, 'default_state', true );
+            $room          = intval( get_post_meta( $room_id, 'number_room', true ) );
+            if ( !$default_state ) $default_state = 'available';
+            $check_in  = strtotime( $check_in );
+            $check_out = strtotime( $check_out );
+            $sql = "
+				SELECT
+					`check_in`,
+					`check_out`,
+					`number`,
+					`status`,
+					DATE_FORMAT(FROM_UNIXTIME(check_in), '%Y-%m-%d')
+				FROM
+					{$wpdb->prefix}st_room_availability
+				WHERE
+					(
+						(
+							{$check_in} <= CAST(check_in as UNSIGNED)
+							AND {$check_out} >= CAST(check_out as UNSIGNED)
+						)
+						OR (
+							{$check_in} BETWEEN CAST(check_in AS UNSIGNED)
+							AND CAST(check_out as UNSIGNED)
+						)
+						OR (
+							{$check_out} BETWEEN CAST(check_in AS UNSIGNED)
+							AND CAST( check_out AS UNSIGNED )
+						)
+					)
+				AND post_id = '{$room_id}'";
+            $results = $wpdb->get_results( $sql );
+            $price = TSPrice::getRoomPriceOnlyCustomPrice( $room_id, $check_in, $check_out, 1, $adult_number, $child_number );
+            if ( $price <= 0 ) {
+                return false;
+            }
+            if ( is_array( $results ) && count( $results ) ) {
+                for ( $i = $check_in; $i <= $check_out; $i = strtotime( '+1 day', $i ) ) {
+                    $in_date = false;
+                    $status  = 'available';
+                    foreach ( $results as $key => $val ) {
+                        if ( $i >= $val->check_in && $i <= $val->check_out ) {
+                            $status  = $val->status;
+                            $in_date = true;
+                        }
+                    }
+                    if ( $in_date ) {
+                        if ( $status != 'available' || $room < $number_room ) {
+                            return false;
+                        }
+                    } else {
+                        if ( $default_state != 'available' || $room < $number_room ) {
+                            return false;
+                        }
+                    }
+                }
+                return true;
+            } else {
+                return false;
+            }
         }
     }
     $hotelhelper = new HotelHelper();

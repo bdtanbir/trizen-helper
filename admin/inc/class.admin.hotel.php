@@ -535,7 +535,11 @@ if ( !class_exists( 'TSAdminHotel' ) ) {
             }
 
             $allow_full_day = get_post_meta( $hotel_id, 'allow_full_day', true );
-            if ( !$allow_full_day || $allow_full_day == '' ) $allow_full_day = 'on';
+            if ( $allow_full_day == 1 ) {
+                $allow_full_day = 'on';
+            } else {
+                $allow_full_day = 'off';
+            }
 
             $year = date( 'Y', $check_in );
             if ( empty( $year ) ) $year = date( 'Y' );
