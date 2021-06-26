@@ -94,7 +94,6 @@ if ( !class_exists( 'TSHotel' ) ) {
             add_action('wp_ajax_ts_top_ajax_search', [$this, '_top_ajax_search']);
             add_action('wp_ajax_nopriv_ts_top_ajax_search', [$this, '_top_ajax_search']);
 
-            add_action( 'wp_ajax_ts_add_room_number_inventory', [ $this, 'ts_add_room_number_inventory' ] );
             //xsearch Load post hotel filter ajax location
             add_action('wp_ajax_ts_filter_hotel_ajax_location', [$this, 'ts_filter_hotel_ajax_location']);
             add_action('wp_ajax_nopriv_ts_filter_hotel_ajax_location', [$this, 'ts_filter_hotel_ajax_location']);
@@ -121,80 +120,6 @@ if ( !class_exists( 'TSHotel' ) ) {
             query_posts($args);
             $ts_search_query = $wp_query;
             $hotel->remove_alter_search_query();
-        }
-
-        public function ts_add_room_number_inventory() {
-            $room_id      = post('room_id', '');
-            $number_room  = post('number_room', '');
-            $current_user = wp_get_current_user();
-            $roles        = $current_user->roles;
-            $role         = array_shift($roles);
-            if ($role != 'administrator' && $role != 'partner') {
-                $return = [
-                    'status'  => 0,
-                    'message' => esc_html__('Can not set number for room', 'trizen-helper')
-                ];
-                echo json_encode($return);
-                die;
-            } else {
-                if ($role == 'partner') {
-                    $current_user_id = $current_user->ID;
-                    $post   = get_post($room_id);
-                    $authid = $post->post_author;
-                    if ($current_user_id != $authid) {
-                        $return = [
-                            'status'  => 0,
-                            'message' => esc_html__('Can not set number for room', 'trizen-helper')
-                        ];
-                        echo json_encode($return);
-                        die;
-                    }
-                }
-            }
-            if (get_post_type($room_id) != 'hotel_room') {
-                $return = [
-                    'status' => 0,
-                    'message' => esc_html__('Can not set number for room', 'trizen-helper')
-                ];
-                echo json_encode($return);
-                die;
-            }
-            if ($room_id < 0 || $room_id == '' || !is_numeric($room_id)) {
-                $return = [
-                    'status' => 0,
-                    'message' => esc_html__('Room is invalid!', 'trizen-helper'),
-                ];
-                echo json_encode($return);
-                die;
-            }
-            if ($number_room < 0 || $number_room == '' || !is_numeric($number_room)) {
-                $return = [
-                    'status' => 0,
-                    'message' => esc_html__('Number of room is invalid!', 'trizen-helper'),
-                ];
-                echo json_encode($return);
-                die;
-            }
-            $res = update_post_meta($room_id, 'number_room', $number_room);
-            //Update number room in available table
-            $update_number_room = TS_Hotel_Room_Availability::inst()
-                ->where('post_id', $room_id)
-                ->update(['number' => $number_room]);
-            if ($res && $update_number_room > 0) {
-                $return = [
-                    'status' => 1,
-                    'message' => esc_html__('Update success!', 'trizen-helper'),
-                ];
-                echo json_encode($return);
-                die;
-            } else {
-                $return = [
-                    'status' => 0,
-                    'message' => esc_html__('Can not set number for room', 'trizen-helper')
-                ];
-                echo json_encode($return);
-                die;
-            }
         }
 
         public function removeSearchServiceLocationByAuthor($query) {

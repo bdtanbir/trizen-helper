@@ -1363,7 +1363,7 @@ A VERTICAL event
     transform: translateX(-50%) translateY(-50%)
 }
 .fc-day-grid-event{
-    min-height: 40px;
+    min-height: 35px;
 }
 @media screen and (max-width: 992px) {
     .fc-center {width: 30% !important ;overflow: hidden}

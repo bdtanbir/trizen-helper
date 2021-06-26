@@ -11826,7 +11826,7 @@ jQuery(document).ready(function ($) {
 
         if (!me.hasClass('loading')) {
             var comment_id = me.data('id');
-            var loading    = $('<i class="loading_icon fa fa-spinner fa-spin"></i>');
+            var loading    = $('<i class="loading_icon fas fa-spinner fa-spin"></i>');
 
             me.addClass('loading');
             me.before(loading);
