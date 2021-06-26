@@ -1517,7 +1517,7 @@ function ts_add_room_number_inventory() {
     }
     if (get_post_type($room_id) != 'hotel_room') {
         $return = [
-            'status' => 0,
+            'status'  => 0,
             'message' => esc_html__('Can not set number for room', 'trizen-helper')
         ];
         echo json_encode($return);
@@ -1525,7 +1525,7 @@ function ts_add_room_number_inventory() {
     }
     if ($room_id < 0 || $room_id == '' || !is_numeric($room_id)) {
         $return = [
-            'status' => 0,
+            'status'  => 0,
             'message' => esc_html__('Room is invalid!', 'trizen-helper'),
         ];
         echo json_encode($return);
@@ -1546,19 +1546,65 @@ function ts_add_room_number_inventory() {
         ->update(['number' => $number_room]);
     if ($res && $update_number_room > 0) {
         $return = [
-            'status' => 1,
+            'status'  => 1,
             'message' => esc_html__('Update success!', 'trizen-helper'),
         ];
         echo json_encode($return);
         die;
     } else {
         $return = [
-            'status' => 0,
+            'status'  => 0,
             'message' => esc_html__('Can not set number for room', 'trizen-helper')
         ];
         echo json_encode($return);
         die;
     }
+}
+
+
+
+add_action( 'comment_post', 'save_review_stars' );
+function save_review_stars($comment_id) {
+    $comemntObj = get_comment($comment_id);
+    $post_id    = $comemntObj->comment_post_ID;
+
+    if (get_post_type($post_id) == 'ts_hotel') {
+        $all_stars = TSHotel::get_review_stars();
+        $ts_review_stars = isset($_POST['ts_review_stars']) ? $_POST['ts_review_stars']: [];
+
+        if (!empty($all_stars) and is_array($all_stars)) {
+            $total_point = 0;
+            foreach ( $all_stars as $key => $value ) {
+                if ( isset( $ts_review_stars[$value] ) ) {
+                    //Now Update the Each Star Value
+                    if( is_numeric( $ts_review_stars[$value] ) ) {
+                        $ts_review_stars[$value] = intval( $ts_review_stars[$value] );
+                    } else {
+                        $ts_review_stars[$value] = 5;
+                    }
+                    $total_point += $ts_review_stars[$value];
+                    update_comment_meta($comment_id, 'ts_star_' . sanitize_title($value), $ts_review_stars[$value]);
+                }
+            }
+            $avg = round($total_point / count($all_stars), 1);
+            //Update comment rate with avg point
+            $rate = wp_filter_nohtml_kses($avg);
+            if ($rate > 5) {
+                //Max rate is 5
+                $rate = 5;
+            }
+
+            update_comment_meta($comment_id, 'comment_rate', $rate);
+            //Now Update the Stars Value
+            update_comment_meta($comment_id, 'ts_review_stars', $ts_review_stars);
+        }
+    }
+    if (post('comment_rate')) {
+        update_comment_meta($comment_id, 'comment_rate', post('comment_rate'));
+    }
+    //review_stars
+    $avg = TSReview::get_avg_rate($post_id);
+    update_post_meta($post_id, 'rate_review', $avg);
 }
 
 

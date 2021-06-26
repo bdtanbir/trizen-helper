@@ -248,4 +248,34 @@
         });
     });
 
+
+    $('.review-form .review-items .rates .la').each(function () {
+        var list = $(this).parent(),
+            listItems  = list.children(),
+            itemIndex  = $(this).index(),
+            parentItem = list.parent();
+        $(this).hover(function () {
+            for (var i = 0; i < listItems.length; i++) {
+                if (i <= itemIndex) {
+                    $(listItems[i]).addClass('hovered');
+                } else {
+                    break;
+                }
+            }
+            $(this).click(function () {
+                for (var i = 0; i < listItems.length; i++) {
+                    if (i <= itemIndex) {
+                        $(listItems[i]).addClass('selected');
+                    } else {
+                        $(listItems[i]).removeClass('selected');
+                    }
+                }
+                ;
+                parentItem.children('.ts_review_stars').val(itemIndex + 1);
+            });
+        }, function () {
+            listItems.removeClass('hovered');
+        });
+    });
+
 })(jQuery);

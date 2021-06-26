@@ -77,7 +77,7 @@ $link_with_params = add_query_arg($get_data, get_the_permalink());
                 <?php } ?>
                 <div class="room-photos">
                     <a class="btn theme-btn-hover-gray" data-src="<?php the_post_thumbnail_url(); ?>"
-                       data-fancybox="gallery"
+                       data-fancybox="gallery<?php the_ID(); ?>"
                        data-caption="<?php esc_attr_e('Showing image - 01', 'trizen'); ?>"
                        data-speed="700">
                         <i class="la la-photo mr-2"></i><?php esc_html_e('Room Photos', 'trizen'); ?>
@@ -104,7 +104,7 @@ $link_with_params = add_query_arg($get_data, get_the_permalink());
                                 $zero_nm = '';
                             }
                             echo '<a class="d-none"
-                                   data-fancybox="gallery"
+                                   data-fancybox="gallery'.get_the_ID().'"
                                    data-src="' . $image_src[0] . '"
                                    data-caption="' . esc_attr__('Showing image - ', 'trizen') . esc_attr($zero_nm) . $count++. '"
                                    data-speed="700"></a>';
@@ -129,14 +129,14 @@ $link_with_params = add_query_arg($get_data, get_the_permalink());
                 <p class="text-uppercase font-size-14">
                     <?php esc_html_e('Per/night', 'trizen'); ?>
                     <strong class="mt-n1 text-black font-size-18 font-weight-black d-block">
-                        <?php echo TravelHelper::format_money( $sale_price ); ?>
+                        <!--                        --><?php //echo TravelHelper::format_money( $sale_price ); ?>
+                        $595.33
                     </strong>
                 </p>
                 <div class="custom-checkbox mb-0">
-                    <input type="checkbox" id="selectChb1">
-                    <label for="selectChb1" class="theme-btn theme-btn-small">
-                        <?php esc_html_e('Select', 'trizen'); ?>
-                    </label>
+                    <a href="<?php the_permalink(); ?>" class="theme-btn theme-btn-small">
+                        Room Details
+                    </a>
                 </div>
             </div>
         </div>

@@ -530,8 +530,8 @@ if ( !class_exists( 'AvailabilityHelper' ) ) {
                 } else {
                     if (filter_var($_POST['calendar_price'], FILTER_VALIDATE_FLOAT) === false) {
                         echo json_encode([
-                            'type' => 'error',
-                            'status' => 0,
+                            'type'    => 'error',
+                            'status'  => 0,
                             'message' => __('The price field is not a number.', 'trizen-helper')
                         ]);
                         die();
@@ -541,8 +541,8 @@ if ( !class_exists( 'AvailabilityHelper' ) ) {
             $price       = floatval(request('calendar_price', 0));
             $post_id     = request('calendar_post_id', '');
             $post_id     = post_origin($post_id);
-//            $adult_price = floatval( request( 'calendar_adult_price', '' ) );
-//            $child_price = floatval( request( 'calendar_child_price', '' ) );
+            $adult_price = floatval( request( 'calendar_adult_price', '' ) );
+            $child_price = floatval( request( 'calendar_child_price', '' ) );
             $parent_id   = get_post_meta($post_id, 'room_parent', true);
             for ($i = $check_in; $i <= $check_out; $i = strtotime('+1 day', $i)) {
                 $data = [
@@ -554,8 +554,8 @@ if ( !class_exists( 'AvailabilityHelper' ) ) {
                     'status'      => $status,
                     'parent_id'   => $parent_id,
                     'is_base'     => 0,
-//                    'adult_price' => $adult_price,
-//                    'child_price' => $child_price,
+                    'adult_price' => $adult_price,
+                    'child_price' => $child_price,
                 ];
                 TS_Hotel_Room_Availability::inst()->insertOrUpdate($data);
             }
