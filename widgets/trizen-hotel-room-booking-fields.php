@@ -62,7 +62,7 @@ class trizen_hrbf_widget extends WP_Widget {
 
             <div class="sidebar-widget-item">
                 <div class="contact-form-action"  data-availability-date="<?php echo esc_attr($current_calendar_reverb); ?>">
-                    <!-- <form action="#"> -->
+
                         <div class="input-box">
                             <label class="label-text" for="input-check-in">
                                 <?php esc_html_e('Check In', 'trizen-helper'); ?>
@@ -82,33 +82,7 @@ class trizen_hrbf_widget extends WP_Widget {
 
                             </div>
                         </div>
-                        <!--<div class="input-box">
-                            <label class="label-text" for="input-form-select">
-                                <?php /*esc_html_e('Rooms', 'trizen-helper'); */?>
-                            </label>
-                            <?php /*if($room_query->have_posts()) { */?>
-                                <div class="form-group">
-                                    <div class="select-contain w-auto">
-                                        <select id="input-form-select" class="select-contain-select" name="room-for-hotel">
-                                            <option value="0">
-                                                <?php /*esc_html_e('Select Room', 'trizen-helper'); */?>
-                                            </option>
 
-                                            <?php /*while($room_query->have_posts()) { $room_query->the_post();
-                                                $title_one = get_the_title();
-                                                $postid_one = get_the_ID();
-
-                                                echo '<option value="'.esc_attr($postid_one).'">
-                                                '.esc_html($title_one).'
-                                                    </option>';
-                                                } wp_reset_query(); */?>
-
-                                        </select>
-                                    </div>
-                                </div>
-                            <?php /*} */?>
-                        </div>-->
-                    <!-- </form> -->
                 </div>
             </div>
             <div class="sidebar-widget-item">

@@ -17461,9 +17461,9 @@ options:
 
         buttonIcons: {
 
-            prev: 'a fa fa-chevron-left',
+            prev: 'a fas fa-chevron-left',
 
-            next: 'a fa fa-chevron-right',
+            next: 'a fas fa-chevron-right',
 
             prevYear: 'left-double-arrow',
 

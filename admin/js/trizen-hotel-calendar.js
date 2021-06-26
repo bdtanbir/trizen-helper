@@ -681,7 +681,7 @@ jQuery(function($){
                             html += `<div class="price">${ts_params.text_adult} ${event.adult_price}</div>`;
                             html += `<div class="price">${ts_params.text_child} ${event.child_price}</div>`;
                         } else {
-                            html += '<div class="price -0-o-">'+ ts_params.text_price +' '+event.price+'</div>';
+                            html += '<div class="price">'+ ts_params.text_price +' '+event.price+'</div>';
                         }
                     }
                     if(typeof event.status == 'undefined' || event.status != 'available'){

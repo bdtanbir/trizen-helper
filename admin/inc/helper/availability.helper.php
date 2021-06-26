@@ -5,7 +5,7 @@ if ( !class_exists( 'AvailabilityHelper' ) ) {
         public function __construct()
         {
             if (is_admin()) {
-                add_action( 'wp_ajax_ts_get_availability_hotel', [&$this, '_get_availability_hotel'] );
+//                add_action( 'wp_ajax_ts_get_availability_hotel', [&$this, '_get_availability_hotel'] );
             }
 
             add_action( 'wp_ajax_trizen_calendar_bulk_edit_form', [$this, 'trizen_calendar_bulk_edit_form'] );
@@ -396,7 +396,7 @@ if ( !class_exists( 'AvailabilityHelper' ) ) {
             return $return;
         }
 
-        function _get_availability_hotel() {
+        /*function _get_availability_hotel() {
             $results       = [];
             $post_id       = request('post_id', '');
             $post_id       = post_origin($post_id);
@@ -461,7 +461,7 @@ if ( !class_exists( 'AvailabilityHelper' ) ) {
             }
             echo json_encode($results);
             die();
-        }
+        }*/
 
         static function _getdataHotel( $post_id, $check_in, $check_out ) {
             global $wpdb;
