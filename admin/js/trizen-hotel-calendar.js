@@ -664,12 +664,12 @@ jQuery(function($){
                 eventClick: function(event, element, view){
                     setCheckInOut(event.start.format('MM/DD/YYYY'),event.start.format('MM/DD/YYYY'),self.form_container);
                                         let price_by_per_person = $('.calendar-content', self.container).data('price-by-per-person') == 'on' ? true : false || false;
-                                        if ( price_by_per_person ) {
+                                        /*if ( price_by_per_person ) {
                                             $('#calendar_adult_price', self.form_container).val(event.adult_price);
                                             $('#calendar_child_price', self.form_container).val(event.child_price);
-                                        } else {
+                                        } else {*/
                                             $('#calendar_price', self.form_container).val(event.price);
-                                        }
+                                        // }
                     $('#calendar_number', self.form_container).val(event.number);
                     $('#calendar_status option[value='+event.status+']', self.form_container).prop('selected');
                 },
@@ -677,12 +677,12 @@ jQuery(function($){
                     var html = '';
                     if(event.status == 'available'){
                         let price_by_per_person = $('.calendar-content', self.container).data('price-by-per-person') == 'on' ? true : false || false;
-                        if ( price_by_per_person ) {
+                        /*if ( price_by_per_person ) {
                             html += `<div class="price">${ts_params.text_adult} ${event.adult_price}</div>`;
                             html += `<div class="price">${ts_params.text_child} ${event.child_price}</div>`;
-                        } else {
+                        } else {*/
                             html += '<div class="price">'+ ts_params.text_price +' '+event.price+'</div>';
-                        }
+                        // }
                     }
                     if(typeof event.status == 'undefined' || event.status != 'available'){
                         html += '<div class="not_available">'+ ts_params.text_unavailable +'</div>';
@@ -691,7 +691,7 @@ jQuery(function($){
                 },
                 loading: function(isLoading, view){
                     if(isLoading){
-                        $('.overlay', self.container).addClass('open');
+                        $('.overlay', self.container).removeClass('open');
                     }else{
                         $('.overlay', self.container).removeClass('open');
                     }
@@ -738,7 +738,7 @@ jQuery(function($){
                     value: $('input[name=price_by_per_person]:checked').val() == 'on' ? true : false || false
                 });
                 $('.form-message', t).attr('class', 'form-message').find('p').html('');
-                $('.overlay', self.container).addClass('open');
+                $('.overlay', self.container).removeClass('open');
                 if(flag_submit) return false; flag_submit = true;
                 $.post(ajaxurl, data, function(respon, textStatus, xhr) {
                     if(typeof respon == 'object'){

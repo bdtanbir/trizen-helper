@@ -251,6 +251,16 @@ When it's NOT activated, the fc-button classes won't even be in the DOM.
 .fc .fc-button-group > .fc-button:active,
 .fc .fc-button-group > .fc-button.fc-button-active {
     z-index: 1;
+    outline: none;
+    box-shadow: none;
+}
+.fc-row .fc-helper-skeleton td.fc-today.fc-state-highlight,
+.fc-unthemed .fc-today {
+    background: rgb(216, 217, 62) !important;
+}
+.fc-state-default {
+    background-image: none !important;
+    text-shadow: none !important;
 }
 .fc-direction-ltr .fc-button-group > .fc-button:not(:first-child) {
     margin-left: 2px;
@@ -270,6 +280,7 @@ When it's NOT activated, the fc-button classes won't even be in the DOM.
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
 }
+.fc-toolbar .fc-button:hover,
 .fc-toolbar .fc-today-button,
 .fc-direction-ltr .fc-button-group .fc-next-button,
 .fc-direction-ltr .fc-button-group .fc-prev-button,
@@ -1277,8 +1288,8 @@ A VERTICAL event
     color: #FFF;
     padding-top: 5px;
     padding-bottom: 5px;
-    border: 1px solid #ED8323;
-    background-color: #287dfa;
+    border: 1px solid #000000;
+    background-color: #000000;
 }
 .fc-day-number{
     padding-left: 5px !important;
@@ -1315,9 +1326,15 @@ A VERTICAL event
     display: block;
     margin-bottom: 10px !important;
 }
-.fc-event{
-    background-color: rgb(237, 131, 35);
-    border-color: rgb(237, 131, 35);
+.fc-event-container .fc-event{
+    background-color: #287dfa;
+    border-color: #287dfa;
+    margin: 3px 2px 0;
+}
+.fc-content .price {
+    font-size: 12px;
+    margin-top: 3px;
+    padding: 0 0 0 5px;
 }
 .fc-highlight{
     opacity: 0.7 !important;

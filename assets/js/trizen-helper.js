@@ -112,6 +112,30 @@
         });
     });
 
+    /*$(".check-in-input-ts").daterangepicker({
+            singleDatePicker: true,
+            sameDate: false,
+            autoApply: true,
+            disabledPast: true,
+            dateFormat: 'DD/MM/YYYY',
+            customClass: '',
+            widthSingle: 500,
+            minDate: new Date,
+            // onlyShowCurrentMonth: true,
+        }
+    )*/
+    $(".check-out-input-ts, .check-in-input-ts").daterangepicker({
+            singleDatePicker: true,
+            sameDate: false,
+            autoApply: true,
+            disabledPast: true,
+            dateFormat: 'DD/MM/YYYY',
+            customClass: '',
+            widthSingle: 500,
+            minDate: new Date,
+            // onlyShowCurrentMonth: true,
+    })
+
     /* Searching Room Availability */
     $('.form-check-availability-hotel', body).submit(function (ev) {
         ev.preventDefault();
