@@ -18,23 +18,23 @@ define( 'TRIZEN_HELPER_VERSION', '1.0' );
 
 
 require_once TRIZEN_HELPER_PATH.'admin/inc/setting/trizen-option-setting.php';
+    require_once TRIZEN_HELPER_PATH.'custom/trizen-custom-metaboxes.php';
 add_action('plugins_loaded', 'trizen_helper_load');
 function trizen_helper_load() {
 	require_once TRIZEN_HELPER_PATH.'widgets/trizen-social-profile.php';
 	require_once TRIZEN_HELPER_PATH.'widgets/trizen-recent-post-with-thumbnail.php';
 	require_once TRIZEN_HELPER_PATH.'custom/trizen-custom-post-types.php';
-	require_once TRIZEN_HELPER_PATH.'custom/trizen-custom-metaboxes.php';
 	require_once TRIZEN_HELPER_PATH.'custom/trizen-taxonomy-class.php';
 	require_once TRIZEN_HELPER_PATH.'custom/trizen-room-facilities-custom-icon-field.php';
 	require_once TRIZEN_HELPER_PATH.'widgets/trizen-hotel-organized-by.php';
 	require_once TRIZEN_HELPER_PATH.'widgets/trizen-hotel-price-and-availability.php';
 	require_once TRIZEN_HELPER_PATH.'widgets/trizen-hotel-room-booking-fields.php';
 	require_once TRIZEN_HELPER_PATH.'inc/trizen-helper.booking.php';
+require_once TRIZEN_HELPER_PATH.'inc/class.hotel-helper.php';
 	require_once TRIZEN_HELPER_PATH.'custom/trizen-helper.class-admin-room.php';
     require_once TRIZEN_HELPER_PATH.'admin/inc/database.helper.php';
     require_once TRIZEN_HELPER_PATH.'admin/inc/class.review.php';
     require_once TRIZEN_HELPER_PATH.'core/database/tables/availability.php';
-    require_once TRIZEN_HELPER_PATH.'core/database/tables/hotel_room_availability.php';
     require_once TRIZEN_HELPER_PATH.'core/database/tables/order_item.php';
     require_once TRIZEN_HELPER_PATH.'admin/inc/class.user.php';
 }
@@ -45,6 +45,7 @@ if(is_admin()) {
     require_once TRIZEN_HELPER_PATH.'admin/inc/class.admin.availability.php';
     require_once TRIZEN_HELPER_PATH.'core/database/tables/ts_price.php';
 }
+require_once TRIZEN_HELPER_PATH.'core/database/tables/hotel_room_availability.php';
 require_once TRIZEN_HELPER_PATH.'admin/inc/class.tsadmin.php';
 require_once TRIZEN_HELPER_PATH.'admin/inc/helper/nested_sets_model.helper.php';
 require_once TRIZEN_HELPER_PATH.'admin/inc/helper/availability.helper.php';
@@ -63,7 +64,6 @@ require_once TRIZEN_HELPER_PATH.'inc/class.hotel.php';
 require_once TRIZEN_HELPER_PATH.'inc/helper/price.helper.php';
 require_once TRIZEN_HELPER_PATH.'inc/hotel-alone-helper.php';
 require_once TRIZEN_HELPER_PATH.'inc/class.single_hotel.php';
-require_once TRIZEN_HELPER_PATH.'inc/class.hotel-helper.php';
 
 
 

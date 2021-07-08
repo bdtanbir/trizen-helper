@@ -293,14 +293,15 @@
 .trizen-hotel-features-repeater-metabox .field-group .trizen_hotel_features_remove:hover {
     background: #e40707;
 }
+.location-list label input:focus,
 .trizen-room-rules-metabox .field-group .trizen_room_rules_remove:focus,
 .trizen-room-other-facility-metabox .field-group .trizen_room_other_facility_remove:focus,
 .hotel-accordion-item .hotel-accordion-title .trizen_hotel_faq_remove:focus,
 .hotel-accordion-item .hotel-accordion-title a:focus,
 #tab-hotel-features .trizen-btn:focus,
 .trizen-hotel-features-repeater-metabox .field-group .trizen_hotel_features_remove:focus {
-    outline: none;
-    box-shadow: none;
+    outline: none !important;
+    box-shadow: none !important;
 }
 #tab-hotel-features .trizen-btn {
     padding: 1px 15px;
@@ -1605,6 +1606,44 @@ button {
 #adminmenu .menu-icon-hotel_room .wp-menu-image:before,
 #adminmenu .menu-icon-ts_hotel .wp-menu-image:before {
     color: #ff76e1;
+}
+.location-list label input {
+    border: 1px solid #e8e8e8;
+    border-radius: 3px;
+    width: 18px;
+    height: 18px;
+    box-shadow: none;
+    position: relative;
+    background: #e8e8e8;
+}
+.location-list label input[type="checkbox"]:checked::before {
+    content: '';
+    width: 3px;
+    height: 7px;
+    border-right: 1px solid #ffffff;
+    border-bottom: 1px solid #ffffff;
+    position: absolute;
+    left: 10px;
+    top: 6px;
+    transform: rotate(45deg);
+}
+.location-list label input[type="checkbox"]:checked {
+    background: #287dfa;
+    border-color: #287dfa;
+}
+#trizen-select-country-meta .select2-selection__rendered,
+#trizen-select-country-meta select {
+    border: 1px solid #ccc;
+    padding: 2px 15px;
+    border-radius: 4px;
+}
+#trizen-select-country-meta .select2-container .select2-selection--single {
+    height: auto;
+    border: none;
+}
+#trizen-select-country-meta .select2-container--default .select2-selection--single .select2-selection__arrow {
+    height: 32px;
+    width: 27px;
 }
 
 

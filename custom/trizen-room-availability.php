@@ -1,11 +1,6 @@
 <?php
 global $post;
 
-if( is_admin() ){
-    $post_id = get_the_ID();
-}else{
-    $post_id = get('id','');
-}
 ?>
 
 <div class="calendar-wrapper" data-post-id="<?php echo esc_attr($post->ID); ?>">
@@ -226,7 +221,7 @@ if( is_admin() ){
                                 </label>
                             </div>
                         </div>
-                        <input type="hidden" name="post-id" value="<?php echo esc_attr($post_id); ?>">
+                        <input type="hidden" name="post-id" value="<?php echo esc_attr($post->ID); ?>">
                         <div class="form-message"></div>
                     </div>
                     <div class="form-footer">

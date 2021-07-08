@@ -1267,16 +1267,18 @@ if ( !class_exists( 'TravelHelper' ) ) {
                         } elseif (get_post_type($post_id) == 'ts_hotel') {
                             require_once TRIZEN_HELPER_PATH . 'admin/inc/hotel/hotel_review_form.php';
                         }
-                        ?>
-                        <div class="text-left review-comment-btn-wrap">
-                            <input type="hidden" id="comment_post_ID" name="comment_post_ID"
-                                   value="<?php echo esc_attr($post_id); ?>">
-                            <input type="hidden" id="comment_parent" name="comment_parent" value="0">
-                            <input id="submit" type="submit" name="submit"
-                                   class="btn btn-green upper font-medium review-comment-btn"
-                                   value="<?php esc_attr_e('Leave a Review', 'trizen-helper') ?>">
-                        </div>
-                        <?php
+                        if( is_user_logged_in(  )) {
+                            ?>
+                            <div class="text-left review-comment-btn-wrap">
+                                <input type="hidden" id="comment_post_ID" name="comment_post_ID"
+                                    value="<?php echo esc_attr($post_id); ?>">
+                                <input type="hidden" id="comment_parent" name="comment_parent" value="0">
+                                <input id="submit" type="submit" name="submit"
+                                    class="btn btn-green upper font-medium review-comment-btn"
+                                    value="<?php esc_attr_e('Leave a Review', 'trizen-helper') ?>">
+                            </div>
+                            <?php
+                        }
                         do_action('comment_form', $post_id);
                         ?>
                     </form>

@@ -714,7 +714,7 @@ if ( !class_exists( 'TSHotel' ) ) {
                     $ordered = 0;
                     if (!empty($order_rs)) {
                         foreach ($order_rs as $key => $value) {
-                            if ($allow_fullday == 'on') {
+                            if ($allow_fullday == 1) {
                                 if ($i >= $value->check_in_timestamp && $i <= $value->check_out_timestamp) {
                                     $ordered += (int)$value->room_num_search;
                                 }

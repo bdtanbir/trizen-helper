@@ -3,8 +3,8 @@
 class TS_Single_Hotel {
     static $_inst;
     public function __construct(){
-        add_action('wp_ajax_sts_filter_room_ajax', array($this, '__singleRoomFilterAjax'));
-        add_action('wp_ajax_nopriv_sts_filter_room_ajax', array($this, '__singleRoomFilterAjax'));
+        add_action('wp_ajax_ts_filter_room_ajax', array($this, '__singleRoomFilterAjax'));
+        add_action('wp_ajax_nopriv_ts_filter_room_ajax', array($this, '__singleRoomFilterAjax'));
         // Load instagram ajax
         add_action('wp_ajax_load_instagram', [$this, 'ts_load_instagram_images']);
         add_action('wp_ajax_nopriv_load_instagram', [$this, 'ts_load_instagram_images']);

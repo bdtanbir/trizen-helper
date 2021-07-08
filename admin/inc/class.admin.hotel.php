@@ -516,7 +516,7 @@ if ( !class_exists( 'TSAdminHotel' ) ) {
                     $num_room_first_half_day = 0;
                     $num_room_last_half_day = 0;
                     foreach ( $result as $key => $date ) {
-                        if ( $allow_full_day == 'on' ) {
+                        if ( $allow_full_day == 1 ) {
                             if ( $i >= intval( $date[ 'check_in_timestamp' ] ) && $i <= intval( $date[ 'check_out_timestamp' ] ) ) {
                                 $num_room += $date[ 'number_room' ];
                             }
@@ -1013,7 +1013,7 @@ if ( !class_exists( 'TSAdminHotel' ) ) {
                     $hotel_id = get_the_ID();
                     TSAdminHotel::_update_avg_price($hotel_id);
                     TSAdminHotel::_update_min_price($hotel_id);
-                    TSAdminRoom::_update_duplicate_data($hotel_id, []);
+                    TSAdminHotel::_update_duplicate_data($hotel_id, []);
                 }
             }
 

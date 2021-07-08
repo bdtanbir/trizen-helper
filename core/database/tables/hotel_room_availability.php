@@ -116,9 +116,14 @@ class TS_Hotel_Room_Availability extends TS_Model {
             unset($data['check_in']);
             return $this->where($where)->update($data);
         }else{
+            if(get_post_meta($data['post_id'],'allow_full_day',true) == 1) {
+                $allow_full_day = 'on';
+            } else {
+                $allow_full_day = 'off';
+            }
             $data['adult_number']   = get_post_meta($data['post_id'],'adult_number',true);
             $data['child_number']   = get_post_meta($data['post_id'],'child_number',true);
-            $data['allow_full_day'] = get_post_meta($data['post_id'],'allow_full_day',true);
+            $data['allow_full_day'] = $allow_full_day;
             $data['number']         = get_post_meta($data['post_id'],'number_room',true);
 
             return $this->insert($data);

@@ -360,7 +360,7 @@ if ( !class_exists( 'TSAvailability' ) ) {
 
         public function _insertCustomPriceTour(){
             $complete = 1;
-            if ( TSAdminRoom::isset_table( 'ts_tours' ) ) {
+            if ( TSAvailability::isset_table( 'ts_tours' ) ) {
 
                 global $wpdb;
                 $table = $wpdb->prefix . $this->table;
@@ -412,7 +412,7 @@ if ( !class_exists( 'TSAvailability' ) ) {
         public function _insertCustomPriceActivity()
         {
             $complete = 1;
-            if ( TSAdminRoom::isset_table( 'ts_activity' ) ) {
+            if ( TSAvailability::isset_table( 'ts_activity' ) ) {
 
                 global $wpdb;
                 $table = $wpdb->prefix . $this->table;
@@ -525,7 +525,7 @@ if ( !class_exists( 'TSAvailability' ) ) {
                                 if($post_types[$index] == 'ts_tours' or $post_types[$index] == 'ts_activity'){
                                     $meta_key = 'type_activity';
                                     $meta_value = 'daily_activity';
-                                    if($post_types[$index] == 'st_tours'){
+                                    if($post_types[$index] == 'ts_tours'){
                                         $meta_key = 'type_tour';
                                         $meta_value = 'daily_tour';
                                     }
@@ -656,6 +656,6 @@ if ( !class_exists( 'TSAvailability' ) ) {
         }
     }
 
-    $st_avaibility = new TSAvailability();
+    $ts_avaibility = new TSAvailability();
 }
 ?>

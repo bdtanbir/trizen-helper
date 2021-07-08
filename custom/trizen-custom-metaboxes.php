@@ -54,14 +54,6 @@ if(!function_exists('trizen_register_meta_boxes')) {
 		$meta_key = 'trizen_hotel_image_gallery';
 		update_post_meta( $post_id, $meta_key, $_POST[$meta_key] );
 
-        // If the checkbox was not empty, save it as array in post meta
-        if ( ! empty( $_POST['multi_location'] ) ) {
-            update_post_meta( $post_id, 'multi_location', $_POST['multi_location'] );
-
-            // Otherwise just delete it if its blank value.
-        } else {
-            delete_post_meta( $post_id, 'multi_location' );
-        }
 
         // If the checkbox was not empty, save it as array in post meta
         if ( ! empty( $_POST['multi_location'] ) ) {
@@ -107,7 +99,7 @@ if(!function_exists('trizen_register_meta_boxes')) {
 		];
 		foreach ( $fields as $field ) {
 			if ( array_key_exists( $field, $_POST ) ) {
-				update_post_meta( $post_id, $field, wp_kses_post( $_POST[$field] ) );
+				update_post_meta( $post_id, $field, $_POST[$field] );
 			}
 		}
 
@@ -190,6 +182,16 @@ if(!function_exists('trizen_register_meta_boxes')) {
 
 		$room_gallery_meta_key = 'trizen_hotel_room_image_gallery';
 		update_post_meta( $post_id, $room_gallery_meta_key, $_POST[$room_gallery_meta_key] );
+
+        
+        // If the checkbox was not empty, save it as array in post meta
+        if ( ! empty( $_POST['multi_location'] ) ) {
+            update_post_meta( $post_id, 'multi_location', $_POST['multi_location'] );
+
+            // Otherwise just delete it if its blank value.
+        } else {
+            delete_post_meta( $post_id, 'multi_location' );
+        }
 
 
 		if (isset($_POST['room_parent'])) {

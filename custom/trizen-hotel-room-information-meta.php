@@ -1,5 +1,5 @@
 <?php
-
+global $post;
 $room_price         = get_post_meta( get_the_ID(), 'price', true );
 $number_of_room     = get_post_meta( get_the_ID(), 'number_room', true );
 $number_of_adults   = get_post_meta( get_the_ID(), 'adult_number', true );
@@ -18,6 +18,17 @@ $discount_rate                   = get_post_meta( get_the_ID(), 'discount_rate',
 $discount_type                   = get_post_meta( get_the_ID(), 'discount_type_no_day', true );
 $hotel_rooms_select              = get_post_meta( get_the_ID(), 'room_parent', true );
 $allow_full_day_booking          = get_post_meta( get_the_ID(), 'allow_full_day', true );
+
+
+$html_location  = TravelHelper::treeLocationHtml();
+$multi_location = maybe_unserialize(get_post_meta(get_the_ID(), 'multi_location', true));
+if (!empty($multi_location) && !is_array($multi_location)) {
+    $multi_location = explode(',', $multi_location);
+}
+if (empty($multi_location)) {
+    $multi_location = array('');
+}
+
 
 $default = array(
 	'post_type'      => 'ts_hotel',
@@ -66,14 +77,6 @@ $hotel_rooms = new WP_Query($default);
                                class="widefat form-control" name="search" value="">
                         <div class="location-list-wrapper">
                             <?php
-                            $html_location  = TravelHelper::treeLocationHtml();
-                            $multi_location = maybe_unserialize(get_post_meta(get_the_ID(), 'multi_location', true));
-                            if (!empty($multi_location) && !is_array($multi_location)) {
-                                $multi_location = explode(',', $multi_location);
-                            }
-                            if (empty($multi_location)) {
-                                $multi_location = array('');
-                            }
 
                             if (is_array($html_location) && count($html_location)):
                                 foreach ($html_location as $key => $location):
@@ -112,6 +115,11 @@ $hotel_rooms = new WP_Query($default);
                             placeholder="<?php esc_attr_e('Address', 'trizen-helper'); ?>" />
                     </div>
                 </div>
+            </div>
+            <div class="tab-content" id="tab-room-availability">
+            <?php
+                require_once TRIZEN_HELPER_PATH . '/custom/trizen-room-availability.php';
+            ?>
             </div>
 			<div class="tab-content" id="tab-room-general">
                 <div class="form-settings" id="room_gallery_img">
@@ -531,9 +539,6 @@ $hotel_rooms = new WP_Query($default);
                     </button>
                     <!-- End -->
                 </div>
-            </div>
-            <div class="tab-content" id="tab-room-availability">
-                <?php include_once TRIZEN_HELPER_PATH . 'custom/trizen-room-availability.php'; ?>
             </div>
 		</div>
 	</div>

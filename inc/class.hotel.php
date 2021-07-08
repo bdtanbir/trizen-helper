@@ -58,7 +58,7 @@ if ( !class_exists( 'TSHotel' ) ) {
             add_filter( 'ts_hotel_sidebar', [ $this, 'change_sidebar' ] );
 
             //add Widget Area
-//            add_action( 'widgets_init', [ $this, 'add_sidebar' ] );
+            //add_action( 'widgets_init', [ $this, 'add_sidebar' ] );
 
 
             // Change hotel review arg
@@ -640,7 +640,7 @@ if ( !class_exists( 'TSHotel' ) ) {
             $avg        = TSReview::get_avg_rate( $post_id );
             update_post_meta( $post_id, 'rate_review', $avg );
         }
-        function get_review_stars() {
+        static function get_review_stars() {
             return get_option( 'hotel_review_stars' );
         }
         function get_review_stars_metabox() {
@@ -802,7 +802,7 @@ if ( !class_exists( 'TSHotel' ) ) {
         }
         function get_cart_item_html( $item_id = false )
         {
-//            return st()->load_template( 'hotel/cart_item_html', null, [ 'item_id' => $item_id ] );
+            //return st()->load_template( 'hotel/cart_item_html', null, [ 'item_id' => $item_id ] );
         }
         function change_sidebar( $sidebar = false ) {
             return 'left';

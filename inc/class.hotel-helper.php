@@ -72,12 +72,12 @@ function _alter_search_query_ajax($where) {
         $adult_num   = request('adult_number', 0);
         $child_num   = request('child_number', 0);
         $infant_num  = request('infant_number', 0);
-//                $list = HotelHelper::_hotelValidateByID($hotel_id, strtotime($check_in), strtotime($check_out), $adult_num, $child_num, $infant_num);
-//                if (!is_array($list) || count($list) <= 0) {
-//                    $list = "''";
-//                } else {
-//                    $list = implode(',', $list);
-//                }
+        // $list = HotelHelper::_hotelValidateByID($hotel_id, strtotime($check_in), strtotime($check_out), $adult_num, $child_num, $infant_num);
+        // if (!is_array($list) || count($list) <= 0) {
+        //     $list = "''";
+        // } else {
+        //     $list = implode(',', $list);
+        // }
         //$where .= " AND {$wpdb->prefix}posts.ID NOT IN ({$list})";
         $allow_full_day = get_post_meta($hotel_origin, 'allow_full_day', true);
         $whereNumber = " AND check_in <= %d AND (number  - IFNULL(number_booked, 0)) >= %d";

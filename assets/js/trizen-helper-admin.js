@@ -306,9 +306,11 @@ jQuery(function ($) {
 
 
     /* Select to Select2 convert */
-    $(document).ready(function () {
-        $('.select-to-select2').select2();
-    });
+    if($(".select-to-select2").length) {
+        $(document).ready(function () {
+            $('.select-to-select2').select2();
+        });
+    }
 
     /* Location Search */
     if ($('.ts-select-location').length) {
