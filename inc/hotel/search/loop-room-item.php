@@ -1,7 +1,7 @@
 <?php
 
 $room_id = get_the_ID();
-//    $room_id = TravelHelper::post_translated($room_id);
+$room_id = TravelHelper::post_translated($room_id);
 $item_id = get_post_meta( $room_id, 'room_parent', true );
 if ( empty( $item_id ) ) {
     $item_id = $room_id;
@@ -13,7 +13,8 @@ $get_data                  = array();
 $get_data['start']         = request( 'start' );
 $get_data['end']           = request( 'end' );
 $get_data['date']          = request( 'date' );
-$get_data['infant_number'] = request( 'infant_number' );
+$get_data['room_num_search'] = request( 'room_num_search' );
+// $get_data['infant_number'] = request( 'infant_number' );
 $get_data['adult_number']  = request( 'adult_number' );
 $get_data['child_number']  = request( 'child_number' );
 $link_with_params = add_query_arg($get_data, get_the_permalink());
@@ -21,11 +22,11 @@ $link_with_params = add_query_arg($get_data, get_the_permalink());
 
 
 <div class="cabin-type padding-top-30px">
-    <form method="get" class="form-booking-inpage">
+    <form class="form-booking-inpage" method="get">
         <input type="hidden" name="check_in" value="<?php echo request( 'start' ); ?>"/>
         <input type="hidden" name="check_out" value="<?php echo request( 'end' ); ?>"/>
-        <!--        <input type="hidden" name="room_num_search" value="--><?php //echo request( 'room_num_search' ); ?><!--"/>-->
-        <input type="hidden" name="infant_number" value="<?php echo request( 'infant_number' ); ?>"/>
+        <input type="hidden" name="room_num_search" value="<?php echo request( 'room_num_search' ); ?>" />
+        <!-- <input type="hidden" name="infant_number" value="<?php echo request( 'infant_number' ); ?>"/> -->
         <input type="hidden" name="adult_number" value="<?php echo request( 'adult_number' ); ?>"/>
         <input type="hidden" name="child_number" value="<?php echo request( 'child_number' ); ?>"/>
         <input name="action" value="hotel_add_to_cart" type="hidden">
@@ -45,7 +46,7 @@ $link_with_params = add_query_arg($get_data, get_the_permalink());
                 <?php if(get_the_title()) { ?>
                     <h3 class="title">
                         <a href="<?php echo esc_url($link_with_params) ?>">
-                            <?php the_title(); ?>
+                            <?php the_title(); ?> Fr Plugin
                         </a>
                     </h3>
                 <?php } if($room_facilities) { ?>
@@ -53,9 +54,9 @@ $link_with_params = add_query_arg($get_data, get_the_permalink());
 
                         <?php
                         foreach ($room_facilities as $room_facility) {
-                            $room_facility_icon = get_term_meta( $room_facility->term_id, 'trizen-room-facilities-icon', true );
+                        $room_facility_icon = get_term_meta( $room_facility->term_id, 'trizen-room-facilities-icon', true );
 
-                            ?>
+                        ?>
                             <div class="col-lg-6 responsive-column">
                                 <div class="single-tour-feature d-flex align-items-center mb-3">
                                     <?php if(!empty($room_facility_icon)) { ?>
@@ -119,17 +120,21 @@ $link_with_params = add_query_arg($get_data, get_the_permalink());
                 <?php
                 $start         = convertDateFormat( request( 'start' ) );
                 $end           = convertDateFormat( request( 'end' ) );
-                $infant_number = intval( request( 'infant_number', 1 ) );
+                if ( $start && $end ) {
+                    $is_search_room  = STInput::request( 'is_search_room' );
+                // $infant_number = intval( request( 'infant_number', 1 ) );
                 $adult_number  = request( 'adult_number', 1 );
                 $child_number  = request( 'child_number', '' );
-                //                $room_num_search  = request( 'room_num_search', 1 );
+                $room_num_search  = request( 'room_num_search', 1 );
 
-                $sale_price  = TSPrice::getRoomPrice( $room_id, strtotime( $start ), strtotime( $end ), $infant_number, $adult_number, $child_number );
+                $sale_price  = TSPrice::getRoomPrice( $room_id, strtotime( $start ), strtotime( $end ), $room_num_search, $adult_number, $child_number );
+                $total_price = TSPrice::getRoomPriceOnlyCustomPrice( $room_id, strtotime( $start ), strtotime( $end ), $room_num_search, $adult_number, $child_number );
+            
                 ?>
                 <p class="text-uppercase font-size-14">
                     <?php esc_html_e('Per/night', 'trizen'); ?>
                     <strong class="mt-n1 text-black font-size-18 font-weight-black d-block">
-                        <!--                        --><?php //echo TravelHelper::format_money( $sale_price ); ?>
+                      <?php echo TravelHelper::format_money( $sale_price ); ?> 
                         $595.33
                     </strong>
                 </p>
@@ -138,6 +143,13 @@ $link_with_params = add_query_arg($get_data, get_the_permalink());
                         Room Details
                     </a>
                 </div>
+                <?php } else { ?>
+                    <div class="custom-checkbox mb-0">
+                        <a href="#" class="btn-show-price theme-btn theme-btn-small">
+                            Show Price
+                        </a>
+                    </div>
+                <?php } ?>
             </div>
         </div>
     </form>

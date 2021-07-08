@@ -34,7 +34,7 @@ class trizen_hpa_widget extends WP_Widget {
 		$hotel_sale_price    = get_post_meta( get_the_ID(), 'trizen_hotel_sale_price', true );
         $adult_number        = get( 'adult_number', 1 );
         $child_number        = get( 'child_number', 0 );
-        $infant_number       = get( 'infant_number', 1 );
+        $room_num_search       = get( 'room_num_search', 1 );
         ?>
 
             <form class="form form-check-availability-hotel">
@@ -92,12 +92,12 @@ class trizen_hpa_widget extends WP_Widget {
                         </div>
                     </div>
                     <div class="qty-box mb-2 d-flex align-items-center justify-content-between">
-                        <label class="font-size-16" for="infant_number">
-                            <?php esc_html_e('Infants', 'trizen-helper'); ?> <span><?php esc_html_e('0-2 years old', 'trizen-helper'); ?></span>
+                        <label class="font-size-16" for="room_num_search">
+                            <?php esc_html_e('Room Number', 'trizen-helper'); ?>
                         </label>
                         <div class="qtyBtn d-flex align-items-center">
                             <div class="qtyDec"><i class="la la-minus"></i></div>
-                            <input type="text" id="infant_number" name="infant_number" value="<?php echo esc_attr($infant_number); ?>">
+                            <input type="text" id="room_num_search" name="room_num_search" value="<?php echo esc_attr($room_num_search); ?>">
                             <div class="qtyInc"><i class="la la-plus"></i></div>
                         </div>
                     </div>

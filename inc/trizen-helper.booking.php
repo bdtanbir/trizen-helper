@@ -1621,3 +1621,63 @@ function _add_custom_price() {
     die();
 }
 
+
+
+
+add_action('wp_ajax_ajax_search_room', 'ajax_search_room');
+add_action('wp_ajax_nopriv_ajax_search_room', 'ajax_search_room');
+function ajax_search_room() {
+    check_ajax_referer('ts_frontend_security', 'security');
+    $result = [
+        'html'   => '',
+        'status' => 1,
+        'data'   => '',
+    ];
+    // $post           = request();
+    $hotel_id       = $_REQUEST['room_parent'];
+    $today          = date('m/d/Y');
+    $check_in       = convertDateFormat($_REQUEST['start']);
+    $check_out      = convertDateFormat($_REQUEST['end']);
+    $date_diff      = dateDiff($check_in, $check_out);
+    $booking_period = intval(get_post_meta($hotel_id, 'hotel_booking_period', true));
+    $period         = dateDiff($today, $check_in);
+    if ($booking_period && $period < $booking_period) {
+        $result = [
+            'status'  => 0,
+            'html'    => "None Item from Booking_Period",
+            'message' => sprintf(__('This hotel allow minimum booking is %d day(s)', 'trizen-helper'), $booking_period),
+        ];
+        echo json_encode($result);
+        die;
+    }
+    if ($date_diff < 1) {
+        $result = [
+            'status'    => 0,
+            'html'      => "None Item From Date dif",
+            'message'   => __('Make sure your check-out date is at least 1 day after check-in. HOTEL Helper', 'trizen-helper'),
+            'more-data' => $date_diff
+        ];
+        echo json_encode($result);
+        die;
+    }
+    global $post;
+    $old_post = $post;
+
+    // $hotel = new TSHotel();
+    $query = search_room();
+    if ($query->have_posts()) {
+        while ($query->have_posts()) {
+            $query->the_post();
+            // $result['html'] .= preg_replace('/^\s+|\n|\r|\s+$/m', '', TRIZEN_HELPER_PATH . 'inc/hotel/search/loop-room-item.php');
+            $result['html'] .= 'Working! ';
+        }
+    } else {
+        $result['html'] .= "None Item";
+    }
+    wp_reset_postdata();
+    $post = $old_post;
+    // echo json_encode($result);
+    echo json_encode($result);
+    die();
+}
+

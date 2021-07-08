@@ -396,10 +396,10 @@ if ( !class_exists( 'AvailabilityHelper' ) ) {
 
         function _get_availability_hotel() {
             $results       = [];
-            $post_id       = request('post_id', '');
+            $post_id       = $_REQUEST['post_id'];
             $post_id       = post_origin($post_id);
-            $check_in      = request('start', '');
-            $check_out     = request('end', '');
+            $check_in      = $_REQUEST['start'];
+            $check_out     = $_REQUEST['end'];
             $price_ori     = floatval(get_post_meta($post_id, 'price', true));
             $default_state = get_post_meta($post_id, 'default_state', true);
             $number_room   = intval(get_post_meta($post_id, 'number_room', true));
