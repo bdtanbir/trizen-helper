@@ -1669,14 +1669,13 @@ function ajax_search_room() {
         while ($query->have_posts()) {
             $query->the_post();
             // $result['html'] .= preg_replace('/^\s+|\n|\r|\s+$/m', '', TRIZEN_HELPER_PATH . 'inc/hotel/search/loop-room-item.php');
-            $result['html'] .= 'Working! ';
+            $result['html'] .= 'Working! = ';
         }
     } else {
         $result['html'] .= "None Item";
     }
     wp_reset_postdata();
     $post = $old_post;
-    // echo json_encode($result);
     echo json_encode($result);
     die();
 }
