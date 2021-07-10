@@ -121,28 +121,27 @@ $link_with_params = add_query_arg($get_data, get_the_permalink());
                 $start         = convertDateFormat( request( 'start' ) );
                 $end           = convertDateFormat( request( 'end' ) );
                 if ( $start && $end ) {
-                    $is_search_room  = STInput::request( 'is_search_room' );
-                    // $infant_number = intval( request( 'infant_number', 1 ) );
-                    $adult_number  = request( 'adult_number', 1 );
-                    $child_number  = request( 'child_number', '' );
-                    $room_num_search  = request( 'room_num_search', 1 );
+                $is_search_room  = request( 'is_search_room' );
+                // $infant_number = intval( request( 'infant_number', 1 ) );
+                $adult_number    = request( 'adult_number', 1 );
+                $child_number    = request( 'child_number', '' );
+                $room_num_search = request( 'room_num_search', 1 );
 
-                    $sale_price  = TSPrice::getRoomPrice( $room_id, strtotime( $start ), strtotime( $end ), $room_num_search, $adult_number, $child_number );
-                    $total_price = TSPrice::getRoomPriceOnlyCustomPrice( $room_id, strtotime( $start ), strtotime( $end ), $room_num_search, $adult_number, $child_number );
-                
-                    ?>
-                    <p class="text-uppercase font-size-14">
-                        <?php esc_html_e('Per/night', 'trizen'); ?>
-                        <strong class="mt-n1 text-black font-size-18 font-weight-black d-block">
-                        <?php echo TravelHelper::format_money( $sale_price ); ?> 
-                            $595.33
-                        </strong>
-                    </p>
-                    <div class="custom-checkbox mb-0">
-                        <a href="<?php the_permalink(); ?>" class="theme-btn theme-btn-small">
-                            Room Details
-                        </a>
-                    </div>
+                $sale_price  = TSPrice::getRoomPrice( $room_id, strtotime( $start ), strtotime( $end ), $room_num_search, $adult_number, $child_number );
+                $total_price = TSPrice::getRoomPriceOnlyCustomPrice( $room_id, strtotime( $start ), strtotime( $end ), $room_num_search, $adult_number, $child_number );
+            
+                ?>
+                <p class="text-uppercase font-size-14">
+                    <?php esc_html_e('Per/night', 'trizen'); ?>
+                    <strong class="mt-n1 text-black font-size-18 font-weight-black d-block">
+                      <?php echo TravelHelper::format_money( $sale_price ); ?> 
+                    </strong>
+                </p>
+                <div class="custom-checkbox mb-0">
+                    <a href="<?php the_permalink(); ?>" class="theme-btn theme-btn-small">
+                        Room Details
+                    </a>
+                </div>
                 <?php } else { ?>
                     <div class="custom-checkbox mb-0">
                         <a href="#" class="btn-show-price theme-btn theme-btn-small">

@@ -1429,3 +1429,13 @@ A VERTICAL event
     width: auto;
     height: auto;
 }
+
+@media (max-width: 960px) {
+    .fc-content .price {
+        font-size: 10px;
+        padding: 0 0 0 0px;
+    }
+    .fc-day-grid-container {
+        height: auto !important;
+    }
+}

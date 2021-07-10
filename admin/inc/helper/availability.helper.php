@@ -8,6 +8,8 @@ if ( !class_exists( 'AvailabilityHelper' ) ) {
                add_action( 'wp_ajax_ts_get_availability_hotel', [&$this, '_get_availability_hotel'] );
             }
 
+            add_action( 'wp_ajax_ts_add_custom_price', [$this, '_add_custom_price'] );
+
             add_action( 'wp_ajax_trizen_calendar_bulk_edit_form', [$this, 'trizen_calendar_bulk_edit_form'] );
             // Update Status
             add_action('ts_booking_change_status', array(__CLASS__,'_ts_booking_change_status'),10,3);
@@ -731,6 +733,87 @@ if ( !class_exists( 'AvailabilityHelper' ) ) {
             } else {
                 return date('Y-m-d');
             }
+        }
+
+        
+        public function _add_custom_price() {
+            $check_in  = request('calendar_check_in', '');
+            $check_out = request('calendar_check_out', '');
+            if (empty($check_in) || empty($check_out)) {
+                echo json_encode([
+                    'type' => 'error',
+                    'status' => 0,
+                    'message' => __('The check in or check out field is not empty.', 'trizen-helper')
+                ]);
+                die();
+            }
+            $check_in  = strtotime($check_in);
+            $check_out = strtotime($check_out);
+            if ($check_in > $check_out) {
+                echo json_encode([
+                    'type'    => 'error',
+                    'status'  => 0,
+                    'message' => __('The check out is later than the check in field.', 'trizen-helper')
+                ]);
+                die();
+            }
+            $status = request('calendar_status', 'available');
+            if ($status == 'available') {
+                if ( request( 'price_by_per_person', false ) == 'true' ) {
+                    if ( filter_var( $_POST[ 'calendar_adult_price' ], FILTER_VALIDATE_FLOAT ) === false ) {
+                        echo json_encode( [
+                            'type'    => 'error',
+                            'status'  => 0,
+                            'message' => __( 'The adult price field is not a number.', 'trizen-helper' )
+                        ] );
+                        die();
+                    }
+                    if ( filter_var( $_POST[ 'calendar_child_price' ], FILTER_VALIDATE_FLOAT ) === false ) {
+                        echo json_encode( [
+                            'type'    => 'error',
+                            'status'  => 0,
+                            'message' => __( 'The child price field is not a number.', 'trizen-helper' )
+                        ] );
+                        die();
+                    }
+                } else {
+                    if (filter_var($_POST['calendar_price'], FILTER_VALIDATE_FLOAT) === false) {
+                        echo json_encode([
+                            'type'    => 'error',
+                            'status'  => 0,
+                            'message' => __('The price field is not a number.', 'trizen-helper')
+                        ]);
+                        die();
+                    }
+                }
+            }
+            $price       = floatval(request('calendar_price', 0));
+            $post_id     = request('calendar_post_id', '');
+            $post_id     = post_origin($post_id);
+            $adult_price = floatval( request( 'calendar_adult_price', '' ) );
+            $child_price = floatval( request( 'calendar_child_price', '' ) );
+            $parent_id   = get_post_meta($post_id, 'room_parent', true);
+            for ($i = $check_in; $i <= $check_out; $i = strtotime('+1 day', $i)) {
+                $data = [
+                    'post_id'     => $post_id,
+                    'post_type'   => 'hotel_room',
+                    'check_in'    => $i,
+                    'check_out'   => $i,
+                    'price'       => $price,
+                    'status'      => $status,
+                    'parent_id'   => $parent_id,
+                    'is_base'     => 0,
+                    'adult_price' => $adult_price,
+                    'child_price' => $child_price,
+                ];
+                TS_Hotel_Room_Availability::inst()->insertOrUpdate($data);
+            }
+            echo json_encode([
+                'type'    => 'success',
+                'status'  => 1,
+                'message' => __('Successfully', 'trizen-helper')
+            ]);
+            die();
         }
     }
 

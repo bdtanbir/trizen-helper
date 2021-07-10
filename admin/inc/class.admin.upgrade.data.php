@@ -679,7 +679,7 @@ if ( !class_exists( 'TSUpgradeData' ) ) {
             return $new_node;
         }
 
-        public function setChild( $parent_id = 0, $location_country = '', $location_id = 0, $name = '', $status ) {
+        public function setChild( $parent_id, $location_country, $location_id, $name, $status ) {
             global $wpdb;
             $ns = new Nested_set();
             $ns->setControlParams( $wpdb->prefix . $this->table_nested );

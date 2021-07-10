@@ -33,24 +33,21 @@ function trizen_helper_load() {
 	require_once TRIZEN_HELPER_PATH.'custom/trizen-helper.class-admin-room.php';
     require_once TRIZEN_HELPER_PATH.'admin/inc/database.helper.php';
     require_once TRIZEN_HELPER_PATH.'admin/inc/class.review.php';
-    require_once TRIZEN_HELPER_PATH.'core/database/tables/availability.php';
-    require_once TRIZEN_HELPER_PATH.'core/database/tables/order_item.php';
     require_once TRIZEN_HELPER_PATH.'admin/inc/class.user.php';
 }
 require_once TRIZEN_HELPER_PATH.'inc/class.hotel-helper.php';
 require_once TRIZEN_HELPER_PATH.'custom/trizen-availability-model.php';
 require_once TRIZEN_HELPER_PATH.'inc/trizen-hook-function.php';
 
-if(is_admin()) {
-    require_once TRIZEN_HELPER_PATH.'admin/inc/class.admin.availability.php';
-    require_once TRIZEN_HELPER_PATH.'core/database/tables/ts_price.php';
-}
 require_once TRIZEN_HELPER_PATH.'admin/inc/class.tsadmin.php';
 require_once TRIZEN_HELPER_PATH.'admin/inc/helper/nested_sets_model.helper.php';
 require_once TRIZEN_HELPER_PATH.'admin/inc/helper/availability.helper.php';
 require_once TRIZEN_HELPER_PATH.'admin/inc/class.admin.neworder.data.php';
+if(is_admin()) {
+    require_once TRIZEN_HELPER_PATH.'admin/inc/class.admin.availability.php';
+    require_once TRIZEN_HELPER_PATH.'core/database/tables/ts_price.php';
+}
 require_once TRIZEN_HELPER_PATH.'admin/inc/class.woocommerce.php';
-require_once TRIZEN_HELPER_PATH.'core/database/tables/posts.php';
 require_once TRIZEN_HELPER_PATH.'admin/inc/order.php';
 require_once TRIZEN_HELPER_PATH.'admin/inc/class.admin.room-2.php';
 require_once TRIZEN_HELPER_PATH.'admin/inc/class.admin.hotel.php';
@@ -63,6 +60,9 @@ require_once TRIZEN_HELPER_PATH.'inc/class.hotel.php';
 require_once TRIZEN_HELPER_PATH.'inc/helper/price.helper.php';
 require_once TRIZEN_HELPER_PATH.'inc/hotel-alone-helper.php';
 require_once TRIZEN_HELPER_PATH.'inc/class.single_hotel.php';
+require_once TRIZEN_HELPER_PATH.'core/database/tables/posts.php';
+require_once TRIZEN_HELPER_PATH.'core/database/tables/availability.php';
+require_once TRIZEN_HELPER_PATH.'core/database/tables/order_item.php';
 require_once TRIZEN_HELPER_PATH.'core/database/tables/hotel_room_availability.php';
 
 
@@ -101,7 +101,7 @@ function trizen_helper_admin_script()
 		'trizen-admin-global-css',
 		TRIZEN_HELPER_URI.('admin/css/trizen-admin.css'),
 		'',
-		TRIZEN_HELPER_VERSION
+		time()
 	);
 
 	if ( ! did_action( 'wp_enqueue_media' ) )
@@ -299,7 +299,7 @@ function trizen_helper_scripts() {
         'trizen-helper-css',
         TRIZEN_HELPER_URI.('assets/css/trizen-helper.css'),
         '',
-        TRIZEN_HELPER_VERSION
+        time()
     );
 
     wp_enqueue_script(

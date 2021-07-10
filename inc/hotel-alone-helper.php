@@ -279,7 +279,7 @@ if (!class_exists('Hotel_Alone_Helper')) {
 
 
 
-        function seach_room_hotel_activity_by_id($hotel_id = false, $number){
+        function seach_room_hotel_activity_by_id($hotel_id, $number){
             if ( empty( $hotel_id ) ) $hotel_id = get_the_ID();
             $check_in  = request( 'checkin_m' ) . "/" . request( 'checkin_d' ) . "/" . request( 'checkin_y' );
             $check_out = request( 'checkout_m' ) . "/" . request( 'checkout_d' ) . "/" . request( 'checkout_y' );
@@ -365,7 +365,7 @@ if (!class_exists('Hotel_Alone_Helper')) {
             return $result;
         }
 
-        public function _get_number_room_left_on( $hotel_id = '', $room_id, $check_in = '', $check_out = '') {
+        public function _get_number_room_left_on( $hotel_id, $room_id, $check_in, $check_out) {
             if ( !TravelHelper::checkTableDuplicate( 'ts_hotel' ) ) return "''";
             global $wpdb;
             if ( empty( $check_in ) || empty( $check_out ) )
@@ -383,7 +383,7 @@ if (!class_exists('Hotel_Alone_Helper')) {
 						{$wpdb->prefix}ts_order_item_meta
 					INNER JOIN {$wpdb->prefix}postmeta AS mt ON mt.post_id = {$wpdb->prefix}ts_order_item_meta.room_id
 					AND mt.meta_key = 'number_room'
-					INNER JOIN {$wpdb->prefix}ts_hotel AS mt1 ON mt1.post_id = {$wpdb->prefix}st_order_item_meta.st_booking_id
+					INNER JOIN {$wpdb->prefix}ts_hotel AS mt1 ON mt1.post_id = {$wpdb->prefix}ts_order_item_meta.ts_booking_id
 					WHERE
 					(
 							(

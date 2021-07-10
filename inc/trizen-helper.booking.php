@@ -1540,89 +1540,6 @@ function save_review_stars($comment_id) {
     update_post_meta($post_id, 'rate_review', $avg);
 }
 
-add_action( 'wp_ajax_ts_add_custom_price', '_add_custom_price' );
-function _add_custom_price() {
-    $check_in  = request('calendar_check_in', '');
-    $check_out = request('calendar_check_out', '');
-    if (empty($check_in) || empty($check_out)) {
-        echo json_encode([
-            'type' => 'error',
-            'status' => 0,
-            'message' => __('The check in or check out field is not empty.', 'trizen-helper')
-        ]);
-        die();
-    }
-    $check_in  = strtotime($check_in);
-    $check_out = strtotime($check_out);
-    if ($check_in > $check_out) {
-        echo json_encode([
-            'type'    => 'error',
-            'status'  => 0,
-            'message' => __('The check out is later than the check in field.', 'trizen-helper')
-        ]);
-        die();
-    }
-    $status = request('calendar_status', 'available');
-    if ($status == 'available') {
-        if ( request( 'price_by_per_person', false ) == 'true' ) {
-            if ( filter_var( $_POST[ 'calendar_adult_price' ], FILTER_VALIDATE_FLOAT ) === false ) {
-                echo json_encode( [
-                    'type'    => 'error',
-                    'status'  => 0,
-                    'message' => __( 'The adult price field is not a number.', 'trizen-helper' )
-                ] );
-                die();
-            }
-            if ( filter_var( $_POST[ 'calendar_child_price' ], FILTER_VALIDATE_FLOAT ) === false ) {
-                echo json_encode( [
-                    'type'    => 'error',
-                    'status'  => 0,
-                    'message' => __( 'The child price field is not a number.', 'trizen-helper' )
-                ] );
-                die();
-            }
-        } else {
-            if (filter_var($_POST['calendar_price'], FILTER_VALIDATE_FLOAT) === false) {
-                echo json_encode([
-                    'type'    => 'error',
-                    'status'  => 0,
-                    'message' => __('The price field is not a number.', 'trizen-helper')
-                ]);
-                die();
-            }
-        }
-    }
-    $price       = floatval(request('calendar_price', 0));
-    $post_id     = request('calendar_post_id', '');
-    $post_id     = post_origin($post_id);
-    $adult_price = floatval( request( 'calendar_adult_price', '' ) );
-    $child_price = floatval( request( 'calendar_child_price', '' ) );
-    $parent_id   = get_post_meta($post_id, 'room_parent', true);
-    for ($i = $check_in; $i <= $check_out; $i = strtotime('+1 day', $i)) {
-        $data = [
-            'post_id'     => $post_id,
-            'post_type'   => 'hotel_room',
-            'check_in'    => $i,
-            'check_out'   => $i,
-            'price'       => $price,
-            'status'      => $status,
-            'parent_id'   => $parent_id,
-            'is_base'     => 0,
-            'adult_price' => $adult_price,
-            'child_price' => $child_price,
-        ];
-        TS_Hotel_Room_Availability::inst()->insertOrUpdate($data);
-    }
-    echo json_encode([
-        'type'    => 'success',
-        'status'  => 1,
-        'message' => __('Successfully', 'trizen-helper')
-    ]);
-    die();
-}
-
-
-
 
 add_action('wp_ajax_ajax_search_room', 'ajax_search_room');
 add_action('wp_ajax_nopriv_ajax_search_room', 'ajax_search_room');
@@ -1634,26 +1551,32 @@ function ajax_search_room() {
         'data'   => '',
     ];
     // $post           = request();
-    $hotel_id       = $_REQUEST['room_parent'];
+    $hotel_id       = $_POST['room_parent'];
     $today          = date('m/d/Y');
-    $check_in       = convertDateFormat($_REQUEST['start']);
-    $check_out      = convertDateFormat($_REQUEST['end']);
+    $check_in       = convertDateFormat($_POST['start']);
+    $check_out      = convertDateFormat($_POST['end']);
     $date_diff      = dateDiff($check_in, $check_out);
     $booking_period = intval(get_post_meta($hotel_id, 'hotel_booking_period', true));
     $period         = dateDiff($today, $check_in);
     if ($booking_period && $period < $booking_period) {
+        ob_start();
+        include(TRIZEN_HELPER_PATH . 'inc/hotel/search/loop-room-none.php');
+        $room_item_none_html = ob_get_clean();
         $result = [
             'status'  => 0,
-            'html'    => "None Item from Booking_Period",
+            'html'    => $room_item_none_html,
             'message' => sprintf(__('This hotel allow minimum booking is %d day(s)', 'trizen-helper'), $booking_period),
         ];
         echo json_encode($result);
         die;
     }
     if ($date_diff < 1) {
+        ob_start();
+        include(TRIZEN_HELPER_PATH . 'inc/hotel/search/loop-room-none.php');
+        $room_item_none_html = ob_get_clean();
         $result = [
             'status'    => 0,
-            'html'      => "None Item From Date dif",
+            'html'      => $room_item_none_html,
             'message'   => __('Make sure your check-out date is at least 1 day after check-in. HOTEL Helper', 'trizen-helper'),
             'more-data' => $date_diff
         ];
@@ -1662,14 +1585,15 @@ function ajax_search_room() {
     }
     global $post;
     $old_post = $post;
-
-    // $hotel = new TSHotel();
+    
     $query = search_room();
     if ($query->have_posts()) {
         while ($query->have_posts()) {
             $query->the_post();
-            // $result['html'] .= preg_replace('/^\s+|\n|\r|\s+$/m', '', TRIZEN_HELPER_PATH . 'inc/hotel/search/loop-room-item.php');
-            $result['html'] .= 'Working! = ';
+            ob_start();
+            include(TRIZEN_HELPER_PATH . 'inc/hotel/search/loop-room-item.php');
+            $room_item_html = ob_get_clean();
+            $result['html'] .= $room_item_html;
         }
     } else {
         $result['html'] .= "None Item";
@@ -1679,4 +1603,3 @@ function ajax_search_room() {
     echo json_encode($result);
     die();
 }
-

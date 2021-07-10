@@ -1537,6 +1537,13 @@ button {
     border-radius: 4px;
     padding-top: 7px;
 }
+.location-list-wrapper .location-list {
+    border-bottom: 1px solid #f1f1f1;
+    margin-bottom: 8px;
+}
+.location-list-wrapper .location-list label {
+    margin-bottom: 8px;
+}
 
 .nice-checkbox {
     display: inline-block;
@@ -1648,5 +1655,26 @@ button {
 
 
 
-
+@media (max-width: 960px) {
+    .trizen-hotel-information-wrap .nav-pill-main-div {
+        flex-wrap: wrap;
+    }
+    .trizen-hotel-information-wrap .tabs {
+        width: 100%;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: start;
+    }
+    .trizen-hotel-information-wrap .tabs li {
+        padding: 10px 24px 11px 10px;
+        margin-right: 4px;
+    }
+    .calendar-wrapper {
+        flex-wrap: wrap;
+    }
+    .calendar-wrapper .left-side,
+    .calendar-wrapper .right-side {
+        width: 100%;
+    }
+}
 

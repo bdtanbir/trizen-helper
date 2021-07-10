@@ -141,6 +141,7 @@
         ev.preventDefault();
         var form = $(this),
             parent    = form.parent(),
+            loader = $('.loader-wrapper', parent),
             message   = $('.message-wrapper', form);
         var has_fixed = form.closest('.fixed-on-mobile');
         if (has_fixed.hasClass('open')) {
@@ -152,8 +153,8 @@
             value: ts_params._s
         });
         message.html('');
-        // loader.show();
-        // $('.ts-list-rooms .loader-wrapper').show();
+        loader.show();
+        $('.ts-list-rooms .loader-wrapper').show();
         $.post(ts_params.ajax_url, data, function (respon) {
             if (typeof respon == 'object') {
                 if (respon.message) {
@@ -165,8 +166,8 @@
                 }, 500);
                 $('[data-toggle="tooltip"]').tooltip();
             }
-            // $('.ts-list-rooms .loader-wrapper').hide();
-            // loader.hide();
+            $('.ts-list-rooms .loader-wrapper').hide();
+            loader.hide();
         }, 'json');
     });
 

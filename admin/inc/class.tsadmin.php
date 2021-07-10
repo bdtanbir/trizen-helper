@@ -19,7 +19,7 @@ if (!class_exists('TSAdmin')) {
 
         }
 
-        static function get_history_bookings($type = "ts_hotel", $offset, $limit, $author = false) {
+        static function get_history_bookings($type, $offset, $limit, $author = false) {
             global $wpdb;
             $where  = '';
             $join   = '';
