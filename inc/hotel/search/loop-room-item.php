@@ -45,8 +45,8 @@ $link_with_params = add_query_arg($get_data, get_the_permalink());
             <div class="cabin-type-detail">
                 <?php if(get_the_title()) { ?>
                     <h3 class="title">
-                        <a href="<?php echo esc_url($link_with_params) ?>">
-                            <?php the_title(); ?> Fr Plugin
+                        <a href="<?php echo esc_url($link_with_params); ?>">
+                            <?php the_title(); ?>
                         </a>
                     </h3>
                 <?php } if($room_facilities) { ?>
@@ -138,14 +138,14 @@ $link_with_params = add_query_arg($get_data, get_the_permalink());
                     </strong>
                 </p>
                 <div class="custom-checkbox mb-0">
-                    <a href="<?php the_permalink(); ?>" class="theme-btn theme-btn-small">
-                        Room Details
+                    <a href="<?php echo esc_url($link_with_params); ?>" class="theme-btn theme-btn-small">
+                        <?php esc_html_e( 'Room Details', 'trizen-helper' ); ?>
                     </a>
                 </div>
                 <?php } else { ?>
                     <div class="custom-checkbox mb-0">
                         <a href="#" class="btn-show-price theme-btn theme-btn-small">
-                            Show Price
+                            <?php esc_html_e( 'Show Price', 'trizen-helper' ); ?>
                         </a>
                     </div>
                 <?php } ?>

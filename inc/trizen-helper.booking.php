@@ -1577,7 +1577,7 @@ function ajax_search_room() {
         $result = [
             'status'    => 0,
             'html'      => $room_item_none_html,
-            'message'   => __('Make sure your check-out date is at least 1 day after check-in. HOTEL Helper', 'trizen-helper'),
+            'message'   => __('Make sure your check-out date is at least 1 day after check-in.', 'trizen-helper'),
             'more-data' => $date_diff
         ];
         echo json_encode($result);
@@ -1596,7 +1596,10 @@ function ajax_search_room() {
             $result['html'] .= $room_item_html;
         }
     } else {
-        $result['html'] .= "None Item";
+        ob_start();
+        include(TRIZEN_HELPER_PATH . 'inc/hotel/search/loop-room-none.php');
+        $room_item_none_html = ob_get_clean();
+        $result['html'] .= $room_item_none_html;
     }
     wp_reset_postdata();
     $post = $old_post;

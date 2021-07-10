@@ -88,10 +88,10 @@
         check_in_out.daterangepicker(options,
             function (start, end, label) {
                 check_in_input.val(start.format(parent.data('format'))).trigger('change');
-                $('.form-date-search .check-in-input').val(start.format('YYYY-MM-DD')).trigger('change');
+                $('#tp_hotel .form-date-search .check-in-input').val(start.format('YYYY-MM-DD')).trigger('change');
                 check_in_render.html(start.format(parent.data('format'))).trigger('change');
                 check_out_input.val(end.format(parent.data('format'))).trigger('change');
-                $('.form-date-search .check-out-input').val(end.format('YYYY-MM-DD')).trigger('change');
+                $('#tp_hotel .form-date-search .check-out-input').val(end.format('YYYY-MM-DD')).trigger('change');
                 check_out_render.html(end.format(parent.data('format'))).trigger('change');
                 if (timepicker) {
                     check_in_input.val(start.format(parent.data('date-format'))).trigger('change');
