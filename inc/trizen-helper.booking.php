@@ -358,7 +358,7 @@ function trizen_get_option($option_id, $default = false) {
 	return ts_traveler_get_option($option_id, $default);
 }
 function getDateFormat() {
-	$format = '{mm}/{dd}/{yyyy}';
+	$format = '{dd}/{mm}/{yyyy}';
 
 	$ori_format = [
 		'{d}' => 'j',
@@ -458,7 +458,7 @@ function getDateFormatMomentText() {
 function get_discount_rate($post_id = '', $check_in = ''){
     $post_type = get_post_type($post_id);
     $discount_text = 'discount' ;
-    if($post_type =='ts_hotel' or $post_type =='st_rental' or $post_type =='hotel_room') $discount_text = 'discount_rate';
+    if($post_type =='ts_hotel' or $post_type =='ts_rental' or $post_type =='hotel_room') $discount_text = 'discount_rate';
     $tour_price_by = '';
     if($post_type == 'st_tours'){
         $tour_price_by = get_post_meta($post_id, 'tour_price_by', true);

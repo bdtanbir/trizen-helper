@@ -115,14 +115,14 @@ class trizen_hrbf_widget extends WP_Widget {
                     </div>
                 </div>
                 <div class="qty-box mb-2 d-flex align-items-center justify-content-between">
-                    <label class="font-size-16" for="hotel-room-infants-input">
-                        <?php esc_html_e('Infants', 'trizen-helper'); ?> <span><?php esc_html_e('0-2 years old', 'trizen-helper'); ?></span>
+                    <label class="font-size-16" for="hotel-room-room-input">
+                        <?php esc_html_e('Room', 'trizen-helper'); ?>
                     </label>
                     <div class="qtyBtn d-flex align-items-center">
                         <div class="qtyDec">
                             <i class="la la-minus"></i>
                         </div>
-                        <input id="hotel-room-infants-input" type="text" name="infant_number" value="<?php esc_attr_e('0', 'trizen'); ?>">
+                        <input id="hotel-room-room-input" type="text" name="room_num_search" value="<?php esc_attr_e('1', 'trizen'); ?>">
                         <div class="qtyInc">
                             <i class="la la-plus"></i>
                         </div>
