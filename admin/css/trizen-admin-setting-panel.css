@@ -1,4 +1,37 @@
 
+html {
+    /* scroll-behavior: smooth; */
+}
+.trizen-setting-tab .highlight-heading {
+    padding-top: 35px;
+}
+.trizen-setting-tab .highlight-heading h1 {
+    background: #287df9;
+    display: block;
+    line-height: 42px;
+    font-size: 20px;
+    border-radius: 4px;
+    color: #fff;
+    padding: 0 15px;
+    margin-top: 0;
+    position: relative;
+}
+.trizen-setting-tab .highlight-heading h1 a {
+    position: absolute;
+    right: 5px;
+    top: 9%;
+    background: #fff;
+    display: inline-block;
+    text-align: center;
+    text-decoration: none;
+    height: 83%;
+    border-radius: 4px;
+    color: #000;
+    text-transform: uppercase;
+    font-size: 14px;
+    padding: 0 6px 0px 6px;
+    line-height: 37px;
+}
 
 
 /* Trizen Setting Panel */
@@ -92,7 +125,7 @@
     height: 46px;
     line-height: 43px;
 }
-.trizen-setting-tabs .trizen-setting-tabs-nav li a.active {
+.trizen-setting-tabs .trizen-setting-tabs-nav li.active a {
     background: #287df9;
     border-color: #287df9;
     color: #ffffff;
@@ -111,7 +144,7 @@
     opacity: 0;
     visibility: hidden;
 }
-.trizen-setting-tabs .trizen-setting-tabs-nav li a.active:before {
+.trizen-setting-tabs .trizen-setting-tabs-nav li.active a:before {
     opacity: 1;
     visibility: visible;
 }
@@ -146,6 +179,7 @@
     outline: none !important;
     border-color: #287df9 !important;
 }
+#hotel_room_review_star_group p .title,
 #hotel_review_star_group p .title {
     margin: 0;
     max-width: 400px;
@@ -154,11 +188,14 @@
     font-weight: 400;
     line-height: 18px;
 }
+#hotel_room_review_star_group p .title input,
 #hotel_review_star_group p .title input {
     margin-top: 5px;
     height: 41px;
 }
+.hotel-room-review-wrap #add_hotel_room_review_star,
 .hotel-review-wrap #add_hotel_review_star,
+#hotel_room_review_star_group p #remove_hotel_room_review_star,
 #hotel_review_star_group p #remove_hotel_review_star {
     vertical-align: bottom;
     text-decoration: none;
@@ -172,17 +209,21 @@
     -ms-transition: .3s;
     -moz-transition: .3s;
 }
+#hotel_room_review_star_group p #remove_hotel_room_review_star:hover,
 #hotel_review_star_group p #remove_hotel_review_star:hover {
     background: #dc0606;
 }
+#hotel_room_review_star_group p,
 #hotel_review_star_group p {
     margin-bottom: 15px;
     margin-top: 0;
 }
 
+.hotel-room-review-wrap #add_hotel_room_review_star,
 .hotel-review-wrap #add_hotel_review_star {
     background: #10d010;
 }
+.hotel-room-review-wrap #add_hotel_room_review_star:hover,
 .hotel-review-wrap #add_hotel_review_star:hover {
     background: #0da50d;
 }

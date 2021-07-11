@@ -30,30 +30,29 @@ class trizen_hrbf_widget extends WP_Widget {
 		echo $args['before_widget'];
 
         $room_price = get_post_meta(get_the_ID(), 'price', true);
-        $trizen_hotel_room_extra_service_data    = get_post_meta(get_the_ID(), 'trizen_hotel_extra_services_data_group', true);
+        $trizen_hotel_room_extra_service_data    = get_post_meta(get_the_ID(), 'extra_services', true);
 
         if(!empty($trizen_hrbf_title)) {
             echo $args['before_title'] . esc_html( $trizen_hrbf_title ) . $args['after_title'];
         }
 
-		while ( have_posts() ): the_post();
 		$room_id   = get_the_ID();
 		$hotel_id  = get_post_meta( get_the_ID(), 'room_parent', true );
 
-        $adult_number = request( 'adult_number', 1 );
-        $child_number = request( 'child_number', '' );
+        $adult_number    = request( 'adult_number', 1 );
+        $child_number    = request( 'child_number', '' );
+        $room_num_search = (int)get( 'room_num_search', 1 );
 
         $current_calendar = get_current_available_calendar(get_the_ID());
         $current_calendar_reverb = date('m/d/Y', strtotime($current_calendar));
         $start          = get( 'start', date( getDateFormat(), strtotime($current_calendar)) );
         $end            = get( 'end', date( getDateFormat(), strtotime( "+ 1 day", strtotime($current_calendar)) ) );
         $date           = get( 'date', date( 'd/m/Y h:i a', strtotime($current_calendar) ) . '-' . date( 'd/m/Y h:i a', strtotime( '+1 day', strtotime($current_calendar) ) ) );
-        $room_num_search = (int)get( 'room_num_search', 1 );
         if ( $room_num_search <= 0 ) $room_num_search = 1;
 
 
         $sale_price  = TSPrice::getRoomPrice( $room_id, strtotime( $start ), strtotime( $end ), $room_num_search, $adult_number, $child_number );
-            $numberday = dateDiff( $start, $end );
+        $numberday = dateDiff( $start, $end );
         ?>
         <form id="form-booking-inpage single-room-form" class="form single-room-form hotel-room-booking-form" method="post">
             <input name="action" value="hotel_add_to_cart" type="hidden">
@@ -149,7 +148,7 @@ class trizen_hrbf_widget extends WP_Widget {
                                         <label for="<?php echo esc_attr($extra_price_title); echo __('-','trizen-helper').esc_attr($key); ?>" class="d-flex justify-content-between align-items-center">
                                             <?php echo esc_html($item['trizen_hotel_room_extra_service_title']); ?>
                                             <span class="text-black font-weight-regular">
-                                                <?php esc_html_e('$', 'trizen-helper'); echo esc_html($item['trizen_hotel_room_extra_service_price']); echo esc_html($item['trizen_hotel_room_extra_service_price_designation']); ?>
+                                                <?php echo get_woocommerce_currency_symbol(); echo esc_html($item['trizen_hotel_room_extra_service_price']); echo esc_html($item['trizen_hotel_room_extra_service_price_designation']); ?>
                                             </span>
                                         </label>
                                     </div>
@@ -173,9 +172,9 @@ class trizen_hrbf_widget extends WP_Widget {
                                 <!--<span class="font-size-17 text-black">
                                     <?php /*esc_html_e('$', 'trizen-helper'); */?>
                                 </span>-->
-                                <input id="room-price" type="text" name="total" class="num" value="<?php echo TravelHelper::format_money($sale_price) ?>" readonly="readonly"/>
+                                <input id="room-price" type="text" name="total" class="num mr-2" value="<?php echo TravelHelper::format_money($sale_price); ?>" readonly="readonly"/>
                                 <span>
-                                    <?php echo sprintf( _n( '/ per room', '/%d per rooms', $numberday, 'trizen-helper' ), $numberday ); ?>
+                                    <?php esc_html_e( ' / Per Room', 'trizen-helper' ); ?>
                                 </span>
                             </p>
                         </div>
@@ -196,7 +195,6 @@ class trizen_hrbf_widget extends WP_Widget {
         </form>
 
 		<?php
-		endwhile;
 
 
 		// After widget code, if any

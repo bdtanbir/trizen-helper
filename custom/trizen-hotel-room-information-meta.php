@@ -10,7 +10,7 @@ $room_badge_title   = get_post_meta( get_the_ID(), 'room_badge_title', true );
 $room_address       = get_post_meta( get_the_ID(), 'address', true );
 
 // Hotel Room Extra Services
-$trizen_hotel_room_extra_services_data = get_post_meta( get_the_ID(), 'trizen_hotel_extra_services_data_group', true );
+$trizen_hotel_room_extra_services_data = get_post_meta( get_the_ID(), 'extra_services', true );
 
 $trizen_room_other_facility_data = get_post_meta( get_the_ID(), 'trizen_room_other_facility_data_group', true );
 $trizen_room_rules_data          = get_post_meta( get_the_ID(), 'trizen_room_rules_data_group', true );
@@ -289,7 +289,7 @@ $hotel_rooms = new WP_Query($default);
                                     </div>
                                     <div class="form-group">
                                         <label for="trizen_hotel_room_extra_service_price_designation" class="title">
-                                            <?php esc_html_e('Price Designation', 'trizen-helper'); ?> <code><?php esc_html_e('eg: Per 1 ...', 'trizen-helper'); ?></code>
+                                            <?php esc_html_e('Designation', 'trizen-helper'); ?> <code><?php esc_html_e('eg: Per 1 ...', 'trizen-helper'); ?></code>
                                         </label>
                                         <input type="text" name="trizen_hotel_room_extra_service_price_designation[]" id="trizen_hotel_room_extra_service_price_designation" />
                                     </div>
@@ -326,7 +326,7 @@ $hotel_rooms = new WP_Query($default);
                                             </div>
                                             <div class="form-group">
                                                 <label for="trizen_hotel_room_extra_service_price_designation" class="title" name="trizen_hotel_room_extra_service_price_designation[]">
-                                                    <?php esc_html_e('Price Designation', 'trizen-helper'); ?> <code><?php esc_html_e('eg: Per 1 ...', 'trizen-helper'); ?></code>
+                                                    <?php esc_html_e('Designation', 'trizen-helper'); ?> <code><?php esc_html_e('eg: Per 1 ...', 'trizen-helper'); ?></code>
                                                 </label>
                                                 <input type="text" name="trizen_hotel_room_extra_service_price_designation[]" id="trizen_hotel_room_extra_service_price_designation" value="<?php if($field['trizen_hotel_room_extra_service_price_designation'] != '') echo esc_attr( $field['trizen_hotel_room_extra_service_price_designation'] ); ?>" />
                                             </div>

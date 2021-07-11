@@ -52,7 +52,11 @@ class TS_Admin_Settings {
         );
         add_settings_section(
             'trizen_settings_panel_main_section_id', // section ID
-            '', // title (if needed)
+            '<div class="highlight-heading" id="hotel_options">
+                <h1>
+                    Hotel Options <a href="#wpwrap">Top</a>
+                </h1>
+            </div>', // title (if needed)
             '', // callback function (if needed)
             'trizen_setting_panel_slug' // page slug
         );
@@ -99,6 +103,48 @@ class TS_Admin_Settings {
             );
         }
 
+
+        // Hotel Room
+        register_setting(
+            'trizen_settings_panel_group_hotel_option', // settings group name
+            'hotel_room_review', // option name
+            '' // sanitization function
+        );
+        add_settings_section(
+            'trizen_settings_panel_room_main_section_id', // section ID
+            '<div class="highlight-heading" id="room_options">
+                <h1>
+                    Room Options <a href="#wpwrap">Top</a>
+                </h1>
+            </div>', // title (if needed)
+            '', // callback function (if needed)
+            'trizen_setting_panel_slug' // page slug
+        );
+        add_settings_field(
+            'hotel_room_review',
+            'Enable Room Review',
+            [$this, 'tsp_hotel_room_review_callback'], // function which prints the field
+            'trizen_setting_panel_slug', // page slug
+            'trizen_settings_panel_room_main_section_id', // section ID
+            array(
+                'label_for' => 'hotel_room_review',
+                'class'     => 'trizen-setting-tabs-content-control', // for <tr> element
+            )
+        );
+        $is_room_review = get_option( 'hotel_room_review' );
+        if($is_room_review == 'on') {
+            add_settings_field(
+                'room_review_stars',
+                'Review Criterias',
+                [$this, 'tsp_hotel_room_stars_callback'], // function which prints the field
+                'trizen_setting_panel_slug', // page slug
+                'trizen_settings_panel_room_main_section_id', // section ID
+                array(
+                    'label_for' => 'room_review_stars',
+                    'class'     => 'trizen-setting-tabs-content-control', // for <tr> element
+                )
+            );
+        }
     }
 
     public function tsp_disable_availability_check_callback(){
@@ -108,8 +154,8 @@ class TS_Admin_Settings {
         } else {
             $checked = '';
         }
-        echo '<input type="checkbox" id="disable_availability_check" name="disable_availability_check" '.$checked.' />';
         ?>
+        <input type="checkbox" id="disable_availability_check" name="disable_availability_check" <?php echo $checked; ?> />
         <span class="description">
             <?php echo __('<strong>OFF: </strong>Dont Check availability in search results.', 'trizen-helper'); ?>
         </span>
@@ -171,6 +217,67 @@ class TS_Admin_Settings {
             </span>
         </div>
 
+
+        <?php
+    }
+
+    
+    //  Hotel Room
+    public function tsp_hotel_room_review_callback(){
+        $is_hotel_room_review = get_option( 'hotel_room_review' );
+        if($is_hotel_room_review == 'on') {
+            $checked = 'checked';
+        } else {
+            $checked = '';
+        }
+        ?>
+        <input type="checkbox" id="hotel_room_review" name="hotel_room_review" <?php echo esc_attr( $checked ); ?> />
+        <span class="description">
+            <?php echo __('<strong>ON: </strong>Users can review for room. <strong>OFF: </strong>Users can not review for room', 'trizen-helper'); ?>
+        </span>
+        <?php
+    }
+    public function tsp_hotel_room_stars_callback(){
+        $review_criterias = get_option( 'room_review_stars' );
+        ?>
+
+        <div class="hotel-room-review-wrap">
+            <script type="text/html" id="tmpl-repeater2">
+                <p>
+                    <label for="room_review_stars" class="title">
+                        <?php esc_html_e('Title', 'trizen-helper'); ?>
+                        <input type="text" id="room_review_stars" size="20" name="room_review_stars[]" value="" />
+                    </label>
+                    <a href="#" id="remove_hotel_room_review_star">
+                        <?php esc_html_e('Remove', 'trizen-helper'); ?>
+                    </a>
+                </p>
+            </script>
+
+            <div id="hotel_room_review_star_group">
+                <?php
+                error_log(print_r($review_criterias, 1));
+                if(!empty($review_criterias)) {
+                    foreach ($review_criterias as $key=> $item) { ?>
+                        <p>
+                            <label for="room_review_stars<?php echo esc_attr($key); ?>" class="title">
+                                <?php esc_html_e('Title', 'trizen-helper'); ?>
+                                <input type="text" id="room_review_stars<?php echo esc_attr($key); ?>" size="20" name="room_review_stars[]" value="<?php echo esc_attr($item); ?>" />
+                            </label>
+                            <a href="#" id="remove_hotel_room_review_star">
+                                <?php esc_html_e('Remove', 'trizen-helper'); ?>
+                            </a>
+                        </p>
+                    <?php }
+                } ?>
+            </div>
+            <a href="#" id="add_hotel_room_review_star">
+                <?php esc_html_e('Add New Field', 'trizen-helper'); ?>
+            </a>
+            <span class="description">
+                <?php esc_html_e('You can add, edit, delete and review criteria for room.', 'trizen-helper'); ?>
+            </span>
+        </div>
 
         <?php
     }

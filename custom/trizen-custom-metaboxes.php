@@ -229,7 +229,7 @@ if(!function_exists('trizen_register_meta_boxes')) {
 
 
 		/* Hotel Room Extra Services */
-		$room_extra_service_oldfield = get_post_meta($post_id, 'trizen_hotel_extra_services_data_group', true);
+		$room_extra_service_oldfield = get_post_meta($post_id, 'extra_services', true);
 		if ( $_POST['trizen_hotel_room_extra_service_title'] ) {
 			$newfield                                          = array();
 			$trizen_hotel_room_extra_service_title             = $_POST['trizen_hotel_room_extra_service_title'];
@@ -245,9 +245,9 @@ if(!function_exists('trizen_register_meta_boxes')) {
 			}
 		}
 		if ( !empty( $newfield ) && $newfield != $room_extra_service_oldfield )
-			update_post_meta( $post_id, 'trizen_hotel_extra_services_data_group', $newfield );
+			update_post_meta( $post_id, 'extra_services', $newfield );
 		elseif ( empty($newfield) && $room_extra_service_oldfield )
-			delete_post_meta( $post_id, 'trizen_hotel_extra_services_data_group', $room_extra_service_oldfield );
+			delete_post_meta( $post_id, 'extra_services', $room_extra_service_oldfield );
 
 
 

@@ -77,7 +77,6 @@ class trizen_hpa_widget extends WP_Widget {
                             <input type="hidden" class="check-in-input" value="<?php echo esc_attr($start) ?>" name="start">
                             <input type="hidden" class="check-out-input" value="<?php echo esc_attr($end) ?>" name="end">
                             <input type="text" class="check-in-out" value="<?php echo esc_attr($date); ?>" name="date">
-                            <input type="text" class="check-in-out-tst" value="<?php echo date('h:i a'); ?>" name="real-date">
                         </div>
                     </div>
                 </div>

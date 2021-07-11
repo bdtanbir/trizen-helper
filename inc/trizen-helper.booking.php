@@ -136,7 +136,7 @@ function get_carts() {
 function getExtraPrice($room_id = '', $extra_price = array(), $number_room = 0, $numberday = 0){
 	$total_price = 0;
     $price_unit = get_post_meta($room_id, 'extra_price_unit', true);
-//    $extra_price = get_post_meta($room_id, 'trizen_hotel_extra_services_data_group', true);
+//    $extra_price = get_post_meta($room_id, 'extra_services', true);
 //	if(isset($extra_price) && is_array($extra_price) && count($extra_price)){
 		foreach($extra_price as $number){
 			$price_item = $number['trizen_hotel_room_extra_service_price'];
@@ -546,7 +546,7 @@ function do_add_to_cart() {
 	 	$child_number = intval( request( 'child_number', '' ) );
 	 	if ( $child_number <= 0 ) $child_number = 0;
 
-    /*$trizen_hotel_room_extra_service_data    = get_post_meta(get_the_ID(), 'trizen_hotel_extra_services_data_group', true);
+    /*$trizen_hotel_room_extra_service_data    = get_post_meta(get_the_ID(), 'extra_services', true);
     if($trizen_hotel_room_extra_service_data) {
         foreach ($trizen_hotel_room_extra_service_data as $key => $item) {
             $extra_price_title = strtolower(str_replace(' ', '-', $item['trizen_hotel_room_extra_service_title']));
@@ -649,8 +649,8 @@ function do_add_to_cart() {
  		$item_price = floatval( get_post_meta( $room_origin, 'price', true ) );
  	}
  	// Extra price added
- 	$extras = request( 'trizen_hotel_extra_services_data_group', [] );
-// 	$extras = get_post_meta(get_the_ID(), 'trizen_hotel_extra_services_data_group', true);
+ 	$extras = request( 'extra_services', [] );
+// 	$extras = get_post_meta(get_the_ID(), 'extra_services', true);
 
  	$extra_price   = getExtraPrice( $room_origin, $extras, $room_num_search, $numberday );
  	$sale_price    = TSPrice::getRoomPrice( $room_origin, strtotime( $check_in ), strtotime( $check_out ), $room_num_search, $adult_number, $child_number );

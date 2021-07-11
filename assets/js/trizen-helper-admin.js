@@ -347,6 +347,11 @@ jQuery(function ($) {
             $("#location_map_setting").toggleClass('hidden');
         });
     }
+    
+    $(document).on('click', '.trizen-setting-tabs-nav li', function() {
+        $('.trizen-setting-tabs-nav li').removeClass('active');
+        $(this).addClass('active');
+    })
 
 });
 

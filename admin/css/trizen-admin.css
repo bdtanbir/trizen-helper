@@ -91,6 +91,8 @@
     width: 12%;
     flex: none;
     margin: 0 20px 0 0;
+    position: sticky;
+    top: 50px;
 }
 .trizen-hotel-information-wrap .tabs li {
     font-size: 14px;
@@ -1529,9 +1531,12 @@ button {
     font-size: 14px;
     font-weight: 400;
 }
+.ts-select-location {
+    max-width: 600px;
+}
 .location-list-wrapper {
     margin-top: 20px;
-    max-height: 350px;
+    max-height: 440px;
     overflow-x: hidden;
     border: 1px solid #ddd;
     border-radius: 4px;
@@ -1540,6 +1545,9 @@ button {
 .location-list-wrapper .location-list {
     border-bottom: 1px solid #f1f1f1;
     margin-bottom: 8px;
+}
+.location-list-wrapper .location-list:last-child {
+    border-bottom: none;
 }
 .location-list-wrapper .location-list label {
     margin-bottom: 8px;
@@ -1675,6 +1683,10 @@ button {
     .calendar-wrapper .left-side,
     .calendar-wrapper .right-side {
         width: 100%;
+    }
+    .trizen-hotel-information-wrap .tabs {
+        position: relative;
+        top: 0;
     }
 }
 

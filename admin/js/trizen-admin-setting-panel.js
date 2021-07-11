@@ -61,9 +61,17 @@
             e.preventDefault();
             $(this).parent().remove();
         });
-        /*if($("#add_hotel_review_star p").length <=1) {
-            $("#remove_hotel_review_star").remove()
-        }*/
+        
+        $("#add_hotel_room_review_star").on('click', function (e) {
+            e.preventDefault();
+            var template = wp.template('repeater2'),
+                html = template();
+            $("#hotel_room_review_star_group").append(html);
+        });
+        $(document).on('click', '#remove_hotel_room_review_star', function (e) {
+            e.preventDefault();
+            $(this).parent().remove();
+        });
     });
 
 

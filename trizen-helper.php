@@ -91,7 +91,7 @@ function trizen_helper_admin_script()
 		'trizen-setting-panel-admin-css',
 		TRIZEN_HELPER_URI.('admin/css/trizen-admin-setting-panel.css'),
 		'',
-		TRIZEN_HELPER_VERSION
+		time()
 	);
     wp_enqueue_style(
         'sweetalert2-min-css',
@@ -207,13 +207,6 @@ function trizen_helper_admin_script()
 	wp_enqueue_script(
 		'trizen-helper-admin-js',
 		TRIZEN_HELPER_URI . ('assets/js/trizen-helper-admin.js'),
-		'',
-		TRIZEN_HELPER_VERSION,
-		true
-	);
-	wp_register_script(
-		'trizen-setting-panel-js',
-		TRIZEN_HELPER_URI . ('admin/js/trizen-setting-panel-tab.js'),
 		'',
 		TRIZEN_HELPER_VERSION,
 		true
