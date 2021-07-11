@@ -7,7 +7,6 @@ class TS_Admin_Settings {
     public function __construct() {
         add_action('admin_menu', [$this, '__registerPage'], 9);
 
-        add_action( 'wp_ajax_save_settings_with_ajax', array( $this, 'trizen_save_settings_panel_with_ajax' ) );
         add_action( 'admin_init',  array( $this, 'trizen_register_setting_panel') );
     }
 
@@ -19,34 +18,18 @@ class TS_Admin_Settings {
             'trizen_setting_panel_slug',
             [$this, '__showPage'],
             TRIZEN_HELPER_URI . '/admin/img/favicon.png',
-            35 );
+            75 );
     }
 
     public function __showPage() {
 
-//        $ajax_url = array(
-//            'ajaxurl' => admin_url( 'admin-ajax.php' ),
-//        );
-//        wp_localize_script( 'trizen-admin-setting-panel-js', 'trizen_settings_panel_param', $ajax_url );
-//
-//        /**
-//         * This section will handle the "trizen_save_settings_panel" array. If any new settings options is added
-//         * then it will matches with the older array and then if it founds anything new then it will update the entire array.
-//         */
-//        $this->trizen_default_settings_panel = array_fill_keys( $this->trizen_setting_default_keys, true );
-//        $this->trizen_get_settings_panel     = get_option( 'trizen_save_settings_panel', $this->trizen_default_settings_panel );
-//        $trien_new_settings_panel           = array_diff_key( $this->trizen_default_settings_panel, $this->trizen_get_settings_panel );
-//
-//        if( ! empty( $trien_new_settings_panel ) ) {
-//            $trizen_updated_settings_panel = array_merge( $this->trizen_get_settings_panel, $trien_new_settings_panel );
-//            update_option( 'trizen_save_settings_panel', $trizen_updated_settings_panel );
-//        }
-//        $this->trizen_get_settings_panel = get_option( 'trizen_save_settings_panel', $this->trizen_default_settings_panel );
         ?>
         <div id="trizen_settings_app">
-            <?php echo '<form action="options.php" method="POST" id="trizen_admin_settings_panel_form" name="trizen_admin_settings_panel_form">'; ?>
-                <?php include_once TRIZEN_HELPER_PATH . 'admin/inc/setting/trizen-option-setting-content.php'; ?>
-            <?php echo '</form>'; ?>
+            <form action="options.php" method="POST" id="trizen_admin_settings_panel_form" name="trizen_admin_settings_panel_form">
+                <?php
+                include_once TRIZEN_HELPER_PATH . 'admin/inc/setting/trizen-option-setting-content.php';
+                ?>
+            </form>
         </div>
         <?php
     }
@@ -132,7 +115,6 @@ class TS_Admin_Settings {
         </span>
         <?php
     }
-
     public function tsp_hotel_review_callback(){
         $is_hotel_review = get_option( 'hotel_review' );
         if($is_hotel_review == 'on') {
@@ -147,7 +129,6 @@ class TS_Admin_Settings {
         </span>
         <?php
     }
-
     /* Repeater Field Testing */
     public function tsp_hotel_stars_callback(){
         $text = get_option( 'hotel_review_stars' );
@@ -201,35 +182,6 @@ class TS_Admin_Settings {
             self::$_inst = new self();
 
         return self::$_inst;
-    }
-
-    /**
-     * Saving data with ajax request
-     * @param
-     * @return  array
-     * @since 1.0
-     */
-    public function trizen_save_settings_panel_with_ajax() {
-
-        if( isset( $_POST['fields'] ) ) {
-            parse_str( $_POST['fields'], $settings );
-        } else {
-            return;
-        }
-
-        $this->trizen_settings_panel = [];
-
-        foreach( $this->trizen_setting_default_keys as $key ){
-            if( isset( $settings[ $key ] ) ) {
-                $this->trizen_settings_panel[ $key ] = 1;
-            } else {
-                $this->trizen_settings_panel[ $key ] = 0;
-            }
-        }
-        update_option( 'trizen_save_settings_panel', $this->trizen_settings_panel );
-        return true;
-        die();
-
     }
 
 }

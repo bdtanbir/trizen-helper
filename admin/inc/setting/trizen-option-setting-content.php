@@ -28,17 +28,16 @@
     </ul>
     <div class="trizen-setting-tabs-content">
         <div id="hotel_option" class="trizen-setting-tab">
-
             <div class="form-settings" id="hotel_review">
                 <?php
                     settings_fields( 'trizen_settings_panel_group_hotel_option' ); // settings group name
                     do_settings_sections( 'trizen_setting_panel_slug' ); // just a page slug
                 ?>
             </div>
-
         </div>
+
         <div id="room_option" class="trizen-setting-tab hidden">
-            <h1>I AM FROM A SPACIAL ROOM</h1>
+            <h1>I am from a spacial room</h1>
         </div>
     </div>
 </div>

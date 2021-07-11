@@ -49,7 +49,7 @@ if(is_admin()) {
 }
 require_once TRIZEN_HELPER_PATH.'admin/inc/class.woocommerce.php';
 require_once TRIZEN_HELPER_PATH.'admin/inc/order.php';
-require_once TRIZEN_HELPER_PATH.'admin/inc/class.admin.room-2.php';
+require_once TRIZEN_HELPER_PATH.'admin/inc/class.admin.room.php';
 require_once TRIZEN_HELPER_PATH.'admin/inc/class.admin.hotel.php';
 require_once TRIZEN_HELPER_PATH.'admin/inc/class.admin.upgrade.data.php';
 require_once TRIZEN_HELPER_PATH.'admin/inc/class.admin.duplicate.data.php';
