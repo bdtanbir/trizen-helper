@@ -358,7 +358,7 @@ function trizen_get_option($option_id, $default = false) {
 	return ts_traveler_get_option($option_id, $default);
 }
 function getDateFormat() {
-	$format = '{dd}/{mm}/{yyyy}';
+	$format = '{mm}/{dd}/{yyyy}';
 
 	$ori_format = [
 		'{d}' => 'j',
@@ -1503,6 +1503,38 @@ function save_review_stars($comment_id) {
 
     if (get_post_type($post_id) == 'ts_hotel') {
         $all_stars = TSHotel::get_review_stars();
+        $ts_review_stars = isset($_POST['ts_review_stars']) ? $_POST['ts_review_stars']: [];
+
+        if (!empty($all_stars) and is_array($all_stars)) {
+            $total_point = 0;
+            foreach ( $all_stars as $key => $value ) {
+                if ( isset( $ts_review_stars[$value] ) ) {
+                    //Now Update the Each Star Value
+                    if( is_numeric( $ts_review_stars[$value] ) ) {
+                        $ts_review_stars[$value] = intval( $ts_review_stars[$value] );
+                    } else {
+                        $ts_review_stars[$value] = 5;
+                    }
+                    $total_point += $ts_review_stars[$value];
+                    update_comment_meta($comment_id, 'ts_star_' . sanitize_title($value), $ts_review_stars[$value]);
+                }
+            }
+            $avg = round($total_point / count($all_stars), 1);
+            //Update comment rate with avg point
+            $rate = wp_filter_nohtml_kses($avg);
+            if ($rate > 5) {
+                //Max rate is 5
+                $rate = 5;
+            }
+
+            update_comment_meta($comment_id, 'comment_rate', $rate);
+            //Now Update the Stars Value
+            update_comment_meta($comment_id, 'ts_review_stars', $ts_review_stars);
+        }
+    }
+
+    if (get_post_type($post_id) == 'hotel_room') {
+        $all_stars = get_option( 'room_review_stars' );
         $ts_review_stars = isset($_POST['ts_review_stars']) ? $_POST['ts_review_stars']: [];
 
         if (!empty($all_stars) and is_array($all_stars)) {

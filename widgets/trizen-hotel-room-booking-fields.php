@@ -29,6 +29,7 @@ class trizen_hrbf_widget extends WP_Widget {
 		// Before widget code, if any
 		echo $args['before_widget'];
 
+        while ( have_posts() ): the_post();
         $room_price = get_post_meta(get_the_ID(), 'price', true);
         $trizen_hotel_room_extra_service_data    = get_post_meta(get_the_ID(), 'extra_services', true);
 
@@ -41,13 +42,13 @@ class trizen_hrbf_widget extends WP_Widget {
 
         $adult_number    = request( 'adult_number', 1 );
         $child_number    = request( 'child_number', '' );
-        $room_num_search = (int)get( 'room_num_search', 1 );
 
         $current_calendar = get_current_available_calendar(get_the_ID());
         $current_calendar_reverb = date('m/d/Y', strtotime($current_calendar));
         $start          = get( 'start', date( getDateFormat(), strtotime($current_calendar)) );
         $end            = get( 'end', date( getDateFormat(), strtotime( "+ 1 day", strtotime($current_calendar)) ) );
         $date           = get( 'date', date( 'd/m/Y h:i a', strtotime($current_calendar) ) . '-' . date( 'd/m/Y h:i a', strtotime( '+1 day', strtotime($current_calendar) ) ) );
+        $room_num_search = (int)get( 'room_num_search', 1 );
         if ( $room_num_search <= 0 ) $room_num_search = 1;
 
 
@@ -195,7 +196,7 @@ class trizen_hrbf_widget extends WP_Widget {
         </form>
 
 		<?php
-
+        endwhile;
 
 		// After widget code, if any
 		echo $args['after_widget'];

@@ -153,7 +153,7 @@ if ( !class_exists( 'TSReview' ) ) {
                     $key = 'rental_review_stars';
                     break;
                 case "hotel_room":
-                    $key = 'hotel_room_review_stars';
+                    $key = 'room_review_stars';
                     break;
                 case "ts_cars":
                     $key = 'car_review_stars';

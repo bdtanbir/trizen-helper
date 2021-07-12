@@ -13,25 +13,37 @@
 
 <?php if( is_user_logged_in(  )) { ?>
     <div class="form-content">
+        <div class="rate-option p-2">
+            <div class="row review-items has-matchHeight">
+
+                <?php
+                $stars = TSReview::get_review_stars( get_the_ID() );
+                if ( !empty( $stars ) ) {
+                    foreach ( $stars as $star ) {
+                        ?>
+                        <div class="col-lg-4 responsive-column item">
+                            <div class="rate-option-item">
+                                <label><?php echo esc_html($star); ?></label>
+                                <input class="ts_review_stars" type="hidden" name="ts_review_stars[<?php echo trim( $star ); ?>]">
+                                <div class="rate-stars-option rates">
+                                    <?php
+                                    for ( $i = 1; $i <= 5; $i++ ) {
+                                        echo '<i class="la la-star grey"></i>';
+                                    }
+                                    ?>
+                                </div>
+                            </div>
+                        </div>
+                        <?php
+                    }
+                }
+                ?>
+
+            </div>
+        </div>
 
         <div class="form-wrapper contact-form-action">
             <div class="row">
-
-                <div class="col-lg-12">
-                    <div class="input-box form-group room-stars">
-                        <span class="label-text">
-                            <?php esc_html_e( 'Your Rating', 'trizen-helper' ); ?>
-                        </span>
-                        <span class="ts-stars">
-                            <?php
-                                for ( $i = 1; $i <= 5; $i++ ) {
-                                    echo '<i class="la la-star grey"></i>';
-                                }
-                            ?>
-                        </span>
-                        <input name="comment_rate" class="ts_review_stars" type="hidden" value="1">
-                    </div>
-                </div>
 
                 <div class="col-lg-12">
                     <div class="input-box">

@@ -110,6 +110,11 @@ class TS_Admin_Settings {
             'hotel_room_review', // option name
             '' // sanitization function
         );
+        register_setting(
+            'trizen_settings_panel_group_hotel_option', // settings group name
+            'room_review_stars', // option name
+            '' // sanitization function
+        );
         add_settings_section(
             'trizen_settings_panel_room_main_section_id', // section ID
             '<div class="highlight-heading" id="room_options">
@@ -256,7 +261,6 @@ class TS_Admin_Settings {
 
             <div id="hotel_room_review_star_group">
                 <?php
-                error_log(print_r($review_criterias, 1));
                 if(!empty($review_criterias)) {
                     foreach ($review_criterias as $key=> $item) { ?>
                         <p>

@@ -1,6 +1,6 @@
 
 html {
-    /* scroll-behavior: smooth; */
+    scroll-behavior: smooth;
 }
 .trizen-setting-tab .highlight-heading {
     padding-top: 35px;
