@@ -98,16 +98,7 @@ function ts_filter_hotel_ajax() {
 	$style         = get('layout');
 	$format        = get('format');
 	$is_popup_map  = get('is_popup_map');
-	$half_map_show = get('half_map_show');
-	$fullwidth     = get('fullwidth');
-	if (empty($half_map_show))
-		$half_map_show = 'yes';
 	$popup_map = '';
-	if ($is_popup_map) {
-		$popup_map = '<div class="row list-style">';
-	}
-	if (!in_array($format, ['normal', 'halfmap', 'popupmap']))
-		$format = 'normal';
 	global $wp_query, $ts_search_query;
 	setQueryHotelSearch();
 	$query = $ts_search_query;
@@ -124,31 +115,25 @@ function ts_filter_hotel_ajax() {
 	//End map
 	ob_start();
 //            echo st()->load_template('layouts/modern/common/loader', 'content');
-	if (!isset($style) || empty($style)) $style = 'grid';
-	switch ($format) {
-		case 'halfmap':
-			echo ($style == 'grid') ? '<div class="row">' : '<div class="row list-style">';
-			break;
-		default:
-			echo ($style == 'grid') ? '<div class="row row-wrapper">' : '<div class="style-list">';
-			break;
-	}
+    error_log(print_r($query, 1));
 	if ($query->have_posts()) {
 		while ($query->have_posts()) {
 			$query->the_post();
-//                    if ($fullwidth) {
-//                        echo 'I am FullWidth Loop';
-//                        echo st()->load_template('layouts/modern/hotel/elements/loop/' . esc_attr($format), $style, ['show_map' => $half_map_show, 'fullwidth' => true]);
-//                    } else {
-			require_once TRIZEN_HELPER_PATH .'inc/hotel/search/hotel-grid.php';
-//                        echo st()->load_template('layouts/modern/hotel/elements/loop/' . esc_attr($format), $style, ['show_map' => $half_map_show]);
-//                    }
-//                    if ($is_popup_map)
-//                        $popup_map .= st()->load_template('layouts/modern/hotel/elements/loop/popupmap');
+
+			echo '<div class="col-lg-4 responsive-column i-am-plugin">';
+            include(TRIZEN_HELPER_PATH .'inc/hotel/search/hotel-grid.php');
+
+            ?>
+
+
+
+			<?php
+			echo '</div>';
+
 			//Map
 			$map_lat = get_post_meta(get_the_ID(), 'lat', true);
 			$map_lng = get_post_meta(get_the_ID(), 'lng', true);
-			if (!empty($map_lat) and !empty($map_lng)) {
+			/*if (!empty($map_lat) and !empty($map_lng)) {
 				if (empty($map_lat_center)) $map_lat_center = $map_lat;
 				if (empty($map_lng_center)) $map_lng_center = $map_lng;
 				$post_type = get_post_type();
@@ -162,41 +147,34 @@ function ts_filter_hotel_ajax() {
 				$data_map[$stt]['content_html'] = preg_replace('/^\s+|\n|\r|\s+$/m', '', TRIZEN_HELPER_PATH .'inc/hotel/search/hotel-grid.php');
 				$data_map[$stt]['content_adv_html'] = preg_replace('/^\s+|\n|\r|\s+$/m', '', TRIZEN_HELPER_PATH .'inc/hotel/search/hotel-grid.php');
 				$stt++;
-			}
+			}*/
 			//End map
 		}
 	} else {
 		if ($is_popup_map)
-			$popup_map .= '<div class="col-xs-12">' . esc_html__('Hotel None', 'trizen-helper') . '</div>';
-		echo ($style == 'grid') ? '<div class="col-xs-12">' : '';
 		require_once TRIZEN_HELPER_PATH .'inc/hotel/search/loop-room-none.php';
-		echo '</div>';
 	}
-	echo '</div>';
 	$ajax_filter_content = ob_get_contents();
 	ob_clean();
 	ob_end_flush();
-	if ($is_popup_map) {
-		$popup_map .= '</div>';
-	}
 	ob_start();
 	TravelHelper::paging(false, false, true); ?>
 	<span class="count-string">
-                    <?php
-                    if (!empty($ts_search_query)) {
-	                    $wp_query = $ts_search_query;
-                    }
-                    if ($wp_query->found_posts):
-	                    $page           = get_query_var('paged');
-	                    $posts_per_page = get_query_var('posts_per_page');
-	                    if (!$page) $page = 1;
-	                    $last = $posts_per_page * ($page);
-	                    if ($last > $wp_query->found_posts) $last = $wp_query->found_posts;
-	                    echo sprintf(__('%d - %d of %d ', 'trizen-helper'), $posts_per_page * ($page - 1) + 1, $last, $wp_query->found_posts);
-	                    echo ($wp_query->found_posts == 1) ? __('Hotel', 'trizen-helper') : __('Hotels', 'trizen-helper');
-                    endif;
-                    ?>
-                </span>
+        <?php
+        if (!empty($ts_search_query)) {
+            $wp_query = $ts_search_query;
+        }
+        if ($wp_query->found_posts):
+            $page           = get_query_var('paged');
+            $posts_per_page = get_query_var('posts_per_page');
+            if (!$page) $page = 1;
+            $last = $posts_per_page * ($page);
+            if ($last > $wp_query->found_posts) $last = $wp_query->found_posts;
+            echo sprintf(__('%d - %d of %d ', 'trizen-helper'), $posts_per_page * ($page - 1) + 1, $last, $wp_query->found_posts);
+            echo ($wp_query->found_posts == 1) ? __('Hotel', 'trizen-helper') : __('Hotels', 'trizen-helper');
+        endif;
+        ?>
+    </span>
 	<?php
 	$ajax_filter_pag = ob_get_contents();
 	ob_clean();
