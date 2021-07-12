@@ -36,6 +36,7 @@ function trizen_helper_load() {
     require_once TRIZEN_HELPER_PATH.'admin/inc/class.user.php';
 }
 require_once TRIZEN_HELPER_PATH.'inc/class.hotel-helper.php';
+require_once TRIZEN_HELPER_PATH.'inc/class.hotel.search.php';
 require_once TRIZEN_HELPER_PATH.'custom/trizen-availability-model.php';
 require_once TRIZEN_HELPER_PATH.'inc/trizen-hook-function.php';
 

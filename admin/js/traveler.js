@@ -2494,7 +2494,7 @@ jQuery(document).ready(function ($) {
         holder.html('');
         if (dataobj.room_num_search == "1") {
             if (dataobj.adult_number == "" || dataobj.child_number == '' || typeof dataobj.adult_number == 'undefined' || typeof dataobj.child_number == 'undefined') {
-                setMessage(holder, st_hotel_localize.booking_required_adult_children, 'danger');
+                setMessage(holder, ts_hotel_localize.booking_required_adult_children, 'danger');
                 return !1
             }
         }
@@ -2505,7 +2505,7 @@ jQuery(document).ready(function ($) {
             if (dataobj.check_out == "") {
                 searchform.find('[name=end]').addClass('error')
             }
-            setMessage(holder, st_hotel_localize.is_not_select_date, 'danger');
+            setMessage(holder, ts_hotel_localize.is_not_select_date, 'danger');
             return !1
         }
         return !0
@@ -9875,11 +9875,11 @@ jQuery(function ($) {
         data_item = eval(data_item);
         var color = '237,​ 131,​ 35';
         switch (post_type) {
-            case "st_hotel":
+            case "ts_hotel":
                 color = '81,145,250';
                 //color = '87, 142, 190';
                 break;
-            case "st_rental":
+            case "ts_rental":
                 color = '81,145,250';
                 //color = '227, 91, 90';
                 break;

@@ -568,7 +568,7 @@ if ( !class_exists( 'TSAvailability' ) ) {
                     if($key_post_type !== false){
                         unset($post_types[$key_post_type]);
                     }
-                    if($value == 'st_hotel'){
+                    if($value == 'ts_hotel'){
                         $key_post_type_hotel_room = array_search('hotel_room', $post_types);
                         if($key_post_type_hotel_room !== false){
                             unset($post_types[$key_post_type_hotel_room]);

@@ -68,7 +68,7 @@ if ( !class_exists( 'TSAdminHotel' ) ) {
 
             /**
              *   @since 1.0
-             *   auto create & update table st_hotel
+             *   auto create & update table ts_hotel
              **/
             add_action( 'plugins_loaded', [ __CLASS__, '_check_table_hotel' ] );
 
@@ -182,7 +182,7 @@ if ( !class_exists( 'TSAdminHotel' ) ) {
         /**
          * @since 1.0
          **/
-        function _update_duplicate_data( $id, $data ) {
+        static function _update_duplicate_data( $id, $data ) {
             if ( !TravelHelper::checkTableDuplicate( 'ts_hotel' ) ) return;
             if ( get_post_type( $id ) == 'ts_hotel' ) {
                 $num_rows       = TravelHelper::checkIssetPost( $id, 'ts_hotel' );
