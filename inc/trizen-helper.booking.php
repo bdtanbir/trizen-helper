@@ -1418,6 +1418,33 @@ function _getdataHotel( $post_id, $check_in, $check_out ) {
     return $results;
 }
 
+function get_min_max_price( $post_type = 'ts_hotel' ) {
+	$meta_key = 'avg_price';
+	if ($meta_key == 'avg_price')
+		$meta_key = "price_avg";
+
+	if ( empty( $post_type ) || !TravelHelper::checkTableDuplicate( $post_type ) ) {
+		return [ 'price_min' => 0, 'price_max' => 500 ];
+	}
+
+	global $wpdb;
+	$sql = "
+        select
+            min(CAST({$meta_key} as DECIMAL)) as min,
+            max(CAST({$meta_key} as DECIMAL)) as max
+        from {$wpdb->prefix}ts_hotel";
+
+	$results = $wpdb->get_results( $sql, OBJECT );
+
+	$price_min = $results[ 0 ]->min;
+	$price_max = $results[ 0 ]->max;
+
+	if ( empty( $price_min ) ) $price_min = 0;
+	if ( empty( $price_max ) ) $price_max = 500;
+
+	return [ 'min' => ceil( $price_min ), 'max' => ceil( $price_max ) ];
+}
+
 
 add_action( 'wp_ajax_ts_add_room_number_inventory', 'ts_add_room_number_inventory' );
 function ts_add_room_number_inventory() {
