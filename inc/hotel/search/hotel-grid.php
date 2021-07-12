@@ -36,7 +36,7 @@ $avg = TSReview::get_avg_rate();
 		<?php } if(get_the_title()) { ?>
             <h3 class="card-title">
                 <a href="<?php the_permalink(); ?>">
-					<?php the_title(); ?> = plugin
+					<?php the_title(); ?>
                 </a>
             </h3>
 		<?php } if(!empty($address_title)) { ?>
