@@ -114,8 +114,6 @@ function ts_filter_hotel_ajax() {
 	$stt = 0;
 	//End map
 	ob_start();
-//            echo st()->load_template('layouts/modern/common/loader', 'content');
-    error_log(print_r($query, 1));
 	if ($query->have_posts()) {
 		while ($query->have_posts()) {
 			$query->the_post();
@@ -124,8 +122,6 @@ function ts_filter_hotel_ajax() {
             include(TRIZEN_HELPER_PATH .'inc/hotel/search/hotel-grid.php');
 
             ?>
-
-
 
 			<?php
 			echo '</div>';
