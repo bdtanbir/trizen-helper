@@ -249,14 +249,15 @@ class TS_Admin_Settings {
             'status'         => 'publish'
         ];
         $page_query = new WP_Query($args);
-        echo $search_page;
         ?>
         <select name="hotel_search_result_page" id="hotel_search_result_page" class="select-to-select2 hotel_search_result_page">
-            <option value="">--- Select Page ---</option>
+            <option value="">
+                <?php esc_html_e('--- Select Page ---', 'trizen-helper'); ?>
+            </option>
             <?php while ($page_query->have_posts()) { $page_query->the_post();
                 ?>
 	            <?php $selected = (isset( $search_page ) && $search_page === get_page_uri()) ? 'selected' : '' ; ?>
-            <option value="<?php echo get_page_uri(); ?>" <?php echo $selected; ?>><?php the_title(); ?></option>
+            <option value="<?php echo get_page_uri(); ?>" <?php echo esc_attr($selected); ?>><?php the_title(); ?></option>
             <?php } ?>
         </select>
         <?php
