@@ -50,6 +50,11 @@ class TS_Admin_Settings {
             'hotel_review_stars', // option name
             '' // sanitization function
         );
+        register_setting(
+            'trizen_settings_panel_group_hotel_option', // settings group name
+            'hotel_search_result_page', // option name
+            '' // sanitization function
+        );
         add_settings_section(
             'trizen_settings_panel_main_section_id', // section ID
             '<div class="highlight-heading" id="hotel_options">
@@ -102,6 +107,17 @@ class TS_Admin_Settings {
                 )
             );
         }
+	    add_settings_field(
+		    'hotel_search_result_page',
+		    'Hotel Search Result Page',
+		    [$this, 'tsp_hotel_search_result_callback'], // function which prints the field
+		    'trizen_setting_panel_slug', // page slug
+		    'trizen_settings_panel_main_section_id', // section ID
+		    array(
+			    'label_for' => 'hotel_search_result_page',
+			    'class'     => 'trizen-setting-tabs-content-control', // for <tr> element
+		    )
+	    );
 
 
         // Hotel Room
@@ -223,6 +239,26 @@ class TS_Admin_Settings {
         </div>
 
 
+        <?php
+    }
+    public function tsp_hotel_search_result_callback() {
+        $search_page = get_option('hotel_search_result_page');
+        $args = [
+            'post_type'      => 'page',
+            'posts_per_page' => -1,
+            'status'         => 'publish'
+        ];
+        $page_query = new WP_Query($args);
+        echo $search_page;
+        ?>
+        <select name="hotel_search_result_page" id="hotel_search_result_page" class="select-to-select2 hotel_search_result_page">
+            <option value="">--- Select Page ---</option>
+            <?php while ($page_query->have_posts()) { $page_query->the_post();
+                ?>
+	            <?php $selected = (isset( $search_page ) && $search_page === get_page_uri()) ? 'selected' : '' ; ?>
+            <option value="<?php echo get_page_uri(); ?>" <?php echo $selected; ?>><?php the_title(); ?></option>
+            <?php } ?>
+        </select>
         <?php
     }
 
