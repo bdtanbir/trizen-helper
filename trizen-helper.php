@@ -18,23 +18,20 @@ define( 'TRIZEN_HELPER_VERSION', '1.0' );
 
 
 require_once TRIZEN_HELPER_PATH.'admin/inc/setting/trizen-option-setting.php';
-    require_once TRIZEN_HELPER_PATH.'custom/trizen-custom-metaboxes.php';
-add_action('plugins_loaded', 'trizen_helper_load');
-function trizen_helper_load() {
-	require_once TRIZEN_HELPER_PATH.'widgets/trizen-social-profile.php';
-	require_once TRIZEN_HELPER_PATH.'widgets/trizen-recent-post-with-thumbnail.php';
-	require_once TRIZEN_HELPER_PATH.'custom/trizen-custom-post-types.php';
-	require_once TRIZEN_HELPER_PATH.'custom/trizen-taxonomy-class.php';
-	require_once TRIZEN_HELPER_PATH.'custom/trizen-room-facilities-custom-icon-field.php';
-	require_once TRIZEN_HELPER_PATH.'widgets/trizen-hotel-organized-by.php';
-	require_once TRIZEN_HELPER_PATH.'widgets/trizen-hotel-room-booking-fields.php';
-	require_once TRIZEN_HELPER_PATH.'inc/trizen-helper.booking.php';
-	require_once TRIZEN_HELPER_PATH.'widgets/trizen-hotel-price-and-availability.php';
-	require_once TRIZEN_HELPER_PATH.'custom/trizen-helper.class-admin-room.php';
-    require_once TRIZEN_HELPER_PATH.'admin/inc/database.helper.php';
-    require_once TRIZEN_HELPER_PATH.'admin/inc/class.review.php';
-    require_once TRIZEN_HELPER_PATH.'admin/inc/class.user.php';
-}
+require_once TRIZEN_HELPER_PATH.'custom/trizen-custom-metaboxes.php';
+require_once TRIZEN_HELPER_PATH.'widgets/trizen-social-profile.php';
+require_once TRIZEN_HELPER_PATH.'widgets/trizen-recent-post-with-thumbnail.php';
+require_once TRIZEN_HELPER_PATH.'custom/trizen-custom-post-types.php';
+require_once TRIZEN_HELPER_PATH.'custom/trizen-taxonomy-class.php';
+require_once TRIZEN_HELPER_PATH.'custom/trizen-room-facilities-custom-icon-field.php';
+require_once TRIZEN_HELPER_PATH.'widgets/trizen-hotel-organized-by.php';
+require_once TRIZEN_HELPER_PATH.'widgets/trizen-hotel-room-booking-fields.php';
+require_once TRIZEN_HELPER_PATH.'inc/trizen-helper.booking.php';
+require_once TRIZEN_HELPER_PATH.'widgets/trizen-hotel-price-and-availability.php';
+require_once TRIZEN_HELPER_PATH.'custom/trizen-helper.class-admin-room.php';
+require_once TRIZEN_HELPER_PATH.'admin/inc/database.helper.php';
+require_once TRIZEN_HELPER_PATH.'admin/inc/class.review.php';
+require_once TRIZEN_HELPER_PATH.'admin/inc/class.user.php';
 require_once TRIZEN_HELPER_PATH.'inc/class.hotel-helper.php';
 require_once TRIZEN_HELPER_PATH.'inc/class.hotel.search.php';
 require_once TRIZEN_HELPER_PATH.'custom/trizen-availability-model.php';
@@ -44,10 +41,10 @@ require_once TRIZEN_HELPER_PATH.'admin/inc/class.tsadmin.php';
 require_once TRIZEN_HELPER_PATH.'admin/inc/helper/nested_sets_model.helper.php';
 require_once TRIZEN_HELPER_PATH.'admin/inc/helper/availability.helper.php';
 require_once TRIZEN_HELPER_PATH.'admin/inc/class.admin.neworder.data.php';
-if(is_admin()) {
+// if(is_admin()) {
     require_once TRIZEN_HELPER_PATH.'admin/inc/class.admin.availability.php';
     require_once TRIZEN_HELPER_PATH.'core/database/tables/ts_price.php';
-}
+// }
 require_once TRIZEN_HELPER_PATH.'admin/inc/class.woocommerce.php';
 require_once TRIZEN_HELPER_PATH.'admin/inc/order.php';
 require_once TRIZEN_HELPER_PATH.'admin/inc/class.admin.room.php';
@@ -130,28 +127,6 @@ function trizen_helper_admin_script()
             true
         );
     }
-	/*wp_enqueue_script(
-		'lib-locales-all-js',
-		TRIZEN_HELPER_URI . ('admin/js/locales-all.js'),
-		array('jquery', 'fullcalendar'),
-		null,
-		true
-	);*/
-    /*wp_enqueue_script(
-        'lib-gmap3-js',
-        TRIZEN_HELPER_URI . ('admin/js/gmap3.min.js'),
-        ['jquery'],
-        false,
-        true
-    );*/
-    /*wp_enqueue_script(
-        'traveler-js',
-        TRIZEN_HELPER_URI . ('admin/js/traveler.js'),
-        ['jquery'],
-        null,
-        true
-    );*/
-
 
     wp_enqueue_script(
         'lib-moment.js',
@@ -167,13 +142,6 @@ function trizen_helper_admin_script()
         '1.0',
         true
     );
-    /*wp_enqueue_script(
-        'ts-qtip',
-        TRIZEN_HELPER_URI . ('admin/js/jquery.qtip.js'),
-        array('jquery'),
-        null,
-        true
-    );*/
     wp_enqueue_script(
         'lib-jquery-gantt.js',
         TRIZEN_HELPER_URI.('admin/js/jquery.fn.gantt.js'),
@@ -220,20 +188,6 @@ function trizen_helper_admin_script()
         TRIZEN_HELPER_VERSION,
         true
     );
-    /*wp_enqueue_script(
-        'sweetalert2-core-js',
-        TRIZEN_HELPER_URI.( 'admin/js/core.js' ),
-        array('jquery'),
-        '1.0',
-        true
-    );
-    wp_enqueue_script(
-        'sweetalert2-min-js',
-        TRIZEN_HELPER_URI.( 'admin/js/sweetalert2.min.js' ),
-        array('jquery', 'sweetalert2-core-js'),
-        '1.0',
-        true
-    );*/
 
 	$locale = get_locale();
 	$locale_fullcalendar = $locale;
