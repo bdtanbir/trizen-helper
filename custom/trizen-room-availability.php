@@ -43,7 +43,7 @@ global $post;
 
             <div class="field-group">
                 <label for="calendar_price">
-                    <?php esc_html_e('Price', 'trizen-helper'); echo __(' (', 'trizen-helper').get_woocommerce_currency_symbol().__(')', 'trizen-helper'); ?>
+                    <?php esc_html_e('Price', 'trizen-helper'); echo __(' (', 'trizen-helper').class_exists( 'WooCommerce' ) ? get_woocommerce_currency_symbol() : '$'.__(')', 'trizen-helper'); ?>
                 </label>
                 <input type="text" class="widefat" name="calendar_price" id="calendar_price" placeholder="<?php esc_attr_e('Price', 'trizen-helper'); ?>">
             </div>

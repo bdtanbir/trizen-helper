@@ -176,15 +176,7 @@ function getCouponPrice(){
 function get_current_available_calendar($post_id) {
 	if (!empty($post_id)) {
 		$post_type = get_post_type($post_id);
-		if ($post_type == 'ts_tours' || $post_type == 'ts_activity') {
-			$max_people = get_post_meta($post_id, 'max_people', true);
-			if (empty($max_people))
-				$max_people = 0;
-		} elseif ($post_type == 'hotel_room') {
-			$max_people = get_post_meta($post_id, 'number_room', true);
-			if (empty($max_people))
-				$max_people = 0;
-		} elseif ($post_type == 'ts_rental') {
+		if ($post_type == 'hotel_room') {
 			$max_people = get_post_meta($post_id, 'number_room', true);
 			if (empty($max_people))
 				$max_people = 0;
@@ -458,11 +450,8 @@ function getDateFormatMomentText() {
 function get_discount_rate($post_id = '', $check_in = ''){
     $post_type = get_post_type($post_id);
     $discount_text = 'discount' ;
-    if($post_type =='ts_hotel' or $post_type =='ts_rental' or $post_type =='hotel_room') $discount_text = 'discount_rate';
-    $tour_price_by = '';
-    if($post_type == 'st_tours'){
-        $tour_price_by = get_post_meta($post_id, 'tour_price_by', true);
-    }
+    if($post_type =='ts_hotel' or $post_type =='hotel_room') $discount_text = 'discount_rate';
+
     $discount_type = get_post_meta( $post_id, 'discount_type' , true );
     $discount_rate = floatval(get_post_meta($post_id,$discount_text,true));
     if($discount_rate < 0) $discount_rate = 0;
@@ -470,30 +459,15 @@ function get_discount_rate($post_id = '', $check_in = ''){
     $is_sale_schedule = get_post_meta($post_id, 'is_sale_schedule', true);
     if($is_sale_schedule == false || empty($is_sale_schedule)) $is_sale_schedule = 'off';
     if($is_sale_schedule == 'on'){
-        if($post_type == 'ts_tours'){
-            if($tour_price_by != 'fixed_depart'){
-                $sale_from = intval(strtotime(get_post_meta($post_id, 'sale_price_from',true)));
-                $sale_to = intval(strtotime(get_post_meta($post_id, 'sale_price_to',true)));
-                if($sale_from > 0 && $sale_to > 0 && $sale_from < $sale_to){
-                    if($check_in >= $sale_from && $check_in <= $sale_to){
-                        return $discount_rate ;
-                    }else {
-                        return 0 ;
-                    }
-                }
-            }
-        }else{
-            $sale_from = intval(strtotime(get_post_meta($post_id, 'sale_price_from',true)));
-            $sale_to   = intval(strtotime(get_post_meta($post_id, 'sale_price_to',true)));
-            if($sale_from > 0 && $sale_to > 0 && $sale_from < $sale_to){
-                if($check_in >= $sale_from && $check_in <= $sale_to){
-                    return $discount_rate ;
-                }else {
-                    return 0 ;
-                }
+        $sale_from = intval(strtotime(get_post_meta($post_id, 'sale_price_from',true)));
+        $sale_to   = intval(strtotime(get_post_meta($post_id, 'sale_price_to',true)));
+        if($sale_from > 0 && $sale_to > 0 && $sale_from < $sale_to){
+            if($check_in >= $sale_from && $check_in <= $sale_to){
+                return $discount_rate ;
+            }else {
+                return 0 ;
             }
         }
-
     }else{
         return $discount_rate;
     }

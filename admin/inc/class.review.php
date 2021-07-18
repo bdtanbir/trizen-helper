@@ -149,20 +149,8 @@ if ( !class_exists( 'TSReview' ) ) {
                 case "ts_hotel":
                     $key = 'hotel_review_stars';
                     break;
-                case "ts_rental":
-                    $key = 'rental_review_stars';
-                    break;
                 case "hotel_room":
                     $key = 'room_review_stars';
-                    break;
-                case "ts_cars":
-                    $key = 'car_review_stars';
-                    break;
-                case "ts_tours":
-                    $key = 'tour_review_stars';
-                    break;
-                case "ts_activity":
-                    $key = 'activity_review_stars';
                     break;
             }
             $list_star = get_option( $key );

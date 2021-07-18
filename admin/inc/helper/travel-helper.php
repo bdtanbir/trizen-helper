@@ -189,7 +189,7 @@ if ( !class_exists( 'TravelHelper' ) ) {
         }
 
         static function woocommerce_default_currency_smbl() {
-            $currency = get_woocommerce_currency_symbol();
+            $currency = class_exists( 'WooCommerce' ) ? get_woocommerce_currency_symbol() : '$';
             return $currency;
         }
 
@@ -307,21 +307,6 @@ if ( !class_exists( 'TravelHelper' ) ) {
             if ( ts_check_service_available( 'ts_hotel' ) ) {
                 $post_type[] = "ts_hotel";
                 $post_type[] = "hotel_room";
-            }
-            if ( ts_check_service_available( 'ts_tours' ) ) {
-                $post_type[] = "ts_tours";
-            }
-            if ( ts_check_service_available( 'ts_rental' ) ) {
-                $post_type[] = "ts_rental";
-            }
-            if ( ts_check_service_available( 'ts_cars' ) ) {
-                $post_type[] = "ts_cars";
-            }
-            if ( ts_check_service_available( 'ts_activity' ) ) {
-                $post_type[] = "ts_activity";
-            }
-            if ( ts_check_service_available( 'ts_flight' ) ) {
-                $post_type[] = "ts_flight";
             }
             return $post_type;
         }
@@ -973,7 +958,7 @@ if ( !class_exists( 'TravelHelper' ) ) {
             $precision          = TravelHelper::get_current_currency( 'booking_currency_precision', 2 );
             $thousand_separator = TravelHelper::get_current_currency( 'thousand_separator', ',' );
             $decimal_separator  = TravelHelper::get_current_currency( 'decimal_separator', '.' );*/
-            $symbol             = get_woocommerce_currency_symbol();
+            $symbol             = class_exists( 'WooCommerce' ) ? get_woocommerce_currency_symbol() : '$';
 //            $symbol             = self::get_current_currency( 'symbol' );
             $precision          = TravelHelper::get_current_currency( 'booking_currency_precision', 2 );
             $thousand_separator = TravelHelper::get_current_currency( 'thousand_separator', ',' );
@@ -1108,11 +1093,6 @@ if ( !class_exists( 'TravelHelper' ) ) {
                 'next_text' => __( 'Next Page', 'trizen-helper' ),
                 'type'      => 'list'
             ];
-            /*$style = st()->get_option( 'pag_style', true );
-            if ( $style == 'st_tour_ver' ) {
-                $arg[ 'prev_text' ] = "<i class='fa fa-angle-left'></i>";
-                $arg[ 'next_text' ] = "<i class='fa fa-angle-right'></i>";
-            }*/
             // Set up paginated links.
             $links = paginate_links( $arg );
 

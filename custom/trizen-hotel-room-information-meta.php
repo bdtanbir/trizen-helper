@@ -217,7 +217,7 @@ $hotel_rooms = new WP_Query($default);
 			<div class="tab-content" id="tab-room-price">
 				<div class="form-settings" id="room_price_setting">
 					<label for="price" class="title">
-						<?php esc_html_e('Price', 'trizen-helper'); echo __(' (', 'trizen-helper').get_woocommerce_currency_symbol().__(')', 'trizen-helper'); ?>
+						<?php esc_html_e('Price', 'trizen-helper'); echo __(' (', 'trizen-helper').class_exists( 'WooCommerce' ) ? get_woocommerce_currency_symbol() : '$'.__(')', 'trizen-helper'); ?>
 					</label>
 					<span class="description">
                         <?php esc_html_e('The price of room per one night', 'trizen-helper'); ?>

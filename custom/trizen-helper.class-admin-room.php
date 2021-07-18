@@ -114,10 +114,6 @@ add_action('init', 'ts_register_location_tax');
 function ts_register_location_tax() {
     $booking_type = apply_filters('ts_booking_post_type', [
         'ts_hotel',
-        'ts_rental',
-        'ts_tours',
-        'ts_cars',
-        'ts_activity',
         'hotel_room'
     ]);
 }

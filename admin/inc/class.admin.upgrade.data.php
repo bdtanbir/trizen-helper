@@ -33,7 +33,7 @@ if ( !class_exists( 'TSUpgradeData' ) ) {
          * @since 1.3.1
          **/
         public function _save_properties( $post_id, $post_object ) {
-            if ( !in_array( $post_object->post_type, [ 'ts_hotel', 'ts_rental', 'ts_cars', 'ts_tours', 'ts_activity', 'hotel_room' ] ) ) {
+            if ( !in_array( $post_object->post_type, [ 'ts_hotel', 'hotel_room' ] ) ) {
                 return $post_id;
             }
             global $pagenow;
@@ -338,7 +338,7 @@ if ( !class_exists( 'TSUpgradeData' ) ) {
             $duplicate = TSDuplicateData::inst();
             if ( request( 'update_table_post_type', '' ) == 'update_table_post_type' && request( 'step', '' ) == 'update_table_post_type' ) {
                 $progress = (float) request( 'progress', '' );
-                $sql      = "SELECT count(ID) as total FROM {$wpdb->prefix}posts WHERE post_type in ('ts_hotel','ts_rental','ts_activity','ts_tours','ts_cars') AND post_status IN ('publish','private')";
+                $sql      = "SELECT count(ID) as total FROM {$wpdb->prefix}posts WHERE post_type in ('ts_hotel') AND post_status IN ('publish','private')";
                 $total    = (int) $wpdb->get_var( $sql );
                 if ( $progress == 100 || $total <= 0 ) {
                     update_option( 'ts_duplicated_data', 'updated' );
@@ -580,11 +580,7 @@ if ( !class_exists( 'TSUpgradeData' ) ) {
 					WHERE
 						post_type IN (
 							'ts_hotel',
-							'hotel_room',
-							'ts_cars',
-							'ts_tours',
-							'ts_rental',
-							'ts_activity'
+							'hotel_room'
 						)
 					AND mt.meta_value <> ''
 					AND post_status NOT IN ('auto-draft')" ) );
@@ -806,7 +802,7 @@ if ( !class_exists( 'TSUpgradeData' ) ) {
 			INNER JOIN {$wpdb->prefix}postmeta AS mt ON mt.post_id = {$wpdb->prefix}posts.ID
 			AND mt.meta_key = 'multi_location'
 			WHERE
-				post_type IN ('ts_hotel','hotel_room','ts_cars','ts_tours','ts_rental','ts_activity')
+				post_type IN ('ts_hotel','hotel_room')
 			AND mt.meta_value <> ''
 			AND post_status NOT IN ('auto-draft')
 			ORDER BY

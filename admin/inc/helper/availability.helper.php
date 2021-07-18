@@ -101,21 +101,10 @@ if ( !class_exists( 'AvailabilityHelper' ) ) {
                 $table  = $wpdb->prefix . 'ts_availability';
 
                 switch ($post_type) {
-                    case 'ts_tours':
-                    case 'ts_activity':
-                        $table = $wpdb->prefix . 'ts_tour_availability';
-                        if($post_type == 'ts_activity'){
-                            $table = $wpdb->prefix . 'ts_activity_availability';
-                        }
-                        $booked = ($data['adult_number'] + $data['child_number'] + $data['infant_number']);
-                        $sql = $wpdb->prepare("UPDATE {$table} SET number_booked = IFNULL(number_booked, 0) + %d WHERE post_id = %d AND check_in = %s", $booked, $data['ts_booking_id'], $data['check_in_timestamp']);
-                        $wpdb->query( $sql );
-                        break;
                     case "ts_hotel":
                     case "hotel_room":
                         $table  = $wpdb->prefix . 'ts_room_availability';
-                        if (!empty($data['room_origin']))
-                        {
+                        if (!empty($data['room_origin'])) {
                             $booked =  !empty($data['room_num_search'])?intval($data['room_num_search']):1;
 
                             $booked_temp = $booked;
@@ -151,17 +140,8 @@ if ( !class_exists( 'AvailabilityHelper' ) ) {
             $post_type = get_post_type($post_id);
             $table = '';
             switch ($post_type) {
-                case 'ts_tours':
-                    $table = 'ts_tour_availability';
-                    break;
-                case 'ts_activity':
-                    $table = 'ts_activity_availability';
-                    break;
                 case 'hotel_room':
                     $table = 'ts_room_availability';
-                    break;
-                case 'ts_rental':
-                    $table = 'ts_rental_availability';
                     break;
             }
             $start = ($current_page - 1) * $posts_per_page;
@@ -270,10 +250,6 @@ if ( !class_exists( 'AvailabilityHelper' ) ) {
                     $data_insert['is_base']        = 0;
                     $data_insert['parent_id']      = $parent_id;
                 }
-                if ($table == 'ts_tour_availability' or $table == 'ts_activity_availability') {
-                    $data_insert['starttime'] = $starttime;
-                    $data_insert['is_base']   = 0;
-                }
                 $wpdb->insert(
                     $wpdb->prefix . $table,
                     $data_insert
@@ -315,10 +291,6 @@ if ( !class_exists( 'AvailabilityHelper' ) ) {
                         $data_insert['child_number'] = get_post_meta($post_id, 'children_number', true);
                         $data_insert['is_base'] = 0;
                         $data_insert['parent_id'] = $parent_id;
-                    }
-                    if ($table == 'ts_tour_availability' or $table == 'ts_activity_availability') {
-                        $data_insert['starttime'] = $starttime;
-                        $data_insert['is_base'] = 0;
                     }
                     $wpdb->insert(
                         $wpdb->prefix . $table,
@@ -389,8 +361,6 @@ if ( !class_exists( 'AvailabilityHelper' ) ) {
                         'status'         => $item['status'],
                         'groupday'       => isset($item['groupday']) ? $item['groupday'] : '',
                     ];
-                    if ($table == 'ts_tour_availability' or $table == 'ts_activity_availability')
-                        $return['starttime'] = $item['starttime'];
                 }
             }
             return $return;
@@ -688,19 +658,11 @@ if ( !class_exists( 'AvailabilityHelper' ) ) {
             $post_type = get_post_type($post_id);
             $where_book_limit = '';
             if ($max_people > 0) {
-                if($post_type == 'ts_tours' || $post_type == 'ts_activity'){
-                    $where_book_limit = " AND number_booked < number * count_starttime ";
-                }elseif($post_type == 'hotel_room' || $post_type == 'ts_rental'){
+                if($post_type == 'hotel_room'){
                     $where_book_limit = " AND number_booked < number ";
                 }
             }
-            if($post_type == 'ts_activity'){
-                $table = $wpdb->prefix . 'ts_activity_availability';
-                $booking_period = intval(get_post_meta($post_id, 'activity_booking_period', true));
-            }elseif($post_type == 'ts_tours'){
-                $table = $wpdb->prefix . 'ts_tour_availability';
-                $booking_period = intval(get_post_meta($post_id, 'tours_booking_period', true));
-            }elseif($post_type == 'hotel_room'){
+            if($post_type == 'hotel_room'){
                 $table = $wpdb->prefix . 'ts_room_availability';
                 $hotel_id = get_post_meta($post_id, 'room_parent', true);
                 if(!empty($hotel_id)){
@@ -708,9 +670,6 @@ if ( !class_exists( 'AvailabilityHelper' ) ) {
                 }else{
                     $booking_period = 0;
                 }
-            }elseif($post_type == 'ts_rental'){
-                $table = $wpdb->prefix . 'ts_rental_availability';
-                $booking_period = intval(get_post_meta($post_id, 'rentals_booking_period', true));
             }
             $newCheckIn = strtotime('+ ' . $booking_period . ' day', strtotime(date('Y-m-d')));
             $sql = "

@@ -338,7 +338,7 @@ $query = new WP_Query($args)
 			            <?php esc_html_e('Regular price', 'trizen-helper'); ?>
                     </label>
                     <span class="description">
-                        <?php esc_html_e('Enter regular price here. ', 'trizen-helper'); echo '('.get_woocommerce_currency_symbol().')'; ?>
+                        <?php esc_html_e('Enter regular price here. ', 'trizen-helper'); echo '('.class_exists( 'WooCommerce' ) ? get_woocommerce_currency_symbol() : '$'.')'; ?>
                     </span>
                     <div class="form-input">
                         <input
@@ -346,7 +346,7 @@ $query = new WP_Query($args)
                             name="price_avg"
                             type="text"
                             value="<?php echo esc_attr($hotel_regular_price); ?>"
-                            placeholder="<?php echo get_woocommerce_currency_symbol(); ?>" />
+                            placeholder="<?php echo class_exists( 'WooCommerce' ) ? get_woocommerce_currency_symbol() : '$'; ?>" />
                     </div>
                 </div>
             </div>

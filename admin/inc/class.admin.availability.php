@@ -25,7 +25,7 @@ if ( !class_exists( 'TSAvailability' ) ) {
         public function _sync_availability_process()
         {
 //            $list_disable_service = st()->get_option('list_disabled_feature');
-            $post_types=[ 'hotel_room', 'ts_rental', 'ts_activity', 'ts_tours'];
+            $post_types=[ 'hotel_room'];
 
             /*if(!empty($list_disable_service)){
                 foreach ($list_disable_service as $key => $value) {
@@ -83,21 +83,9 @@ if ( !class_exists( 'TSAvailability' ) ) {
                                 $index+=1;
                                 $offset=0;
                                 global $wpdb;
-                                if($post_types[$index] == 'ts_tours' or $post_types[$index] == 'ts_activity'){
-                                    $meta_key = 'type_activity';
-                                    $meta_value = 'daily_activity';
-                                    if($post_types[$index] == 'ts_tours'){
-                                        $meta_key = 'type_tour';
-                                        $meta_value = 'daily_tour';
-                                    }
-                                    $sql_total = $wpdb->prepare("SELECT p.* FROM {$wpdb->posts} as p INNER JOIN {$wpdb->postmeta} as mt ON p.ID = mt.post_id AND mt.meta_key=%s WHERE post_type = %s AND mt.meta_value=%s GROUP BY ID", $meta_key, $post_types[$index], $meta_value);
-                                    $wpdb->get_results($sql_total);
-                                    $total = $wpdb->num_rows;
-                                }else{
-                                    $post_type = $post_types[$index];
-                                    $sql_total = $wpdb->prepare("SELECT COUNT(*) as total FROM {$wpdb->posts} WHERE post_type = %s LIMIT 1", $post_type);
-                                    $total = $wpdb->get_var($sql_total);
-                                }
+                                $post_type = $post_types[$index];
+                                $sql_total = $wpdb->prepare("SELECT COUNT(*) as total FROM {$wpdb->posts} WHERE post_type = %s LIMIT 1", $post_type);
+                                $total = $wpdb->get_var($sql_total);
                             }
 
                             $this->__run_fill_availability($post_types[$index], $offset, 10);
@@ -144,7 +132,7 @@ if ( !class_exists( 'TSAvailability' ) ) {
 
         public function __run_fill_old_order(){
             $date='2018_04_21';
-            $post_types=['ts_hotel','hotel_room', 'ts_rental','ts_tours', 'ts_activity'];
+            $post_types=['ts_hotel','hotel_room'];
             foreach ($post_types as $k => $v){
                 $key='ts_run_fill_old_order_once_'.$v.'_'.$date;
                 if(get_option($key)) return;
@@ -153,18 +141,6 @@ if ( !class_exists( 'TSAvailability' ) ) {
                     case 'hotel_room':
                         if(class_exists('TSAdminRoom')) {
                             TSAdminRoom::inst()->__run_fill_old_order($date);
-                            update_option($key, 1);
-                        }
-                        break;
-                    case 'ts_tours':
-                        if(class_exists('STAdminTours')) {
-                            STAdminTours::inst()->__run_fill_old_order($date);
-                            update_option($key, 1);
-                        }
-                        break;
-                    case 'ts_activity':
-                        if(class_exists('TSAdminActivity')) {
-                            TSAdminActivity::inst()->__run_fill_old_order($date);
                             update_option($key, 1);
                         }
                         break;
@@ -317,7 +293,6 @@ if ( !class_exists( 'TSAvailability' ) ) {
             }
 
             $this->_insertCustomPriceHotelRoom();
-            $this->_insertCustomPriceTour();
             $this->_insertCustomPriceActivity();
 
         }
@@ -354,57 +329,6 @@ if ( !class_exists( 'TSAvailability' ) ) {
                         break;
                     }
                 }
-            }
-            update_option( 'ts_upgrade_availability', $complete );
-        }
-
-        public function _insertCustomPriceTour(){
-            $complete = 1;
-            if ( TSAvailability::isset_table( 'ts_tours' ) ) {
-
-                global $wpdb;
-                $table = $wpdb->prefix . $this->table;
-                $sql   = " SELECT
-					post_id,
-					adult_price,
-					child_price,
-					infant_price,
-					check_in,
-					check_out, type_tour
-				FROM
-					{$wpdb->prefix}ts_tours
-				WHERE
-					type_tour = 'specific_date'";
-
-                $results = $wpdb->get_results( $sql );
-                if ( is_array( $results ) && count( $results ) ) {
-                    foreach ( $results as $key => $val ) {
-                        if ( !empty( $val->check_in ) && !empty( $val->check_out ) ) {
-                            $data = [
-                                'post_id'      => $val->post_id,
-                                'post_type'    => 'ts_tours',
-                                'check_in'     => strtotime( $val->check_in ),
-                                'check_out'    => strtotime( $val->check_out ),
-                                'number'       => 1,
-                                'adult_price'  => floatval( $val->adult_price ),
-                                'child_price'  => floatval( $val->child_price ),
-                                'infant_price' => floatval( $val->infant_price ),
-                                'status'       => 'available',
-                                'groupday'     => '1',
-                                'priority'     => 0
-                            ];
-
-                            $insert = $wpdb->insert( $table, $data );
-                            if ( is_wp_error( $insert ) ) {
-                                $complete = 0;
-                                break;
-                            }
-                        }
-
-                    }
-                }
-            } else {
-                $complete = 0;
             }
             update_option( 'ts_upgrade_availability', $complete );
         }
@@ -465,7 +389,7 @@ if ( !class_exists( 'TSAvailability' ) ) {
         public function _sync_price_process()
         {
 //            $list_disable_service = st()->get_option('list_disabled_feature');
-            $post_types=[ 'hotel_room', 'ts_rental', 'ts_activity', 'ts_tours'];
+            $post_types=[ 'hotel_room'];
 
             /*if(!empty($list_disable_service)){
                 foreach ($list_disable_service as $key => $value) {
@@ -522,21 +446,9 @@ if ( !class_exists( 'TSAvailability' ) ) {
                                 $index+=1;
                                 $offset=0;
                                 global $wpdb;
-                                if($post_types[$index] == 'ts_tours' or $post_types[$index] == 'ts_activity'){
-                                    $meta_key = 'type_activity';
-                                    $meta_value = 'daily_activity';
-                                    if($post_types[$index] == 'ts_tours'){
-                                        $meta_key = 'type_tour';
-                                        $meta_value = 'daily_tour';
-                                    }
-                                    $sql_total = $wpdb->prepare("SELECT p.* FROM {$wpdb->posts} as p INNER JOIN {$wpdb->postmeta} as mt ON p.ID = mt.post_id AND mt.meta_key=%s WHERE post_type = %s AND mt.meta_value=%s GROUP BY ID", $meta_key, $post_types[$index], $meta_value);
-                                    $wpdb->get_results($sql_total);
-                                    $total = $wpdb->num_rows;
-                                }else{
-                                    $post_type = $post_types[$index];
-                                    $sql_total = $wpdb->prepare("SELECT COUNT(*) as total FROM {$wpdb->posts} WHERE post_type = %s LIMIT 1", $post_type);
-                                    $total = $wpdb->get_var($sql_total);
-                                }
+                                $post_type = $post_types[$index];
+                                $sql_total = $wpdb->prepare("SELECT COUNT(*) as total FROM {$wpdb->posts} WHERE post_type = %s LIMIT 1", $post_type);
+                                $total = $wpdb->get_var($sql_total);
                             }
 
                             $this->__sync_price_func($post_types[$index], $offset, 10);
@@ -560,7 +472,7 @@ if ( !class_exists( 'TSAvailability' ) ) {
         public function _sync_price_process_old()
         {
 //            $list_disable_service = st()->get_option('list_disabled_feature');
-            $post_types=[ 'hotel_room','ts_tours' ];
+            $post_types=[ 'hotel_room' ];
 
             /*if(!empty($list_disable_service)){
                 foreach ($list_disable_service as $key => $value) {
@@ -644,12 +556,6 @@ if ( !class_exists( 'TSAvailability' ) ) {
             switch ($post_type){
                 case 'hotel_room':
                     TSAdminHotel::__cronjob_update_min_avg_price($offset, $limit);
-                    break;
-                case 'ts_rental':
-
-                    break;
-                case 'ts_activity':
-
                     break;
             }
 

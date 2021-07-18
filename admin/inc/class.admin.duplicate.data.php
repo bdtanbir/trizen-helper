@@ -6,10 +6,6 @@ if ( !class_exists( 'TSDuplicateData' ) ) {
     class TSDuplicateData extends TSAdmin {
         static $column_hotel;
         static $column_hotel_room;
-        static $column_rental;
-        static $column_activity;
-        static $column_tour;
-        static $column_car;
         static $_inst;
 
         public function __construct() {
@@ -110,7 +106,7 @@ if ( !class_exists( 'TSDuplicateData' ) ) {
         }
 
         public function tsDeleteTable() {
-            $post_types = [ 'ts_hotel', 'hotel_room', 'ts_rental', 'ts_cars', 'ts_tours', 'ts_activity' ];
+            $post_types = [ 'ts_hotel', 'hotel_room' ];
             foreach ( $post_types as $post_type ) {
                 $result = self::__tsDeleteTable( $post_type );
             }
@@ -134,7 +130,7 @@ if ( !class_exists( 'TSDuplicateData' ) ) {
 
         public function tsDuplicateData() {
             $post_type = [
-                'ts_hotel', 'hotel_room', 'ts_rental', 'ts_cars', 'ts_tours', 'ts_activity'
+                'ts_hotel', 'hotel_room'
             ];
             $result = true;
             foreach ($post_type as $item) {
@@ -391,13 +387,6 @@ if ( !class_exists( 'TSDuplicateData' ) ) {
             $sql = "SELECT count(post_id) FROM (
                 SELECT post_id FROM {$wpdb->prefix}ts_hotel
                 UNION
-                SELECT post_id FROM {$wpdb->prefix}ts_rental
-                UNION
-                SELECT post_id FROM {$wpdb->prefix}ts_cars
-                UNION
-                SELECT post_id FROM {$wpdb->prefix}ts_activity
-                UNION
-                SELECT post_id FROM {$wpdb->prefix}ts_tours
             ) as post_id";
             return (int) $wpdb->get_var( $sql ) / $total * 100;
         }

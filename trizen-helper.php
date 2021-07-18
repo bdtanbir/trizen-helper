@@ -219,7 +219,7 @@ function trizen_helper_admin_script()
 		'please_waite'        => __('Please wait...', 'trizen-helper'),
 		'prev_month'          => __('prev month', 'trizen-helper'),
 		'next_month'          => __('next month', 'trizen-helper'),
-		'currency_smbl'       => get_woocommerce_currency_symbol(),
+		'currency_smbl'       => class_exists( 'WooCommerce' ) ? get_woocommerce_currency_symbol() : '$',
 		'time_format'         => '12h',
         'ts_search_nonce'     => wp_create_nonce("ts_search_security"),
 	]);
@@ -307,18 +307,6 @@ if (!function_exists('ts_get_page_search_result')) {
             case "ts_hotel":
             case "hotel_room":
                 $page_search = trizen_get_option('hotel_search_result_page');
-                break;
-            case "ts_rental":
-                $page_search = trizen_get_option('rental_search_result_page');
-                break;
-            case "ts_cars":
-                $page_search = trizen_get_option('cars_search_result_page');
-                break;
-            case "ts_activity":
-                $page_search = trizen_get_option('activity_search_result_page');
-                break;
-            case "ts_tours":
-                $page_search = trizen_get_option('tours_search_result_page');
                 break;
             default :
                 $page_search = false;
