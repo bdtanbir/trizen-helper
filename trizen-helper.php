@@ -115,13 +115,13 @@ function trizen_helper_admin_script()
         'trizen-hotel-gmap-js',
         TRIZEN_HELPER_URI . ('admin/js/ts_hotel_gmap.js'),
         null,
-        TRIZEN_HELPER_VERSION,
+        time(),
         true
     );
     if(!empty($google_api_key)) {
         wp_enqueue_script(
             'lib-gmap-js',
-            '//maps.googleapis.com/maps/api/js?key='.$google_api_key,
+            'https://maps.googleapis.com/maps/api/js?key='.$google_api_key.'&libraries=places',
             null,
             '1.0',
             true
