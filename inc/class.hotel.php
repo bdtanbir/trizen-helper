@@ -50,10 +50,6 @@ if ( !class_exists( 'TSHotel' ) ) {
         }
 
         function init() {
-            //Filter the search hotel
-            //custom search hotel template
-            add_filter( 'template_include', [ $this, 'choose_search_template' ] );
-
             //Sidebar Pos for SEARCH
             add_filter( 'ts_hotel_sidebar', [ $this, 'change_sidebar' ] );
 
@@ -472,10 +468,10 @@ if ( !class_exists( 'TSHotel' ) ) {
                                             <label>' . esc_html__( 'Review Text', 'trizen-helper' ) . '</label>
                                             <textarea name="comment" id="comment" class="form-control" rows="6"></textarea>
                                         </div>
-                                        </div><!--End col-sm-8-->
+                                        </div>
                                         ';
 
-                    $comment_form[ 'comment_field' ] .= '<div class="col-sm-4">' . $star_html . '</div></div><!--End Row-->';
+                    $comment_form[ 'comment_field' ] .= '<div class="col-sm-4">' . $star_html . '</div></div>';
                 }
             }
             return $comment_form;
@@ -592,14 +588,6 @@ if ( !class_exists( 'TSHotel' ) ) {
             extract( wp_parse_args( $param, $default ) );
             $arg = [];
             return $arg;
-        }
-        function choose_search_template( $template ) {
-            global $wp_query;
-            $post_type = get_query_var( 'post_type' );
-            if ( $wp_query->is_search && $post_type == 'ts_hotel' ) {
-                return 'I am search-hotel.php';//locate_template( 'search-hotel.php' );  //  redirect to archive-search.php
-            }
-            return $template;
         }
         function _alter_search_query( $where ) {
             if ( is_admin() ) return $where;
