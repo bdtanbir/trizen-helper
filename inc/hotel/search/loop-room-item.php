@@ -79,9 +79,9 @@ $link_with_params = add_query_arg($get_data, get_the_permalink());
                 <div class="room-photos">
                     <a class="btn theme-btn-hover-gray" data-src="<?php the_post_thumbnail_url(); ?>"
                        data-fancybox="gallery<?php the_ID(); ?>"
-                       data-caption="<?php esc_attr_e('Showing image - 01', 'trizen'); ?>"
+                       data-caption="<?php esc_attr_e('Showing image - 01', 'trizen-helper'); ?>"
                        data-speed="700">
-                        <i class="la la-photo mr-2"></i><?php esc_html_e('Room Photos', 'trizen'); ?>
+                        <i class="la la-photo mr-2"></i><?php esc_html_e('Room Photos', 'trizen-helper'); ?>
                     </a>
                     <?php
                     $hidden = array();
@@ -107,7 +107,7 @@ $link_with_params = add_query_arg($get_data, get_the_permalink());
                             echo '<a class="d-none"
                                    data-fancybox="gallery'.get_the_ID().'"
                                    data-src="' . $image_src[0] . '"
-                                   data-caption="' . esc_attr__('Showing image - ', 'trizen') . esc_attr($zero_nm) . $count++. '"
+                                   data-caption="' . esc_attr__('Showing image - ', 'trizen-helper') . esc_attr($zero_nm) . $count++. '"
                                    data-speed="700"></a>';
                         }
 
@@ -132,7 +132,7 @@ $link_with_params = add_query_arg($get_data, get_the_permalink());
             
                 ?>
                 <p class="text-uppercase font-size-14">
-                    <?php esc_html_e('Per/night', 'trizen'); ?>
+                    <?php esc_html_e('Per/night', 'trizen-helper'); ?>
                     <strong class="mt-n1 text-black font-size-18 font-weight-black d-block">
                       <?php echo TravelHelper::format_money( $sale_price ); ?> 
                     </strong>

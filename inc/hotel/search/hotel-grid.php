@@ -23,7 +23,7 @@ $avg = TSReview::get_avg_rate();
                     <?php echo esc_html($badge_title); ?>
                 </span>
 			<?php } ?>
-            <div class="add-to-wishlist icon-element" data-toggle="tooltip" data-placement="top" title="<?php esc_attr_e('Bookmark', 'trizen'); ?>">
+            <div class="add-to-wishlist icon-element" data-toggle="tooltip" data-placement="top" title="<?php esc_attr_e('Bookmark', 'trizen-helper'); ?>">
                 <i class="la la-heart-o"></i>
             </div>
         </div>
@@ -52,23 +52,23 @@ $avg = TSReview::get_avg_rate();
                 <?php echo TSReview::get_rate_review_text($avg, $count_review); ?>
             </span>
             <span class="rating__text">
-                <?php comments_number(__('(0 Review)', 'trizen'), __('(1 Review)', 'trizen'), __('(% Reviews)', 'trizen')); ?>
+                <?php comments_number(__('(0 Review)', 'trizen-helper'), __('(1 Review)', 'trizen-helper'), __('(% Reviews)', 'trizen-helper')); ?>
             </span>
         </div>
         <div class="card-price d-flex align-items-center justify-content-between">
             <p>
                 <span class="price__from">
-                    <?php esc_html_e('From', 'trizen'); ?>
+                    <?php esc_html_e('From', 'trizen-helper'); ?>
                 </span>
                 <span class="price__num">
                     <?php echo TravelHelper::format_money($price); ?>
                 </span>
                 <span class="price__text">
-                    <?php esc_html_e('Per night', 'trizen'); ?>
+                    <?php esc_html_e('Per night', 'trizen-helper'); ?>
                 </span>
             </p>
             <a href="<?php the_permalink(); ?>" class="btn-text">
-				<?php esc_html_e('See details', 'trizen'); ?><i class="la la-angle-right"></i>
+				<?php esc_html_e('See details', 'trizen-helper'); ?><i class="la la-angle-right"></i>
             </a>
         </div>
     </div>
