@@ -10,7 +10,7 @@ $room_badge_title   = get_post_meta( get_the_ID(), 'room_badge_title', true );
 $room_address       = get_post_meta( get_the_ID(), 'address', true );
 
 // Hotel Room Extra Services
-$trizen_hotel_room_extra_services_data = get_post_meta( get_the_ID(), 'extra_services', true );
+// $trizen_hotel_room_extra_services_data = get_post_meta( get_the_ID(), 'extra_services', true );
 
 $trizen_room_other_facility_data = get_post_meta( get_the_ID(), 'trizen_room_other_facility_data_group', true );
 $trizen_room_rules_data          = get_post_meta( get_the_ID(), 'trizen_room_rules_data_group', true );
@@ -255,92 +255,6 @@ $hotel_rooms = new WP_Query($default);
                         </div>
                     </div>
                 </div>
-
-				<div class="form-settings" id="room_extra_services_setting">
-					<label for="price" class="title">
-						<?php esc_html_e('Extra Services', 'trizen-helper'); ?>
-					</label>
-					<span class="description">
-                        <?php esc_html_e('Accompanied service price', 'trizen-helper'); ?>
-                    </span>
-
-                    <div class="room-extra-services">
-                        <!-- Start -->
-                        <script type="text/html" id="tmpl-repeater3">
-
-                            <div class="field-group hotel-accordion-item">
-                                <h3 class="hotel-accordion-title">
-                                    <a href="#room-extra-services-<?php echo get_the_ID(); ?>" class="accordion-toggle"></a>
-                                    <button type="button" class="button button-secondary trizen_hotel_room_extra_service_remove dashicons dashicons-trash">
-                                    </button>
-                                </h3>
-                                <div class="accordion-content active" id="room-extra-services-<?php echo get_the_ID(); ?>">
-                                    <div class="form-group">
-                                        <label for="trizen_hotel_room_extra_service_title" class="title">
-                                            <?php esc_html_e('Title', 'trizen-helper'); ?>
-                                        </label>
-                                        <input id="trizen_hotel_room_extra_service_title" type="text" name="trizen_hotel_room_extra_service_title[]" />
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="trizen_hotel_room_extra_service_price" class="title">
-                                            <?php esc_html_e('Price', 'trizen-helper'); ?>
-                                        </label>
-                                        <input type="text" name="trizen_hotel_room_extra_service_price[]" id="trizen_hotel_room_extra_service_price" />
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="trizen_hotel_room_extra_service_price_designation" class="title">
-                                            <?php esc_html_e('Designation', 'trizen-helper'); ?> <code><?php esc_html_e('eg: Per 1 ...', 'trizen-helper'); ?></code>
-                                        </label>
-                                        <input type="text" name="trizen_hotel_room_extra_service_price_designation[]" id="trizen_hotel_room_extra_service_price_designation" />
-                                    </div>
-                                </div>
-                            </div>
-
-                        </script>
-
-                        <div id="trizen_hotel_room_extra_services_data" class="trizen-hotel-room-extra-services-repeater-metabox">
-		                    <?php
-		                    if( !empty( $trizen_hotel_room_extra_services_data ) ) {
-			                    foreach( $trizen_hotel_room_extra_services_data as $index => $field ) { ?>
-
-                                    <div class="field-group hotel-accordion-item">
-                                        <h3 class="hotel-accordion-title">
-                                            <a href="#room-extra-services-<?php echo esc_attr($index); ?>" class="accordion-toggle">
-							                    <?php if($field['trizen_hotel_room_extra_service_title'] != '') echo esc_html( $field['trizen_hotel_room_extra_service_title'] ); ?>
-                                            </a>
-                                            <button type="button" class="button button-secondary trizen_hotel_room_extra_service_remove dashicons dashicons-trash">
-                                            </button>
-                                        </h3>
-                                        <div class="accordion-content" id="room-extra-services-<?php echo esc_attr($index); ?>">
-                                            <div class="form-group">
-                                                <label for="trizen_hotel_room_extra_service_title" class="title">
-                                                    <?php esc_html_e('Title', 'trizen-helper'); ?>
-                                                </label>
-                                                <input id="trizen_hotel_room_extra_service_title" type="text" name="trizen_hotel_room_extra_service_title[]" value="<?php if($field['trizen_hotel_room_extra_service_title'] != '') echo esc_attr( $field['trizen_hotel_room_extra_service_title'] ); ?>" />
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="trizen_hotel_room_extra_service_price" class="title" name="trizen_hotel_room_extra_service_price[]">
-                                                    <?php esc_html_e('Price', 'trizen-helper'); ?>
-                                                </label>
-                                                <input type="text" name="trizen_hotel_room_extra_service_price[]" id="trizen_hotel_room_extra_service_price" value="<?php if($field['trizen_hotel_room_extra_service_price'] != '') echo esc_attr( $field['trizen_hotel_room_extra_service_price'] ); ?>" />
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="trizen_hotel_room_extra_service_price_designation" class="title" name="trizen_hotel_room_extra_service_price_designation[]">
-                                                    <?php esc_html_e('Designation', 'trizen-helper'); ?> <code><?php esc_html_e('eg: Per 1 ...', 'trizen-helper'); ?></code>
-                                                </label>
-                                                <input type="text" name="trizen_hotel_room_extra_service_price_designation[]" id="trizen_hotel_room_extra_service_price_designation" value="<?php if($field['trizen_hotel_room_extra_service_price_designation'] != '') echo esc_attr( $field['trizen_hotel_room_extra_service_price_designation'] ); ?>" />
-                                            </div>
-                                        </div>
-                                    </div>
-				                    <?php
-			                    }
-		                    } ?>
-                        </div>
-                        <button type="button" id="trizen_hotel_room_extra_service_add" class="button trizen-btn">
-		                    <?php esc_html_e('Add New', 'trizen-helper'); ?>
-                        </button>
-                    </div>
-				</div>
 
                 <div class="form-settings" id="room_discount_type_setting">
                     <label for="discount_type_no_day" class="title">

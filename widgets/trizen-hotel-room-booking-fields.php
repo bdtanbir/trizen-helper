@@ -31,7 +31,7 @@ class trizen_hrbf_widget extends WP_Widget {
 
         while ( have_posts() ): the_post();
         $room_price = get_post_meta(get_the_ID(), 'price', true);
-        $trizen_hotel_room_extra_service_data    = get_post_meta(get_the_ID(), 'extra_services', true);
+        // $trizen_hotel_room_extra_service_data    = get_post_meta(get_the_ID(), 'extra_services', true);
 
         if(!empty($trizen_hrbf_title)) {
             echo $args['before_title'] . esc_html( $trizen_hrbf_title ) . $args['after_title'];
@@ -130,56 +130,18 @@ class trizen_hrbf_widget extends WP_Widget {
                 </div>
             </div>
             <div class="sidebar-widget-item py-4">
-                <?php if($trizen_hotel_room_extra_service_data) { ?>
-                    <h3 class="title stroke-shape">
-                        <?php esc_html_e('Extra Services', 'trizen-helper'); ?>
-                    </h3>
-                <?php } ?>
                 <div class="extra-service-wrap">
-                    <!-- <form method="post" class="extraServiceForm" id="extraServiceForm"> -->
-                        <?php if($trizen_hotel_room_extra_service_data) { ?>
-                            <div id="checkboxContainPrice">
-
-                                <?php
-                                foreach ( $trizen_hotel_room_extra_service_data as $key => $item ) {
-                                    $extra_price_title = strtolower(str_replace(' ', '-', $item['trizen_hotel_room_extra_service_title']));
-                                    ?>
-                                    <div class="custom-checkbox">
-                                        <input type="checkbox" name="<?php echo esc_attr($extra_price_title); ?>" id="<?php echo esc_attr($extra_price_title); echo __('-','trizen-helper').esc_attr($key); ?>" value="<?php echo esc_attr($item['trizen_hotel_room_extra_service_price']); ?>" />
-                                        <label for="<?php echo esc_attr($extra_price_title); echo __('-','trizen-helper').esc_attr($key); ?>" class="d-flex justify-content-between align-items-center">
-                                            <?php echo esc_html($item['trizen_hotel_room_extra_service_title']); ?>
-                                            <span class="text-black font-weight-regular">
-                                                <?php echo get_woocommerce_currency_symbol(); echo esc_html($item['trizen_hotel_room_extra_service_price']); echo esc_html($item['trizen_hotel_room_extra_service_price_designation']); ?>
-                                            </span>
-                                        </label>
-                                    </div>
-                                <?php } ?>
-
-                            </div>
-                        <?php } ?>
-                        <div class="total-price pt-3">
-                            <p class="text-black">
-                                <?php esc_html_e('Your Price', 'trizen-helper'); ?>
-                            </p>
-                            <p class="d-flex align-items-center">
-                                <?php
-                                /*echo __('from ', 'trizen-helper');
-                                echo sprintf( '<span class="price">%s</span>', TravelHelper::format_money($sale_price) );
-                                echo '<span class="unit">';
-
-                                echo '</span>';*/
-                                ?>
-
-                                <!--<span class="font-size-17 text-black">
-                                    <?php /*esc_html_e('$', 'trizen-helper'); */?>
-                                </span>-->
-                                <input id="room-price" type="text" name="total" class="num mr-2" value="<?php echo TravelHelper::format_money($sale_price); ?>" readonly="readonly"/>
-                                <span>
-                                    <?php esc_html_e( ' / Per Room', 'trizen-helper' ); ?>
-                                </span>
-                            </p>
-                        </div>
-                    <!-- </form> -->
+                    <div class="total-price">
+                        <p class="text-black">
+                            <?php esc_html_e('Your Price', 'trizen-helper'); ?>
+                        </p>
+                        <p class="d-flex align-items-center">
+                            <input id="room-price" type="text" name="total" class="num mr-2" value="<?php echo TravelHelper::format_money($sale_price); ?>" readonly="readonly"/>
+                            <span>
+                                <?php esc_html_e( ' / Per Room', 'trizen-helper' ); ?>
+                            </span>
+                        </p>
+                    </div>
                 </div>
             </div>
             <div class="btn-box submit-group">

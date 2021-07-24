@@ -133,22 +133,6 @@ function get_carts() {
 	//return isset( $_COOKIE['ts_cart'] ) ? unserialize(stripslashes($_COOKIE['ts_cart'])) : false;
 }
 
-function getExtraPrice($room_id = '', $extra_price = array(), $number_room = 0, $numberday = 0){
-	$total_price = 0;
-    $price_unit = get_post_meta($room_id, 'extra_price_unit', true);
-//    $extra_price = get_post_meta($room_id, 'extra_services', true);
-//	if(isset($extra_price) && is_array($extra_price) && count($extra_price)){
-		foreach($extra_price as $number){
-			$price_item = $number['trizen_hotel_room_extra_service_price'];
-			if($price_item <= 0) $price_item = 0;
-//			$number_item = intval($number['trizen_hotel_room_extra_service_price']);
-//			if($number_item <= 0) $number_item = 0;
-			$total_price += $price_item;
-		}
-//	}
-	return $total_price * $number_room;
-}
-
 
 function getPriceWithTax($price = 0, $tax = false){
 	$price = floatval($price);
@@ -623,24 +607,24 @@ function do_add_to_cart() {
  		$item_price = floatval( get_post_meta( $room_origin, 'price', true ) );
  	}
  	// Extra price added
- 	$extras = request( 'extra_services', [] );
+ 	// $extras = request( 'extra_services', [] );
 // 	$extras = get_post_meta(get_the_ID(), 'extra_services', true);
 
- 	$extra_price   = getExtraPrice( $room_origin, $extras, $room_num_search, $numberday );
+ 	// $extra_price   = getExtraPrice( $room_origin, $extras, $room_num_search, $numberday );
  	$sale_price    = TSPrice::getRoomPrice( $room_origin, strtotime( $check_in ), strtotime( $check_out ), $room_num_search, $adult_number, $child_number );
 
     $discount_rate = get_discount_rate( $room_origin, strtotime( $check_in ) );
  	$data          = [
  		'item_price'      => $item_price,
-        'ori_price'       => $sale_price + $extra_price,
+        'ori_price'       => $sale_price,
  		'check_in'        => $check_in,
  		'check_out'       => $check_out,
  		'room_num_search' => $room_num_search,
  		'room_id'         => $room_id,
  		'adult_number'    => $adult_number,
  		'child_number'    => $child_number,
- 		'extras'          => $extras,
- 		'extra_price'     => $extra_price,
+ 		// 'extras'          => $extras,
+ 		// 'extra_price'     => $extra_price,
 // 		'commission'      => TravelHelper::get_commission( $item_id ),
  		'discount_rate'   => $discount_rate,
  		'guest_title'     => post( 'guest_title' ),
@@ -658,6 +642,22 @@ function do_add_to_cart() {
  	return $pass_validate;
  }
 
+
+//  function getExtraPrice($room_id = '', $extra_price = array(), $number_room = 0, $numberday = 0){
+// 	$total_price = 0;
+//     // $price_unit = get_post_meta($room_id, 'extra_price_unit', true);
+// //    $extra_price = get_post_meta($room_id, 'extra_services', true);
+// //	if(isset($extra_price) && is_array($extra_price) && count($extra_price)){
+// 		foreach($extra_price as $key => $number){
+// 			$price_item = $number['trizen_hotel_room_extra_service_price'];
+// 			if($price_item <= 0) $price_item = 0;
+// 			// $number_item = intval($number['trizen_hotel_room_extra_service_price']);
+// 			// if($number_item <= 0) $number_item = 0;
+// 			$total_price += $price_item;
+// 		}
+// //	}
+//     return $total_price * $numberday * $number_room;
+// }
 
 function get_cart_link() {
 	$cart_link                  = get_permalink(  );

@@ -229,25 +229,25 @@ if(!function_exists('trizen_register_meta_boxes')) {
 
 
 		/* Hotel Room Extra Services */
-		$room_extra_service_oldfield = get_post_meta($post_id, 'extra_services', true);
-		if ( $_POST['trizen_hotel_room_extra_service_title'] ) {
-			$newfield                                          = array();
-			$trizen_hotel_room_extra_service_title             = $_POST['trizen_hotel_room_extra_service_title'];
-			$trizen_hotel_room_extra_service_price             = $_POST['trizen_hotel_room_extra_service_price'];
-			$trizen_hotel_room_extra_service_price_designation = $_POST['trizen_hotel_room_extra_service_price_designation'];
-			$count                                             = count( $trizen_hotel_room_extra_service_title );
-			for ( $i = 0; $i < $count; $i ++ ) {
-				if ( $trizen_hotel_room_extra_service_title[ $i ] != '' ) :
-					$newfield[ $i ]['trizen_hotel_room_extra_service_title']             = stripslashes( strip_tags( $trizen_hotel_room_extra_service_title[ $i ] ) );
-					$newfield[ $i ]['trizen_hotel_room_extra_service_price']             = stripslashes( $trizen_hotel_room_extra_service_price[ $i ] ); // and however you want to sanitize
-					$newfield[ $i ]['trizen_hotel_room_extra_service_price_designation'] = stripslashes( $trizen_hotel_room_extra_service_price_designation[ $i ] ); // and however you want to sanitize
-				endif;
-			}
-		}
-		if ( !empty( $newfield ) && $newfield != $room_extra_service_oldfield )
-			update_post_meta( $post_id, 'extra_services', $newfield );
-		elseif ( empty($newfield) && $room_extra_service_oldfield )
-			delete_post_meta( $post_id, 'extra_services', $room_extra_service_oldfield );
+		// $room_extra_service_oldfield = get_post_meta($post_id, 'extra_services', true);
+		// if ( $_POST['trizen_hotel_room_extra_service_title'] ) {
+		// 	$newfield                                          = array();
+		// 	$trizen_hotel_room_extra_service_title             = $_POST['trizen_hotel_room_extra_service_title'];
+		// 	$trizen_hotel_room_extra_service_price             = $_POST['trizen_hotel_room_extra_service_price'];
+		// 	$trizen_hotel_room_extra_service_price_designation = $_POST['trizen_hotel_room_extra_service_price_designation'];
+		// 	$count                                             = count( $trizen_hotel_room_extra_service_title );
+		// 	for ( $i = 0; $i < $count; $i ++ ) {
+		// 		if ( $trizen_hotel_room_extra_service_title[ $i ] != '' ) :
+		// 			$newfield[ $i ]['trizen_hotel_room_extra_service_title']             = stripslashes( strip_tags( $trizen_hotel_room_extra_service_title[ $i ] ) );
+		// 			$newfield[ $i ]['trizen_hotel_room_extra_service_price']             = stripslashes( $trizen_hotel_room_extra_service_price[ $i ] ); // and however you want to sanitize
+		// 			$newfield[ $i ]['trizen_hotel_room_extra_service_price_designation'] = stripslashes( $trizen_hotel_room_extra_service_price_designation[ $i ] ); // and however you want to sanitize
+		// 		endif;
+		// 	}
+		// }
+		// if ( !empty( $newfield ) && $newfield != $room_extra_service_oldfield )
+		// 	update_post_meta( $post_id, 'extra_services', $newfield );
+		// elseif ( empty($newfield) && $room_extra_service_oldfield )
+		// 	delete_post_meta( $post_id, 'extra_services', $room_extra_service_oldfield );
 
 
 

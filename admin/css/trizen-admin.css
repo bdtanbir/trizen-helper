@@ -88,7 +88,7 @@
     align-items: start;
 }
 .trizen-hotel-information-wrap .tabs {
-    width: 12%;
+    width: 160px;
     flex: none;
     margin: 0 20px 0 0;
     position: sticky;
