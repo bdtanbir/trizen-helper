@@ -64,8 +64,6 @@ if ( !class_exists( 'TSAdminHotel' ) ) {
             add_action( 'wp_ajax_ts_getRoomHotel', [ __CLASS__, 'getRoomHotel' ], 9999 );
 
 
-            add_action( 'admin_menu',  [$this, 'trizen_hotel_booking_add_menu_page'] );
-
             /**
              *   @since 1.0
              *   auto create & update table ts_hotel
@@ -706,17 +704,6 @@ if ( !class_exists( 'TSAdminHotel' ) ) {
             ) return TRUE;
 
             return FALSE;
-        }
-
-        function trizen_hotel_booking_add_menu_page() {
-            //Add booking page
-
-            add_submenu_page( 'edit.php?post_type=ts_hotel', __( 'Hotel Bookings', 'trizen-helper' ), __( 'Hotel Bookings', 'trizen-helper' ), 'manage_options', 'ts_hotel_booking', [$this, '__hotel_booking_page'] );
-        }
-
-        function __hotel_booking_page() {
-            include_once TRIZEN_HELPER_PATH.'inc/admin/views/hotel/booking_index.php';
-
         }
 
         function edit_order_item(){

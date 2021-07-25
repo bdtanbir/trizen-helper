@@ -55,8 +55,6 @@ if (!class_exists('TSAdminRoom')) {
              **/
             add_action('plugins_loaded', [__CLASS__, '_check_table_hotel_room']);
 
-
-            add_action('admin_menu', [$this, 'add_menu_page']);
             //Check booking edit and redirect
             if (self::is_booking_page()) {
                 add_action('admin_enqueue_scripts', [__CLASS__, 'add_edit_scripts']);
@@ -378,21 +376,6 @@ if (!class_exists('TSAdminRoom')) {
         static function add_edit_scripts() {
 //            wp_enqueue_script('st-hotel-edit-booking', get_template_directory_uri() . '/js/admin/hotel-booking.js', ['jquery', 'jquery-ui-datepicker'], NULL, TRUE);
 //            wp_enqueue_style('jjquery-ui.theme.min.css', get_template_directory_uri() . '/css/admin/jquery-ui.min.css');
-        }
-
-        /**
-         * @since 1.0.0
-         **/
-        function add_menu_page() {
-            //Add booking page
-            add_submenu_page('edit.php?post_type=hotel_room', __('Room Bookings', 'trizen-helper'), __('Room Bookings', 'trizen-helper'), 'manage_options', 'ts_hotel_room_booking', [$this, '__hotel_room_booking_page']);
-        }
-
-        /**
-         * @since 1.0.0
-         **/
-        function __hotel_room_booking_page() {
-            include_once TRIZEN_HELPER_PATH.'inc/admin/views/hotel_room/booking_index.php';
         }
 
         /**
