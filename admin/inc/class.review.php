@@ -310,10 +310,9 @@ if ( !class_exists( 'TSReview' ) ) {
 
                     $liked_COMMENTS = NULL; // setup array variable
                     $liked_USERS    = NULL; // setup array variable
-
-                    if ( count( $meta_COMMENTS ) != 0 ) { // meta exists, set up values
+                    // if ( count( $meta_COMMENTS ) != 0 ) { // meta exists, set up values
                         $liked_COMMENTS = $meta_COMMENTS;
-                    }
+                    // }
 
                     if ( !is_array( $liked_COMMENTS ) ) // make array just in case
                         $liked_COMMENTS = [];

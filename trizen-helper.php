@@ -18,6 +18,8 @@ define( 'TRIZEN_HELPER_VERSION', '1.0' );
 
 
 require_once TRIZEN_HELPER_PATH.'admin/inc/setting/trizen-option-setting.php';
+add_action('plugins_loaded', 'trizen_helper_load');
+function trizen_helper_load() {
 require_once TRIZEN_HELPER_PATH.'custom/trizen-custom-metaboxes.php';
 require_once TRIZEN_HELPER_PATH.'widgets/trizen-social-profile.php';
 require_once TRIZEN_HELPER_PATH.'widgets/trizen-recent-post-with-thumbnail.php';
@@ -34,6 +36,7 @@ require_once TRIZEN_HELPER_PATH.'admin/inc/class.review.php';
 require_once TRIZEN_HELPER_PATH.'admin/inc/class.user.php';
 require_once TRIZEN_HELPER_PATH.'inc/class.hotel-helper.php';
 require_once TRIZEN_HELPER_PATH.'inc/class.hotel.search.php';
+}
 require_once TRIZEN_HELPER_PATH.'custom/trizen-availability-model.php';
 require_once TRIZEN_HELPER_PATH.'inc/trizen-hook-function.php';
 

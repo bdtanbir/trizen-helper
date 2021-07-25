@@ -21,7 +21,7 @@ if(!class_exists('TS_Woocommerce')) {
             add_action('woocommerce_after_main_content', [$this, '_add_after_main_content'], 1);
             add_filter('woocommerce_show_page_title', [$this, '_hide_page_title']);
             add_filter('woocommerce_breadcrumb_defaults', [$this, '_change_bc_class']);
-            add_action('pre_get_posts', [$this, '_change_posts_per_page']);
+            // add_action('pre_get_posts', [$this, '_change_posts_per_page']);
             add_filter('loop_shop_columns', [$this, '_change_loop_shop_columns']);
             //add_action('woocommerce_before_shop_loop_item_title', [$this, '_add_thumb_img_hover']);
 			add_action('wp_enqueue_scripts' ,[$this , 'ts_woo_fix_cookie']) ;
@@ -240,11 +240,11 @@ if(!class_exists('TS_Woocommerce')) {
         function _change_loop_shop_columns() {
             return 3;
         }
-         function _change_posts_per_page($query) {
-            if($limit = get('posts_per_page')) {
-                $query->set('posts_per_page',$limit);
-            }
-        }
+        //  function _change_posts_per_page($query) {
+        //     if($limit = get('posts_per_page')) {
+        //         $query->set('posts_per_page',$limit);
+        //     }
+        // }
         static function _hide_page_title() {
             return false;
         }
