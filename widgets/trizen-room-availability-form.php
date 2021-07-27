@@ -10,8 +10,8 @@ class trizen_hpa_widget extends WP_Widget {
 		// widget actual processes
 		parent::__construct(
 			'trizen_hpa', // Base ID
-			__( 'Trizen: Hotel Price And Availability', 'trizen-helper' ), // Name
-			array( 'description' => __( 'Trizen: Hotel Price And Availability', 'trizen-helper' ), ) // Args
+			__( 'Trizen: Rooom Availability Form', 'trizen-helper' ), // Name
+			array( 'description' => __( 'Trizen: Rooom Availability Form', 'trizen-helper' ), ) // Args
 		);
 	}
 

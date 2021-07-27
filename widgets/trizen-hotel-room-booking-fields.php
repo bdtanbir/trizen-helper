@@ -10,8 +10,8 @@ class trizen_hrbf_widget extends WP_Widget {
 		// widget actual processes
 		parent::__construct(
 			'trizen_hrbf', // Base ID
-			__( 'Trizen: Hotel Room Booking Info', 'trizen-helper' ), // Name
-			array( 'description' => __( 'Trizen: Hotel Room Booking Info', 'trizen-helper' ), ) // Args
+			__( 'Trizen: Hotel Room Booking Field', 'trizen-helper' ), // Name
+			array( 'description' => __( 'Trizen: Hotel Room Booking Field', 'trizen-helper' ), ) // Args
 		);
 	}
 
