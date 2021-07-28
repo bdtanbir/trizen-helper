@@ -18,29 +18,13 @@ if ( !class_exists( 'TSAvailability' ) ) {
 
             add_action('init',array($this,'__run_fill_old_order'), 999);
 
-            add_action('admin_enqueue_scripts',array($this,'_add_scripts'));
             add_action('wp_ajax_st_sync_availability_process',array($this,'_sync_availability_process'));
             add_action('wp_ajax_st_sync_price_process',array($this,'_sync_price_process'));
         }
         public function _sync_availability_process()
         {
-//            $list_disable_service = st()->get_option('list_disabled_feature');
             $post_types=[ 'hotel_room'];
 
-            /*if(!empty($list_disable_service)){
-                foreach ($list_disable_service as $key => $value) {
-                    $key_post_type = array_search($value, $post_types);
-                    if($key_post_type !== false){
-                        unset($post_types[$key_post_type]);
-                    }
-                    if($value == 'ts_hotel'){
-                        $key_post_type_hotel_room = array_search('hotel_room', $post_types);
-                        if($key_post_type_hotel_room !== false){
-                            unset($post_types[$key_post_type_hotel_room]);
-                        }
-                    }
-                }
-            }*/
 
             $rs=[];
             $stop=0;
@@ -103,13 +87,6 @@ if ( !class_exists( 'TSAvailability' ) ) {
             }
 
             wp_send_json($rs);
-        }
-        public function _add_scripts()
-        {
-            /*if(!empty($_GET['page']) and $_GET['page']=='st_sync_availability')
-                wp_enqueue_script('st-sync-availability',get_template_directory_uri().'/js/admin/sync-availability.js',array('jquery'),null,true);
-            if(!empty($_GET['page']) and $_GET['page']=='st_sync_price')
-                wp_enqueue_script('st-sync-price',get_template_directory_uri().'/js/admin/sync-price.min.js',array('jquery'),null,true);*/
         }
         public function __run_fill_availability($post_type, $offset, $limit)
         {
@@ -388,23 +365,7 @@ if ( !class_exists( 'TSAvailability' ) ) {
 
         public function _sync_price_process()
         {
-//            $list_disable_service = st()->get_option('list_disabled_feature');
             $post_types=[ 'hotel_room'];
-
-            /*if(!empty($list_disable_service)){
-                foreach ($list_disable_service as $key => $value) {
-                    $key_post_type = array_search($value, $post_types);
-                    if($key_post_type !== false){
-                        unset($post_types[$key_post_type]);
-                    }
-                    if($value == 'ts_hotel'){
-                        $key_post_type_hotel_room = array_search('hotel_room', $post_types);
-                        if($key_post_type_hotel_room !== false){
-                            unset($post_types[$key_post_type_hotel_room]);
-                        }
-                    }
-                }
-            }*/
 
             $rs=[];
             $stop=0;
@@ -471,23 +432,7 @@ if ( !class_exists( 'TSAvailability' ) ) {
 
         public function _sync_price_process_old()
         {
-//            $list_disable_service = st()->get_option('list_disabled_feature');
             $post_types=[ 'hotel_room' ];
-
-            /*if(!empty($list_disable_service)){
-                foreach ($list_disable_service as $key => $value) {
-                    $key_post_type = array_search($value, $post_types);
-                    if($key_post_type !== false){
-                        unset($post_types[$key_post_type]);
-                    }
-                    if($value == 'ts_hotel'){
-                        $key_post_type_hotel_room = array_search('hotel_room', $post_types);
-                        if($key_post_type_hotel_room !== false){
-                            unset($post_types[$key_post_type_hotel_room]);
-                        }
-                    }
-                }
-            }*/
 
             $rs=[];
             $stop=0;
