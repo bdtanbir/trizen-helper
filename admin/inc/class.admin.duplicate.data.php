@@ -3,7 +3,7 @@
  * @since 1.0.0
  **/
 if ( !class_exists( 'TSDuplicateData' ) ) {
-    class TSDuplicateData extends TSAdmin {
+    class TSDuplicateData {
         static $column_hotel;
         static $column_hotel_room;
         static $_inst;
