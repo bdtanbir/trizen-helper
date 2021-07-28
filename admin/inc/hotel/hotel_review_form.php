@@ -44,33 +44,6 @@
 
     <div class="form-wrapper contact-form-action">
         <div class="row">
-            <!-- <div class="col-lg-6 responsive-column">
-                <div class="input-box">
-                    <label class="label-text" for="author">
-                        <?php esc_html_e('Name', 'trizen-helper'); ?>
-                    </label>
-                    <div class="form-group">
-                        <span class="la la-user form-icon"></span>
-                        <input id="author" type="text" class="form-control"
-                               name="author"
-                               placeholder="<?php esc_attr_e('Your name', 'trizen-helper') ?>">
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-6 responsive-column">
-                <div class="input-box">
-                    <label class="label-text" for="email">
-                        <?php esc_html_e('Email', 'trizen-helper'); ?>
-                    </label>
-                    <div class="form-group">
-                        <span class="la la-envelope-o form-icon"></span>
-                        <input id="email" type="email" class="form-control"
-                               name="email"
-                               placeholder="<?php esc_attr_e('Email address', 'trizen-helper') ?>">
-                    </div>
-                </div>
-            </div> -->
-
             <div class="col-lg-12">
                 <div class="input-box">
                     <label class="label-text" for="comment">
