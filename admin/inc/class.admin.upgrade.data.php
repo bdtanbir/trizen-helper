@@ -20,7 +20,6 @@ if ( !class_exists( 'TSUpgradeData' ) ) {
             add_action( 'save_post', [ $this, '_save_properties' ], 10, 2 );
 
             add_action( 'plugins_loaded', [&$this, '_check_table_location_relationships'], 50 );
-            add_action( 'admin_enqueue_scripts', [$this, '_add_scripts'] );
             if ( class_exists( 'STTravelCode' ) ) {
                 add_action( 'admin_notices', [$this, '_add_notices'] );
             }
@@ -76,13 +75,6 @@ if ( !class_exists( 'TSUpgradeData' ) ) {
             }
         }
 
-        public function _add_scripts() {
-            wp_register_style( 'admin-location-nested', get_template_directory_uri() . '/css/admin/admin.location-nested.css' );
-            wp_register_script( 'admin-location-nested.js', get_template_directory_uri() . '/js/admin/location-nested.js', [
-                'jquery'
-            ], true );
-        }
-
         public function _add_notices() {
             if(get('page','') != 'tgmpa-install-plugins'){
                 $my_theme = wp_get_theme();
@@ -100,7 +92,7 @@ if ( !class_exists( 'TSUpgradeData' ) ) {
                             <p><?php echo __('From the version <strong>1.0.2</strong>, it has few new data updates. Click "Update Now" button to perform it.', 'trizen-helper'); ?></p>
                             <?php
                                 if( $upgraded ) { ?>
-                                    <p><em>(You did it once. If you want to do ti again, click "Update Now" button.)</em></p>
+                                    <p><em><?php esc_html_e( '(You did it once. If you want to do ti again, click "Update Now" button.)', 'trizen-helper' ); ?></em></p>
                                 <?php }
                             ?>
                             <button id="ts_update-glocation" class="button trizen-btn" type="submit">
@@ -165,9 +157,6 @@ if ( !class_exists( 'TSUpgradeData' ) ) {
                         </div>
                     </div>
                     <?php
-                    /*echo balanceTags( $this->load_view( 'upgrade/index', false, [
-                        'upgraded' => $upgraded
-                    ] ) );*/
                 }
             }
 
@@ -415,7 +404,7 @@ if ( !class_exists( 'TSUpgradeData' ) ) {
                         'number_page'                   => '',
                         'update_location_nested'        => request( 'update_location_nested', '' ),
                         'update_location_relationships' => request( 'update_location_relationships', '' ),
-                        'message'                       => 'The next step is being checked...',
+                        'message'                       => __('The next step is being checked...', 'trizen-helper'),
                         'reset_table'                   => '',
                         'post_type'                     => ''
                     ] );
@@ -484,11 +473,6 @@ if ( !class_exists( 'TSUpgradeData' ) ) {
                         unset($results['lists']);
                     }
                     echo json_encode($results);die;
-                    /*echo json_encode( [
-                        'status'  => 'error',
-                        'message' => 'Your location is empty.'
-                    ] );
-                    die();*/
                 }
             }
             if ( request( 'update_location_nested', '' ) == 'update_location_nested' && request( 'step', '' ) == 'update_location_full_name' ) {

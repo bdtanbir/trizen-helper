@@ -1,11 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Dannie
- * Date: 8/14/2018
- * Time: 8:24 AM
- */
-
 if(!class_exists('TS_Order')) {
     class TS_Order{
 

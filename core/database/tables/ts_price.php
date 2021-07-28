@@ -5,7 +5,7 @@ if ( !class_exists( 'TS_Price' ) ) {
 
         function __construct( $arg = [] )
         {
-//            parent::__construct( $arg );
+            
         }
 
         static function init()

@@ -40,7 +40,6 @@ require_once TRIZEN_HELPER_PATH.'inc/class.hotel.search.php';
 require_once TRIZEN_HELPER_PATH.'custom/trizen-availability-model.php';
 require_once TRIZEN_HELPER_PATH.'inc/trizen-hook-function.php';
 
-require_once TRIZEN_HELPER_PATH.'admin/inc/class.tsadmin.php';
 require_once TRIZEN_HELPER_PATH.'admin/inc/helper/nested_sets_model.helper.php';
 require_once TRIZEN_HELPER_PATH.'admin/inc/helper/availability.helper.php';
 require_once TRIZEN_HELPER_PATH.'admin/inc/class.admin.neworder.data.php';

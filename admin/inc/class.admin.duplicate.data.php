@@ -9,10 +9,7 @@ if ( !class_exists( 'TSDuplicateData' ) ) {
         static $_inst;
 
         public function __construct() {
-            add_action( 'admin_menu', [ $this, '_register_duplicate_submenu_page' ], 50 );
-            add_action( 'admin_menu', [ $this, '_register_sysdata_submenu_page' ], 50 );
 //            add_action( 'admin_menu', [ $this, '_register_sync_price_submenu_page' ], 52 );
-            add_action( 'admin_enqueue_scripts', [ $this, '_add_scripts' ] );
             add_action( 'wp_ajax_ts_duplicate_ajax', [ $this, '_duplicate_ajax' ] );
             add_action( 'plugins_loaded', [ $this, '_create_table' ] );
         }
@@ -28,48 +25,6 @@ if ( !class_exists( 'TSDuplicateData' ) ) {
                 return false;
             }
             return true;
-        }
-
-        public function _add_scripts() {
-//            wp_register_script( 'ts-duplicate', TRIZEN_HELPER_PATH . 'admin/js/ts-duplicate.js', [ 'jquery' ], '1.0.0', true );
-//            $ajax_nonce = wp_create_nonce( "ts_duplicate_string" );
-//            wp_localize_script( 'jquery', 'ts_duplicate_string', [
-//                'string' => $ajax_nonce
-//            ] );
-        }
-
-        public function _register_duplicate_submenu_page() {
-//            add_submenu_page( 'ts_traveler_option', __( 'Upgrade Data', 'trizen-helper' ), __( 'Upgrade Data', 'trizen-helper' ), 'manage_options', 'ts-upgrade-data', [ $this, '_ts_duplicate_data_content' ] );
-        }
-
-        public function _register_sysdata_submenu_page() {
-//            add_submenu_page( 'ts_traveler_option', __( 'Sync Availability', 'trizen-helper' ), __( 'Sync Availability', 'trizen-helper' ), 'manage_options', 'ts_sync_availability', [ $this, '_show_sync_page' ] );
-        }
-
-        public function _show_sync_page() {
-            ?>
-            <!--<div class="" style="margin: 5px 15px 2px;">
-                <h2><?php /*esc_html_e('Sync Availability', 'trizen-helper'); */?></h2>
-                <div class="ts_sync_log"></div><br />
-                <button class="button button-primary st_btn_start_sync" data-text="<?php /*esc_attr_e('Sync Now', 'trizen-helper'); */?>" data-text-in="<?php /*esc_attr_e('Sync...', 'trizen-helper'); */?>">
-                    <?php /*esc_html_e('Sync Now', 'trizen-helper'); */?>
-                </button>
-                <div class="ts-sync-availability-note">
-                    <?php
-/*                    $last_sync_time = get_option('ts_lats_sync_availability');
-                    if(!empty($last_sync_time)){
-                        esc_html_e('Last Sync: ', 'trizen-helper') . $last_sync_time;
-                    }
-                    */?>
-                </div>
-            </div>-->
-            <?php
-        }
-
-        public function _ts_duplicate_data_content() {
-            wp_enqueue_script( 'ts-duplicate' );
-            echo '<h1>Duplicate File Will Include here</h1>';
-//            echo balanceTags( $this->load_view( 'duplicate_data/index', false ) );
         }
 
         public function _duplicate_ajax( $oneclick = false ) {

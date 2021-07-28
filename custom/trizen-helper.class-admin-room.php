@@ -28,14 +28,9 @@ function format_money_raw( $money = '', $symbol = false, $precision = 2, $templa
 		return esc_html__( "Free", 'trizen-helper' );
 	}
 
-	/*if ( !$symbol ) {
-		$symbol = self::get_current_currency( 'symbol' );
-	}*/
-
 	if ( $precision ) {
 		$money = round( $money, $precision );
 	}
-//	if ( !$template ) $template = self::get_current_currency( 'booking_currency_pos' );
 
 	if ( !$template ) {
 		$template = 'left';

@@ -257,28 +257,12 @@ if ( !class_exists( 'DatabaseHelper' ) ) {
                 $wpdb->query( $query );
             }
 
-            // Do update unique
-//                if(!empty($remove_unique))
-//                {
-//                    $delete=[];
-//                    foreach ($remove_unique as $k)
-//                    {
-//                        $delete="ALTER TABLE {$table_name} DROP"
-//                    }
-//                }
 
-
-            if(!empty($unique_key))
-            {
+            if(!empty($unique_key)) {
                 $checkIndex=$wpdb->get_results("SHOW INDEX FROM ".$table_name);
-//                    if($table_name=='wp_ts_availability')
-//                    {
-//                        var_dump($checkIndex);
-//                        die;
-//                    }
+
                 $flag=true;
-                if(!empty($checkIndex))
-                {
+                if(!empty($checkIndex)) {
                     foreach($checkIndex as $index)
                     {
                         if($index->Key_name=='TS_AVAILABILITY'){ $flag=false;}

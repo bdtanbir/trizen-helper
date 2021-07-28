@@ -1,25 +1,12 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: me664
- * Date: 10/1/17
- * Time: 4:21 PM
- */
-
 if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly
 }
 
 class TS_Table_Model{
-
-
-
     /**
      * Return All Last Query Result
-     *
      * @since 1.0
-     * @author dannie
-     *
      * @return array
      */
     function result()
@@ -32,10 +19,7 @@ class TS_Table_Model{
 
     /**
      * Run Update Query
-     *
      * @since 1.0
-     * @author dannie
-     *
      * @param array $data
      * @return bool|false|int
      */
@@ -102,10 +86,7 @@ class TS_Table_Model{
 
     /**
      * Run Insert Query
-     *
      * @since 1.0
-     * @author dannie
-     *
      * @param array $data
      * @return bool|int
      */
@@ -145,8 +126,6 @@ class TS_Table_Model{
 
     /**
      * Delete from table with where clause
-     *
-     * @author dannie
      * @since 1.0
      *
      * @return bool|false|int
@@ -196,10 +175,7 @@ class TS_Table_Model{
 
     /**
      * Get single row by table key
-     *
      * @since 1.0
-     * @author dannie
-     *
      * @param $id
      * @return array|bool|null|object|void
      */
@@ -218,8 +194,6 @@ class TS_Table_Model{
      * Get single row by key and value
      *
      * @since 1.0
-     * @author dannie
-     *
      * @param $key
      * @param $id
      * @return array|bool|null|object|void
@@ -257,8 +231,6 @@ class TS_Table_Model{
      * Get columns of the table
      *
      * @since 1.0
-     * @author dannie
-     *
      * @return array
      */
     function get_columns()
@@ -270,8 +242,6 @@ class TS_Table_Model{
      * Check Meta Table is ready
      *
      * @since 1.0
-     * @author dannie
-     *
      * @since 1.0
      * @return bool
      */
@@ -287,8 +257,6 @@ class TS_Table_Model{
      * Check Meta Table is Created
      *
      * @since 1.0
-     * @author dannie
-     *
      * @since 1.0
      */
     public function _check_meta_table_is_working()
@@ -385,8 +353,6 @@ class TS_Table_Model{
      * Upgrade meta table
      *
      * @since 1.0
-     * @author dannie
-     *
      * @since 1.0
      */
     public function _upgrade_table()
@@ -516,11 +482,7 @@ class TS_Table_Model{
         if(!empty($unique_key))
         {
             $checkIndex=$wpdb->get_results("SHOW INDEX FROM ".$table_name);
-//                    if($table_name=='wp_ts_availability')
-//                    {
-//                        var_dump($checkIndex);
-//                        die;
-//                    }
+
             $flag=true;
             if(!empty($checkIndex))
             {
@@ -541,10 +503,7 @@ class TS_Table_Model{
 
     /**
      * Build the query
-     *
      * @since 1.0
-     * @author dannie
-     *
      * @return bool|string
      */
     public function _get_query()
@@ -700,11 +659,7 @@ class TS_Table_Model{
 
     /**
      * Get Table Name with Prefix
-     *
-     * @author dannie
      * @since 1.0
-     *
-     *
      * @param $prefix
      * @return string
      */
@@ -721,9 +676,7 @@ class TS_Table_Model{
 
     /**
      * Clear Query Condition after each query
-     *
      * @since 1.0
-     * @author dannie
      */
     public function _clear_query()
     {
@@ -735,8 +688,6 @@ class TS_Table_Model{
         $this->_groupby = array();
         $this->_having = array();
     }
-
-
 
     /**
      * Get Errors from Session then unset
@@ -754,8 +705,6 @@ class TS_Table_Model{
         }
 
         return array();
-
-
     }
 
     /**

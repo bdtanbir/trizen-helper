@@ -197,9 +197,6 @@ if(!function_exists('trizen_register_meta_boxes')) {
 		if (isset($_POST['room_parent'])) {
 			update_post_meta( $post_id, 'room_parent', $_POST['room_parent']);
 		}
-		/*if (isset($_POST['discount_type_no_day'])) {
-			update_post_meta( $post_id, 'discount_type_no_day', $_POST['discount_type_no_day']);
-		}*/
 		if (isset($_POST['default_state'])) {
 			update_post_meta( $post_id, 'default_state', $_POST['default_state']);
 		}

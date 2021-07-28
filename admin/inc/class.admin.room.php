@@ -23,8 +23,6 @@ if (!class_exists('TSAdminRoom')) {
          * @update 1.1.3
          * */
         function __construct() {
-//            if (!st_check_service_available($this->post_type)) return;
-
             add_filter('ts_hotel_room_layout', [$this, 'custom_hotel_room_layout']);
 
             self::$booking_page = admin_url('edit.php?post_type=hotel_room&page=ts_hotel_room_booking');
@@ -57,15 +55,12 @@ if (!class_exists('TSAdminRoom')) {
 
             //Check booking edit and redirect
             if (self::is_booking_page()) {
-                add_action('admin_enqueue_scripts', [__CLASS__, 'add_edit_scripts']);
                 add_action('admin_init', [$this, '_do_save_booking']);
             }
-            //parent::__construct();
 
             /**
              * @since 1.2.8
              **/
-            add_action('restrict_manage_posts', [$this, 'restrict_manage_posts_hotel_room']);
             add_action('parse_query', [$this, 'parse_query_hotel_room']);
 
             add_action('init', array($this, '__register_cronjob'), 1);
@@ -174,9 +169,6 @@ if (!class_exists('TSAdminRoom')) {
 
             if (!empty($insertBatch)) {
                 $wpdb->query("INSERT IGNORE INTO {$wpdb->prefix}{$table} (check_in,check_out,post_id,parent_id,post_type,`number`,`status`,price,	allow_full_day,adult_number,child_number,is_base,booking_period, adult_price, child_price) VALUES " . implode(",\r\n", $insertBatch));
-
-                // add log
-                //ST_Cronjob_Log_Model::inst()->log('room_fill_availability_'.$day->format('Y_m_d'),json_encode($ids));
             }
 
             wp_reset_postdata();
@@ -250,19 +242,6 @@ if (!class_exists('TSAdminRoom')) {
                 }
 
             }
-        }
-
-        public function restrict_manage_posts_hotel_room($post_type) {
-            if ($post_type == 'hotel_room'):
-                global $wp_query;
-                ?>
-                <!--<div class="alignleft actions">
-                    <input type="text" class="filter-by-hotel" name="filter_ts_hotel"
-                           value="<?php /*echo request('filter_ts_hotel', ''); */?>"
-                           placeholder="Filter by hotel name">
-                </div>-->
-            <?php
-            endif;
         }
 
         public function parse_query_hotel_room($query) {
@@ -373,21 +352,6 @@ if (!class_exists('TSAdminRoom')) {
         /**
          * @since 1.0.0
          **/
-        static function add_edit_scripts() {
-//            wp_enqueue_script('st-hotel-edit-booking', get_template_directory_uri() . '/js/admin/hotel-booking.js', ['jquery', 'jquery-ui-datepicker'], NULL, TRUE);
-//            wp_enqueue_style('jjquery-ui.theme.min.css', get_template_directory_uri() . '/css/admin/jquery-ui.min.css');
-        }
-
-        /**
-         * @since 1.0.0
-         **/
-        function add_booking() {
-            /*echo balanceTags($this->load_view('hotel_room/booking_edit', FALSE, ['page_title' => __('Add new Hotel Booking', 'trizen-helper')]));*/
-        }
-
-        /**
-         * @since 1.0.0
-         **/
         function _delete_items() {
             if (empty($_POST) or !check_admin_referer('shb_action', 'shb_field')) {
                 //// process form data, e.g. update fields
@@ -407,18 +371,6 @@ if (!class_exists('TSAdminRoom')) {
         /**
          * @since 1.0.0
          **/
-        function edit_order_item() {
-            $item_id = isset( $_GET[ 'order_item_id' ] ) ? $_GET[ 'order_item_id' ] : FALSE;
-            if ( !$item_id or get_post_type( $item_id ) != 'ts_order' ) {
-                //wp_safe_redirect(self::$booking_page); die;
-                return FALSE;
-            }
-            include_once TRIZEN_HELPER_PATH.'inc/admin/views/hotel_room/booking_edit.php';
-        }
-
-        /**
-         * @since 1.0.0
-         **/
         function _do_save_booking() {
             $section = isset($_GET['section']) ? $_GET['section'] : FALSE;
             switch ($section) {
@@ -428,9 +380,6 @@ if (!class_exists('TSAdminRoom')) {
                         return FALSE;
                     }
                     if (isset($_POST['submit']) and $_POST['submit']) $this->_save_booking($item_id);
-                    break;
-                case 'resend_email':
-                    $this->_resend_mail();
                     break;
             }
         }
@@ -475,7 +424,6 @@ if (!class_exists('TSAdminRoom')) {
                 do_action('update_booking_hotel_room', $order_id);
                 do_action('ts_admin_edit_booking_status',$item_data['status'],$order_id);
 
-//                TSCart::send_mail_after_booking($order_id, true);
                 wp_safe_redirect(self::$booking_page);
             }
         }
@@ -515,38 +463,6 @@ if (!class_exists('TSAdminRoom')) {
 
             return true;
         }
-
-        /**
-         * @since 1.0.0
-         **/
-        function _resend_mail() {
-            $order_item = isset($_GET['order_item_id']) ? $_GET['order_item_id'] : FALSE;
-            $test       = isset($_GET['test']) ? $_GET['test'] : FALSE;
-            /*if ($order_item) {
-                $order = $order_item;
-                if ($test) {
-                    global $order_id;
-                    $order_id = $order_item;
-                    $email_to_admin = st()->get_option('email_for_admin', '');
-                    $email = st()->load_template('email/header');
-                    $email .= TravelHelper::_get_template_email($email, $email_to_admin);
-                    $email .= st()->load_template('email/footer');
-                    echo($email);
-                    die;
-                }
-                if ($order) {
-                    $booking_by = get_post_meta($order_item, 'booking_by', true);
-                    $made_by_admin = false;
-                    if ($booking_by && $booking_by == 'admin') {
-                        $made_by_admin = true;
-                    }
-                    TSCart::send_mail_after_booking($order, $made_by_admin);
-                }
-            }*/
-
-            wp_safe_redirect(self::$booking_page . '&send_mail=success');
-        }
-
 
         /**
          * @since 1.0.0
@@ -609,12 +525,7 @@ if (!class_exists('TSAdminRoom')) {
                         $price  = 0;
                         while ($traver->have_posts()) {
                             $traver->the_post();
-                            /*if (get_post_meta(get_the_ID(), 'price_by_per_person', true) == 'on') {
-                                $item_price = (float)get_post_meta(get_the_ID(), 'adult_price', true);
-                            } else {*/
-                                $item_price = (float)get_post_meta(get_the_ID(), 'price', true);
-//                            }
-
+                            $item_price = (float)get_post_meta(get_the_ID(), 'price', true);
                             $price += $item_price;
                         }
                         wp_reset_query();
@@ -658,34 +569,18 @@ if (!class_exists('TSAdminRoom')) {
                 $prices = [];
                 while ($traver->have_posts()) {
                     $traver->the_post();
-                    /*if (get_post_meta(get_the_ID(), 'price_by_per_person', true) == 'on') {
-                        $query_price = TS_Hotel_Room_Availability::inst()
-                            ->select("min(CAST(adult_price as DECIMAL)) as min_price")
-                            ->where('status', 'available')
-                            ->where('post_id', get_the_ID())
-                            ->where("check_in >= UNIX_TIMESTAMP(CURRENT_DATE)", null, true)
-                            ->get()->result();
+                    $query_price = TS_Hotel_Room_Availability::inst()
+                        ->select("min(CAST(price as DECIMAL)) as min_price")
+                        ->where('status', 'available')
+                        ->where('post_id', get_the_ID())
+                        ->where("check_in >= UNIX_TIMESTAMP(CURRENT_DATE)", null, true)
+                        ->get()->result();
 
-                        if (!empty($query_price)) {
-                            $item_price = floatval($query_price[0]['min_price']);
-                        } else {
-                            $item_price = floatval(get_post_meta(get_the_ID(), 'price', true));
-                        }
-                    } else {*/
-                        $query_price = TS_Hotel_Room_Availability::inst()
-                            ->select("min(CAST(price as DECIMAL)) as min_price")
-                            ->where('status', 'available')
-                            ->where('post_id', get_the_ID())
-                            ->where("check_in >= UNIX_TIMESTAMP(CURRENT_DATE)", null, true)
-                            ->get()->result();
-
-                        if (!empty($query_price)) {
-                            $item_price = $query_price[0]['min_price'];
-                        } else {
-                            $item_price = get_post_meta(get_the_ID(), 'price', true);
-                        }
-//                    }
-
+                    if (!empty($query_price)) {
+                        $item_price = $query_price[0]['min_price'];
+                    } else {
+                        $item_price = get_post_meta(get_the_ID(), 'price', true);
+                    }
                     $prices[] = $item_price;
                 }
                 wp_reset_query();
@@ -698,34 +593,18 @@ if (!class_exists('TSAdminRoom')) {
                 }
 
                 if (empty($new_hotel_id)) {
-                    /*if (get_post_meta(get_the_ID(), 'price_by_per_person', true) == 'on') {
-                        $query_price = TS_Hotel_Room_Availability::inst()
-                            ->select("min(CAST(adult_price as DECIMAL)) as min_price")
-                            ->where('status', 'available')
-                            ->where('post_id', get_the_ID())
-                            ->where("check_in >= UNIX_TIMESTAMP(CURRENT_DATE)", null, true)
-                            ->get()->result();
+                    $query_price = TS_Hotel_Room_Availability::inst()
+                        ->select("min(CAST(price as DECIMAL)) as min_price")
+                        ->where('status', 'available')
+                        ->where('post_id', get_the_ID())
+                        ->where("check_in >= UNIX_TIMESTAMP(CURRENT_DATE)", null, true)
+                        ->get()->result();
 
-                        if (!empty($query_price)) {
-                            $item_price = floatval($query_price[0]['min_price']);
-                        } else {
-                            $item_price = floatval(get_post_meta(get_the_ID(), 'price', true));
-                        }
-                    } else {*/
-                        $query_price = TS_Hotel_Room_Availability::inst()
-                            ->select("min(CAST(price as DECIMAL)) as min_price")
-                            ->where('status', 'available')
-                            ->where('post_id', get_the_ID())
-                            ->where("check_in >= UNIX_TIMESTAMP(CURRENT_DATE)", null, true)
-                            ->get()->result();
-
-                        if (!empty($query_price)) {
-                            $item_price = $query_price[0]['min_price'];
-                        } else {
-                            $item_price = get_post_meta(get_the_ID(), 'price', true);
-                        }
-//                    }
-
+                    if (!empty($query_price)) {
+                        $item_price = $query_price[0]['min_price'];
+                    } else {
+                        $item_price = get_post_meta(get_the_ID(), 'price', true);
+                    }
                     update_post_meta($post_id, 'min_price', $item_price);
                 }
             }
@@ -893,13 +772,7 @@ if (!class_exists('TSAdminRoom')) {
             $i         = 1;
             while ($q->have_posts()) {
                 $q->the_post();
-                /*if (get_post_meta(get_the_ID(), 'price_by_per_person', true) == 'on') {
-                    $adult_price = floatval(get_post_meta(get_the_ID(), 'adult_price', true));
-                    $child_price = floatval(get_post_meta(get_the_ID(), 'child_price', true));
-                    $price       = min($adult_price, $child_price);
-                } else {*/
-                    $price = get_post_meta(get_the_ID(), 'price', true);
-//                }
+                $price = get_post_meta(get_the_ID(), 'price', true);
                 if ($i == 1) {
                     $min_price = $price;
                 } else {

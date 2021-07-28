@@ -18,10 +18,6 @@ if ( !class_exists( 'TSReview' ) ) {
 
         function save_comment_meta_data( $comment_id ) {
             $array = get_comment( $comment_id, ARRAY_A );
-            /*if ( ( isset( $_POST[ 'comment_title' ] ) ) && ( $_POST[ 'comment_title' ] != '' ) ) {
-                $title = wp_filter_nohtml_kses( $_POST[ 'comment_title' ] );
-                add_comment_meta( $comment_id, 'comment_title', $title );
-            }*/
             if ( ( isset( $_POST[ 'comment_rate' ] ) ) && ( $_POST[ 'comment_rate' ] != '' ) ) {
                 $rate = wp_filter_nohtml_kses( $_POST[ 'comment_rate' ] );
                 if ( $rate > 5 ) {
