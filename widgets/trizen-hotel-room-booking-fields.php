@@ -29,7 +29,7 @@ class trizen_hrbf_widget extends WP_Widget {
 		// Before widget code, if any
 		echo $args['before_widget'];
 
-        while ( have_posts() ): the_post();
+        // while ( have_posts() ): the_post();
         $room_price = get_post_meta(get_the_ID(), 'price', true);
         // $trizen_hotel_room_extra_service_data    = get_post_meta(get_the_ID(), 'extra_services', true);
 
@@ -80,27 +80,6 @@ class trizen_hrbf_widget extends WP_Widget {
                             <input type="hidden" class="check-out-input" value="<?php echo esc_attr($end) ?>" name="check_out">
                             <input type="text" class="check-in-out" value="<?php echo esc_attr($date); ?>" name="date">
                         </div>
-
-
-                        <!-- <div class="input-box">
-                            <label class="label-text" for="input-check-in">
-                                <?php esc_html_e('Check In', 'trizen-helper'); ?>
-                            </label>
-                            <div class="form-group">
-                                <span class="la la-calendar form-icon"></span>
-                                <input id="input-check-in" value="<?php echo esc_attr($start); ?>" class="date-range form-control" type="text" name="check_in" readonly>
-                            </div>
-                        </div>
-                        <div class="input-box">
-                            <label class="label-text" for="input-check-out">
-                                <?php esc_html_e('Check out', 'trizen-helper'); ?>
-                            </label>
-                            <div class="form-group">
-                                <span class="la la-calendar form-icon"></span>
-                                <input id="input-check-out" value="<?php echo esc_html($end); ?>" class="date-range form-control" type="text" name="check_out" readonly>
-
-                            </div>
-                        </div> -->
 
                 </div>
             </div>
@@ -177,7 +156,7 @@ class trizen_hrbf_widget extends WP_Widget {
         </form>
 
 		<?php
-        endwhile;
+        // endwhile;
 
 		// After widget code, if any
 		echo $args['after_widget'];
