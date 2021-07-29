@@ -334,7 +334,7 @@ function trizen_get_option($option_id, $default = false) {
 	return ts_traveler_get_option($option_id, $default);
 }
 function getDateFormat() {
-	$format = '{mm}/{dd}/{yyyy}';
+	$format = '{dd}/{mm}/{yyyy}';
 
 	$ori_format = [
 		'{d}' => 'j',

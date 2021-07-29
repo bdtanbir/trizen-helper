@@ -84,22 +84,22 @@ class trizen_rpwt_widget extends WP_Widget {
 			if ($post_query1->have_posts() || $post_query2->have_posts() || $post_query3->have_posts()) {
 				?>
 				<div class="section-tab section-tab-2 pb-3">
-					<ul class="nav nav-tabs" id="myTab3" role="tablist">
+					<ul class="nav nav-tabs" id="myTab3">
                         <?php if($post_query1->have_posts()) { ?>
                             <li class="nav-item">
-                                <a class="nav-link" id="recent-tab" data-toggle="tab" href="#recent" role="tab" aria-controls="recent" aria-selected="true">
+                                <a class="nav-link" id="recent-tab" data-toggle="tab" href="#recent">
                                     <?php esc_html_e('Recent', 'trizen-helper'); ?>
                                 </a>
                             </li>
                         <?php } if($post_query2->have_posts()) { ?>
                             <li class="nav-item">
-                                <a class="nav-link active" id="popular-tab" data-toggle="tab" href="#popular" role="tab" aria-controls="popular" aria-selected="false">
+                                <a class="nav-link active" id="popular-tab" data-toggle="tab" href="#popular">
                                     <?php esc_html_e('Popular', 'trizen-helper'); ?>
                                 </a>
                             </li>
                         <?php } if ($post_query3->have_posts()) { ?>
                             <li class="nav-item">
-                                <a class="nav-link" id="new-tab" data-toggle="tab" href="#new" role="tab" aria-controls="new" aria-selected="false">
+                                <a class="nav-link" id="new-tab" data-toggle="tab" href="#new">
                                     <?php esc_html_e('New', 'trizen-helper'); ?>
                                 </a>
                             </li>
