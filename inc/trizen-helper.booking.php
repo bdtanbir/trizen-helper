@@ -361,6 +361,34 @@ function getDateFormat() {
 
 	return $format;
 }
+function getDateFormatForRoomBooking() {
+	$format = '{mm}/{dd}/{yyyy}';
+
+	$ori_format = [
+		'{d}' => 'j',
+		'{dd}' => 'd',
+		'{D}' => 'D',
+		'{DD}' => 'l',
+		'{m}' => 'n',
+		'{mm}' => 'm',
+		'{M}' => 'M',
+		'{MM}' => 'F',
+		'{yy}' => 'y',
+		'{yyyy}' => 'Y'
+	];
+	preg_match_all("/({)[a-zA-Z]+(})/", $format, $out);
+
+	$out = $out[0];
+	foreach ($out as $key => $val) {
+		foreach ($ori_format as $ori_key => $ori_val) {
+			if ($val == $ori_key) {
+				$format = str_replace($val, $ori_val, $format);
+			}
+		}
+	}
+
+	return $format;
+}
 function convertDateFormat($date) {
 	$format = getDateFormat();
 	if (!empty($date)) {

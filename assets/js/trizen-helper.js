@@ -2,6 +2,24 @@
 (function ($) {
     'use strict';
     var body = $('body');
+    var dateRangePicker = $('input[name="daterange"]');
+    var $dateRangePickerTwo = $('input.date-range');
+
+    /*==== Daterangepicker =====*/
+    if ($(dateRangePicker).length) {
+        $(dateRangePicker).daterangepicker({
+            opens: 'right',
+        });
+    }
+
+    /*==== Daterangepicker =====*/
+    if ($($dateRangePickerTwo).length) {
+        $dateRangePickerTwo.daterangepicker({
+            singleDatePicker: true,
+            opens: 'right',
+            minDate: new Date,
+        });
+    }
 
     // single hotel room booking ajax
     $('form.hotel-room-booking-form').on('click', 'button.btn-book-ajax', function (e) {

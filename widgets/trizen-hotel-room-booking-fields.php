@@ -45,8 +45,8 @@ class trizen_hrbf_widget extends WP_Widget {
 
         $current_calendar = get_current_available_calendar(get_the_ID());
         $current_calendar_reverb = date('m/d/Y', strtotime($current_calendar));
-        $start          = get( 'start', date( getDateFormat(), strtotime($current_calendar)) );
-        $end            = get( 'end', date( getDateFormat(), strtotime( "+ 1 day", strtotime($current_calendar)) ) );
+        $start          = get( 'start', date( getDateFormatForRoomBooking(), strtotime($current_calendar)) );
+        $end            = get( 'end', date( getDateFormatForRoomBooking(), strtotime( "+ 1 day", strtotime($current_calendar)) ) );
         $date           = get( 'date', date( 'd/m/Y h:i a', strtotime($current_calendar) ) . '-' . date( 'd/m/Y h:i a', strtotime( '+1 day', strtotime($current_calendar) ) ) );
         $room_num_search = (int)get( 'room_num_search', 1 );
         if ( $room_num_search <= 0 ) $room_num_search = 1;
@@ -63,7 +63,26 @@ class trizen_hrbf_widget extends WP_Widget {
             <div class="sidebar-widget-item">
                 <div class="contact-form-action"  data-availability-date="<?php echo esc_attr($current_calendar_reverb); ?>">
 
-                        <div class="input-box">
+                    <div class="form-group form-date-field date-enquire form-date-search clearfix" data-format="<?php echo getDateFormatMoment() ?>">
+                            <div class="date-wrapper clearfix">
+                                <div class="check-in-wrapper">
+                                    <label class="label-text">
+                                        <?php esc_html_e('Check In - Check Out', 'trizen-helper'); ?>
+                                    </label>
+                                    <div class="check-in-check-out d-flex form-group form-control">
+                                        <i class="la la-calendar form-icon"></i>
+                                        <div class="render check-in-render"><?php echo esc_html($start); ?></div>&nbsp;-&nbsp;
+                                        <div class="render check-out-render"><?php echo esc_html($end); ?></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <input type="hidden" class="check-in-input" value="<?php echo esc_attr($start) ?>" name="check_in">
+                            <input type="hidden" class="check-out-input" value="<?php echo esc_attr($end) ?>" name="check_out">
+                            <input type="text" class="check-in-out" value="<?php echo esc_attr($date); ?>" name="date">
+                        </div>
+
+
+                        <!-- <div class="input-box">
                             <label class="label-text" for="input-check-in">
                                 <?php esc_html_e('Check In', 'trizen-helper'); ?>
                             </label>
@@ -81,7 +100,7 @@ class trizen_hrbf_widget extends WP_Widget {
                                 <input id="input-check-out" value="<?php echo esc_html($end); ?>" class="date-range form-control" type="text" name="check_out" readonly>
 
                             </div>
-                        </div>
+                        </div> -->
 
                 </div>
             </div>
