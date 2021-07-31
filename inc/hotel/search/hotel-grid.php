@@ -23,9 +23,6 @@ $avg = TSReview::get_avg_rate();
                     <?php echo esc_html($badge_title); ?>
                 </span>
 			<?php } ?>
-            <div class="add-to-wishlist icon-element" data-toggle="tooltip" data-placement="top" title="<?php esc_attr_e('Bookmark', 'trizen-helper'); ?>">
-                <i class="la la-heart-o"></i>
-            </div>
         </div>
 	<?php } ?>
     <div class="card-body">

@@ -600,4 +600,3 @@ $query = new WP_Query($args)
         </div>
     </div>
 </div>
-<?php
