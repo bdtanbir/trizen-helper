@@ -53,9 +53,11 @@ $link_with_params = add_query_arg($get_data, get_the_permalink());
                     <div class="row padding-top-20px">
 
                         <?php
+                        $count = 0;
                         foreach ($room_facilities as $room_facility) {
                         $room_facility_icon = get_term_meta( $room_facility->term_id, 'trizen-room-facilities-icon', true );
-
+                        $count++;
+                        if($count <= 4) {
                         ?>
                             <div class="col-lg-6 responsive-column">
                                 <div class="single-tour-feature d-flex align-items-center mb-3">
@@ -72,7 +74,8 @@ $link_with_params = add_query_arg($get_data, get_the_permalink());
                                     <?php } ?>
                                 </div>
                             </div>
-                        <?php } ?>
+                        <?php } 
+                        } ?>
 
                     </div>
                 <?php } ?>
